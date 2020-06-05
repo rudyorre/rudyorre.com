@@ -11,6 +11,106 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<style>
+			.cards h1
+			{
+				text-transform: capitalize;
+				color: #ffffff;
+				font-family: Consolas, monaco, monospace;
+				font-size: 1.4em;
+			}
+
+			.cards
+			{
+    			margin: 0 auto;
+    			max-width: 1000px;
+    			display: grid;
+    			grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    			grid-auto-rows: auto;
+    			gap: 20px;
+    			font-family: sans-serif;
+    			padding-top: 30px;
+			}
+
+			.cards *
+			{
+    			box-sizing: border-box;
+			}
+
+			.card
+			{
+				transition: 0.5s ease;
+				cursor: pointer;
+			}
+
+			.card__image
+			{
+    			width: 100%;
+    			height: 150px;
+    			object-fit: cover;
+    			display: block;
+    			border-top: 2px solid #333333;
+    			border-right: 2px solid #333333;
+    			border-left: 2px solid #333333;
+			}
+
+			.card__content
+			{
+    			line-height: 1.5;
+    			font-size: 0.9em;
+    			padding: 15px;
+    			background: #2e3842;
+				color: #ffffff;
+    			border-right: 2px solid #333333;
+    			border-left: 2px solid #333333;
+			}
+
+			.card__content > p:first-of-type
+			{
+    			margin-top: 0;
+			}
+
+			.card__content > p:last-of-type
+			{
+    			margin-bottom: 0;
+			}
+
+			.card__info
+			{
+    			padding: 15px;
+    			display: flex;
+    			justify-content: space-between;
+    			align-items: center;
+    			color: #ffffff;
+    			background: #343434;
+    			font-size: 0.8em;
+    			border-bottom: 2px solid #333333;
+    			border-right: 2px solid #333333;
+    			border-left: 2px solid #333333;
+			}
+
+			.card__info i
+			{
+    			font-size: 0.9em;
+    			margin-right: 8px;
+			}
+
+			.card__link
+			{
+    			color: #ffffff;
+    			text-decoration: none;
+			}
+
+			.card__link:hover
+			{
+    			text-decoration: underline;
+			}
+
+			.card:hover
+			{
+				transform: scale(1.05);
+			}
+		</style>
 	</head>
 	<body class="is-preload">
 
@@ -40,24 +140,81 @@
 				<!-- Main -->
 					<article id="main">
 						<header>
-							<h2>Generic Page</h2>
-							<p>Aliquam ut ex ut interdum donec amet imperdiet eleifend</p>
+							<h2>Projects</h2>
+							<p>A showcase of some of my projects.</p>
 						</header>
 						<section class="wrapper style5">
-							<div class="inner">
+							<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+							<div class="cards">
 
-								<h3>Lorem ipsum dolor</h3>
-								<p>Morbi mattis mi consectetur tortor elementum, varius pellentesque velit convallis. Aenean tincidunt lectus auctor mauris maximus, ac scelerisque ipsum tempor. Duis vulputate ex et ex tincidunt, quis lacinia velit aliquet. Duis non efficitur nisi, id malesuada justo. Maecenas sagittis felis ac sagittis semper. Curabitur purus leo, tempus sed finibus eget, fringilla quis risus. Maecenas et lorem quis sem varius sagittis et a est. Maecenas iaculis iaculis sem. Donec vel dolor at arcu tincidunt bibendum. Interdum et malesuada fames ac ante ipsum primis in faucibus. Fusce ut aliquet justo. Donec id neque ipsum. Integer eget ultricies odio. Nam vel ex a orci fringilla tincidunt. Aliquam eleifend ligula non velit accumsan cursus. Etiam ut gravida sapien.</p>
+								<!--Project 1: Multivariate Linear Regression-->
+  								<div class="card">
+    								<img class="card__image" src="images/multivariateregression.PNG" alt="">
+    								<div class="card__content">
+      									<h1>Multivariate Linear Regression</h1>
+      									<p>
+        								Statistical model that uses N parameters to predict the outcome of the response variable. Implemented with the gradient descent aglorithm.
+     									</p>
+    								</div>
+    								<div class="card__info">
+										<div>
+											<!--<a href="./" class="card__link">View More</a>-->
+     									</div>
+     									<div>
+											<a href="https://github.com/rudyorre/machine-learning-projects/tree/master/Multivariate-Linear-Regression" target="_blank" class="card__link">View on Github</a>
+     									</div>
+    								</div>
+								</div>
 
-								<p>Vestibulum ultrices risus velit, sit amet blandit massa auctor sit amet. Sed eu lectus sem. Phasellus in odio at ipsum porttitor mollis id vel diam. Praesent sit amet posuere risus, eu faucibus lectus. Vivamus ex ligula, tempus pulvinar ipsum in, auctor porta quam. Proin nec dui cursus, posuere dui eget interdum. Fusce lectus magna, sagittis at facilisis vitae, pellentesque at etiam. Quisque posuere leo quis sem commodo, vel scelerisque nisi scelerisque. Suspendisse id quam vel tortor tincidunt suscipit. Nullam auctor orci eu dolor consectetur, interdum ullamcorper ante tincidunt. Mauris felis nec felis elementum varius.</p>
+								<!--Project 2: Binary Search Tree Map-->
+								<div class="card">
+    								<img class="card__image" src="images/binarysearchtree.PNG" alt="">
+    								<div class="card__content">
+      									<h1>Binary Search Tree Map Container</h1>
+      									<p>
+										Implemented a C++ Map container built upon a binary search tree. Templated so any objects can be mapped, and prevents memory leaks in case of a allocation error.
+										
+     									</p>
+    								</div>
+    								<div class="card__info">
+										<div>
+											<!--<a href="./" class="card__link">View More</a>-->
+     									</div>
+     									<div>
+											<a href="https://warrior-plan.appspot.com/search" target="_blank" class="card__link">View on Github</a>
+     									</div>
+    								</div>
+								</div>
+								  
+								<!--Project 3: Warrior Planner Website-->
+								<div class="card">
+    								<img class="card__image" src="images/warriorplanner.png" alt="">
+    								<div class="card__content">
+      									<h1>Warrior Plan for Google CSSI</h1>
+      									<p>
+        								Collaborative project where we developed tools for El Camino students. I contributed the professor search algorithm and the python backend.
+     									</p>
+    								</div>
+    								<div class="card__info">
+										<div>
+											<!--<a href="./" class="card__link">View More</a>-->
+     									</div>
+     									<div>
+											<a href="https://warrior-plan.appspot.com/search" target="_blank" class="card__link">View Website</a>
+     									</div>
+    								</div>
+								</div>
 
-								<hr />
+								
 
-								<h4>Feugiat aliquam</h4>
-								<p>Nam sapien ante, varius in pulvinar vitae, rhoncus id massa. Donec varius ex in mauris ornare, eget euismod urna egestas. Etiam lacinia tempor ipsum, sodales porttitor justo. Aliquam dolor quam, semper in tortor eu, volutpat efficitur quam. Fusce nec fermentum nisl. Aenean erat diam, tempus aliquet erat.</p>
+								
 
-								<p>Etiam iaculis nulla ipsum, et pharetra libero rhoncus ut. Phasellus rutrum cursus velit, eget condimentum nunc blandit vel. In at pulvinar lectus. Morbi diam ante, vulputate et imperdiet eget, fermentum non dolor. Ut eleifend sagittis tincidunt. Sed viverra commodo mi, ac rhoncus justo. Duis neque ligula, elementum ut enim vel, posuere finibus justo. Vivamus facilisis maximus nibh quis pulvinar. Quisque hendrerit in ipsum id tellus facilisis fermentum. Proin mauris dui, at vestibulum sit amet, auctor bibendum neque.</p>
 
+							</div>
+							</br></br></br></br></br></br>
+							<div class = "cards">
+								</br>
+								<h2>More Coming Soon...</h2>
 							</div>
 						</section>
 					</article>
