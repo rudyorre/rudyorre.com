@@ -63,7 +63,13 @@
 					<br>
 
 					<div class="canvas">
-						<canvas id = "my_canvas" margin-left:auto; margin-right:auto></canvas>
+						<canvas id = "page_1" margin-left:auto; margin-right:auto></canvas>
+					</div>
+
+					<br>
+
+					<div class="canvas">
+						<canvas id = "page_2" margin-left:auto; margin-right:auto></canvas>
 					</div>
 					
 					<br>	
@@ -90,7 +96,21 @@
 			<script>
 				pdfjsLib.getDocument('./assets/documents/transcript.pdf').then(doc => {
 					doc.getPage(1).then(page => {
-						var myCanvas = document.getElementById("my_canvas");
+						var myCanvas = document.getElementById("page_1");
+						var context = myCanvas.getContext("2d");
+
+						var viewport = page.getViewport(2); //scale of viewport
+						myCanvas.width = viewport.width;
+						myCanvas.height = viewport.height;
+
+						page.render({
+							canvasContext: context,
+							viewport: viewport
+						});
+					});
+
+					doc.getPage(2).then(page => {
+						var myCanvas = document.getElementById("page_2");
 						var context = myCanvas.getContext("2d");
 
 						var viewport = page.getViewport(2); //scale of viewport
