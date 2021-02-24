@@ -5,12 +5,28 @@
     <link>/tag/supervised-ml/</link>
       <atom:link href="/tag/supervised-ml/index.xml" rel="self" type="application/rss+xml" />
     <description>Supervised ML</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Wed, 27 May 2020 00:00:00 +0000</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Fri, 05 Feb 2021 00:00:00 +0000</lastBuildDate>
     <image>
       <url>/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
       <title>Supervised ML</title>
       <link>/tag/supervised-ml/</link>
     </image>
+    
+    <item>
+      <title>California Housing Data</title>
+      <link>/project/california-housing/</link>
+      <pubDate>Fri, 05 Feb 2021 00:00:00 +0000</pubDate>
+      <guid>/project/california-housing/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Logistic Regression</title>
+      <link>/project/logistic-regression/</link>
+      <pubDate>Tue, 05 Jan 2021 00:00:00 +0000</pubDate>
+      <guid>/project/logistic-regression/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Multivariate Linear Regression</title>

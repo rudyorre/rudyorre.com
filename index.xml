@@ -37,14 +37,16 @@
     <item>
       <title>Relevant Coursework</title>
       <link>/post/coursework/</link>
-      <pubDate>Tue, 06 Oct 2020 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
       <guid>/post/coursework/</guid>
-      <description>&lt;p&gt;I am currently attending El Camino College. By the end of Spring 2021, I will be finishing with a Certificate of Completion in Computer Science, as well as an Associate&amp;rsquo;s in Mathematics, Physics, and Pre-Engineering. Currently, I have a 4.0 GPA, and have completed 54 semester credits, and have 16 in progress this semester. My relevant courses are highlighted below, but the rest can be found on my &lt;a href=&#34;https://drive.google.com/file/d/1pSLWnH1jIz3oH1qt3UD_9nWxAWuZdnP1/view?usp=sharing&#34; target=&#34;_blank&#34;&gt;transcript&lt;/a&gt; and &lt;a href=&#34;https://drive.google.com/file/d/1Y40pDKAu4umWm4myr4RMo8-0Y4RH0n6B/view?usp=sharing&#34; target=&#34;_blank&#34;&gt;AP Score Report&lt;/a&gt;.&lt;/p&gt;
+      <description>&lt;p&gt;I am currently attending El Camino College. By the end of Spring 2021, I will be finishing with a Certificate of Completion in Computer Science, as well as an Associate&amp;rsquo;s in Mathematics, Physics, and Pre-Engineering. Currently, I have a 4.0 GPA, and have completed 74 semester credits. My relevant courses are highlighted below, but the rest can be found on my &lt;a href=&#34;/media/transcript.pdf&#34; target=&#34;_blank&#34;&gt;transcript&lt;/a&gt; and &lt;a href=&#34;https://drive.google.com/file/d/1Y40pDKAu4umWm4myr4RMo8-0Y4RH0n6B/view?usp=sharing&#34; target=&#34;_blank&#34;&gt;AP Score Report&lt;/a&gt;.&lt;/p&gt;
 &lt;h3 id=&#34;computer-science-courses&#34;&gt;Computer Science Courses&lt;/h3&gt;
 &lt;ul&gt;
+&lt;li&gt;Foundations of Data Science (Python)&lt;/li&gt;
 &lt;li&gt;Advanced Programming in C++&lt;/li&gt;
 &lt;li&gt;Data Structures in (C++)&lt;/li&gt;
 &lt;li&gt;Problem Solving and Program Design (C++)&lt;/li&gt;
+&lt;li&gt;Computer Programming in Python&lt;/li&gt;
 &lt;li&gt;Advanced Placement Computer Science (Java)&lt;/li&gt;
 &lt;li&gt;Advanced Placement Computer Science Principles (JavaScript)&lt;/li&gt;
 &lt;li&gt;Digital Electronics (Arduino C++)&lt;/li&gt;
@@ -58,6 +60,31 @@
 &lt;li&gt;Singular Variable Calculus I &amp;amp; II&lt;/li&gt;
 &lt;/ul&gt;
 </description>
+    </item>
+    
+    <item>
+      <title>Sorting Visualization</title>
+      <link>/post/sorting/</link>
+      <pubDate>Wed, 24 Feb 2021 00:00:00 +0000</pubDate>
+      <guid>/post/sorting/</guid>
+      <description>&lt;p&gt;Sorting viz&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>California Housing Data</title>
+      <link>/project/california-housing/</link>
+      <pubDate>Fri, 05 Feb 2021 00:00:00 +0000</pubDate>
+      <guid>/project/california-housing/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Logistic Regression</title>
+      <link>/project/logistic-regression/</link>
+      <pubDate>Tue, 05 Jan 2021 00:00:00 +0000</pubDate>
+      <guid>/project/logistic-regression/</guid>
+      <description></description>
     </item>
     
     <item>
@@ -161,7 +188,7 @@ data.head()
 &lt;p&gt;Demo:&lt;/p&gt;
 
 
-&lt;div id=&#34;chart-136459872&#34; class=&#34;chart pb-3&#34; style=&#34;max-width: 100%; margin: auto;&#34;&gt;&lt;/div&gt;
+&lt;div id=&#34;chart-645791283&#34; class=&#34;chart pb-3&#34; style=&#34;max-width: 100%; margin: auto;&#34;&gt;&lt;/div&gt;
 &lt;script&gt;
   (function() {
     let a = setInterval( function() {
@@ -171,7 +198,7 @@ data.head()
       clearInterval( a );
 
       Plotly.d3.json(&#34;./line-chart.json&#34;, function(chart) {
-        Plotly.plot(&#39;chart-136459872&#39;, chart.data, chart.layout, {responsive: true});
+        Plotly.plot(&#39;chart-645791283&#39;, chart.data, chart.layout, {responsive: true});
       });
     }, 500 );
   })();
@@ -612,24 +639,6 @@ Three
 &lt;a href=&#34;https://spectrum.chat/academic&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Ask&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;
 &lt;a href=&#34;https://sourcethemes.com/academic/docs/managing-content/#create-slides&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Documentation&lt;/a&gt;&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Privacy Policy</title>
-      <link>/privacy/</link>
-      <pubDate>Thu, 28 Jun 2018 00:00:00 +0100</pubDate>
-      <guid>/privacy/</guid>
-      <description>&lt;p&gt;&amp;hellip;&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Terms</title>
-      <link>/terms/</link>
-      <pubDate>Thu, 28 Jun 2018 00:00:00 +0100</pubDate>
-      <guid>/terms/</guid>
-      <description>&lt;p&gt;&amp;hellip;&lt;/p&gt;
 </description>
     </item>
     
