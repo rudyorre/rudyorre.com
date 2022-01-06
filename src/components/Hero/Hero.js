@@ -16,7 +16,14 @@ const Hero = (props) => (
       <SectionText>
       I am a Junior studying computer science at UCLA.
       </SectionText>
-      <Button onClick={() => window.open('https://drive.google.com/file/d/1kJLOVkapYpOdyiCdLuMI2IjGSwhzzyH7/view?usp=sharing', '_blank') }>Resume</Button>
+      <Button>
+        <a
+          style={{ color: "white" }}
+          target="_blank"
+          href="https://drive.google.com/file/d/1kJLOVkapYpOdyiCdLuMI2IjGSwhzzyH7/view?usp=sharing">
+          Resume
+        </a>
+      </Button>
     </LeftSection>
   </Section>
 );
