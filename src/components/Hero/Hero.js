@@ -16,14 +16,14 @@ const Hero = (props) => (
       <SectionText>
       I am a Junior studying computer science at UCLA.
       </SectionText>
-      <Button>
         <a
           style={{ color: "white" }}
           target="_blank"
           href="https://drive.google.com/file/d/1kJLOVkapYpOdyiCdLuMI2IjGSwhzzyH7/view?usp=sharing">
-          Resume
+          <Button>
+            Resume
+          </Button>
         </a>
-      </Button>
     </LeftSection>
   </Section>
 );
