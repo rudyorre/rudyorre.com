@@ -1,65 +1,7 @@
-export const projects = [
-  {
-    title: 'Scramble! Web App',
-    description: "Matches users to restaurants based off of their preferences using a swiping feature similar to Tinder. User filters and preferences persist via MongoDB.",
-      image: '/images/scramble.png',
-      // tags: ['Mongo', 'Express', 'React', 'Node', "Yelp Fusion"],
-      tags: ['MERN', 'Yelp API'],
-    source: 'https://github.com/rudyorre/restaurant-tinder',
-    visit: '',
-    id: 0,
-  },
-  {
-    title: 'Cannabis Sales Forecasting',
-    description: "Developed a predictive model for sales forecasting and determined key success factors using ensemble methods such as Random Forest and Gradient Boosting.",
-      image: '/images/cookies.png',
-      tags: ['Pandas', 'Sci-Kit Learn'],
-    source: 'https://github.com/rudyorre/m148-project3',
-    visit: '',
-    id: 1,
-  },
-  {
-    title: 'Multivariable Linear Regression',
-    description: 'Statistical model that uses N parameters to predict the outcome of the response variable. Implemented with the gradient descent aglorithm purely in C++.',
-      image: '/images/multivariatelinearregression.png',
-      tags: ['C++'],
-    source: 'https://github.com/rudyorre/machine-learning-projects/tree/master/Multivariate-Linear-Regression',
-    visit: '',
-    id: 2,
-  },
-  {
-    title: 'C++ Shared Pointer',
-    description: "Simulates the C++ implementation of the shared pointer. This implementation has all of the important features, including templating so any object can be pointed to.",
-    image: '/images/smartpointer.png',
-    tags: ['C++'],
-    source: 'https://github.com/rudyorre/smart-shared-ptr',
-    visit: '',
-    id: 3,
-  },
-  {
-    title: 'C++ Map (BST Container)',
-    description: "Implemented a C++ Map container built upon a binary search tree. Templated so any objects can be mapped, and prevents memory leaks in case of a allocation error.",
-      image: '/images/bstmap.png',
-      tags: ['C++'],
-    source: 'https://github.com/rudyorre/El-Camino-College/tree/main/CS-30/Project%201.2%20-%20Map%20(Binary%20Search%20Tree)',
-    visit: '',
-    id: 2,
-  },
-  {
-    title: 'Portfolio Site for Myself',
-    description: "A simple website for showcasing some of my computer science projects. Static site built with React and hosted on Github Pages. More projects will be added in the near future.",
-    image: '/images/portfolio.png',
-    tags: ['React', 'NextJS'],
-    source: 'https://github.com/rudyorre/rudyorre.com',
-    visit: 'https://rudyorre.com/',
-    id: 3,
-  },
-];
+import { links as _links } from './links';
+import { projects as _projects } from './projects';
+import { timeLineData as _timeLineData } from './timelinedata';
 
-export const TimeLineData = [
-  { year: 2017, text: 'Started my journey', },
-  { year: 2018, text: 'Worked as a freelance developer', },
-  { year: 2019, text: 'Founded JavaScript Mastery', },
-  { year: 2020, text: 'Shared my projects with the world', },
-  { year: 2021, text: 'Started my own platform', },
-];
+export const links = _links;
+export const projects = _projects;
+export const TimeLineData = _timeLineData;
