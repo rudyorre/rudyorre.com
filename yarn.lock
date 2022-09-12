@@ -174,17 +174,17 @@
   version "1.1.0"
   resolved "https://registry.npmjs.org/@napi-rs/triples/-/triples-1.1.0.tgz"
 
-"@next/env@11.1.3":
-  version "11.1.3"
-  resolved "https://registry.npmjs.org/@next/env/-/env-11.1.3.tgz"
+"@next/env@11.1.4":
+  version "11.1.4"
+  resolved "https://registry.yarnpkg.com/@next/env/-/env-11.1.4.tgz#ff6090c2c38ca08e7d73eed616ff0899dd3fcc41"
 
-"@next/polyfill-module@11.1.3":
-  version "11.1.3"
-  resolved "https://registry.npmjs.org/@next/polyfill-module/-/polyfill-module-11.1.3.tgz"
+"@next/polyfill-module@11.1.4":
+  version "11.1.4"
+  resolved "https://registry.yarnpkg.com/@next/polyfill-module/-/polyfill-module-11.1.4.tgz#9b4a4ccf3a783244c132bfb2d04d3980dcd3d4c1"
 
-"@next/react-dev-overlay@11.1.3":
-  version "11.1.3"
-  resolved "https://registry.npmjs.org/@next/react-dev-overlay/-/react-dev-overlay-11.1.3.tgz"
+"@next/react-dev-overlay@11.1.4":
+  version "11.1.4"
+  resolved "https://registry.yarnpkg.com/@next/react-dev-overlay/-/react-dev-overlay-11.1.4.tgz#a0b911e799389b4ca6a30fb129c49071150c7a22"
   dependencies:
     "@babel/code-frame" "7.12.11"
     anser "1.4.9"
@@ -198,25 +198,25 @@
     stacktrace-parser "0.1.10"
     strip-ansi "6.0.0"
 
-"@next/react-refresh-utils@11.1.3":
-  version "11.1.3"
-  resolved "https://registry.npmjs.org/@next/react-refresh-utils/-/react-refresh-utils-11.1.3.tgz"
+"@next/react-refresh-utils@11.1.4":
+  version "11.1.4"
+  resolved "https://registry.yarnpkg.com/@next/react-refresh-utils/-/react-refresh-utils-11.1.4.tgz#08d3427b7a97f225d3cf31ee8605722c267176c0"
 
-"@next/swc-darwin-arm64@11.1.3":
-  version "11.1.3"
-  resolved "https://registry.npmjs.org/@next/swc-darwin-arm64/-/swc-darwin-arm64-11.1.3.tgz"
+"@next/swc-darwin-arm64@11.1.4":
+  version "11.1.4"
+  resolved "https://registry.yarnpkg.com/@next/swc-darwin-arm64/-/swc-darwin-arm64-11.1.4.tgz#6a3d80e7cac3e83746adbe98ed1e78ea9baa504f"
 
-"@next/swc-darwin-x64@11.1.3":
-  version "11.1.3"
-  resolved "https://registry.yarnpkg.com/@next/swc-darwin-x64/-/swc-darwin-x64-11.1.3.tgz#8bd515768d02e4c1e0cd80d33f3f29456ee890ee"
+"@next/swc-darwin-x64@11.1.4":
+  version "11.1.4"
+  resolved "https://registry.yarnpkg.com/@next/swc-darwin-x64/-/swc-darwin-x64-11.1.4.tgz#bd548cf3fb3dc5e79a54b330f14e4b7b8a4e1320"
 
-"@next/swc-linux-x64-gnu@11.1.3":
-  version "11.1.3"
-  resolved "https://registry.yarnpkg.com/@next/swc-linux-x64-gnu/-/swc-linux-x64-gnu-11.1.3.tgz#40030577e6ee272afb0080b45468bea73208f46d"
+"@next/swc-linux-x64-gnu@11.1.4":
+  version "11.1.4"
+  resolved "https://registry.yarnpkg.com/@next/swc-linux-x64-gnu/-/swc-linux-x64-gnu-11.1.4.tgz#967c92aa0d9d6bc9414bbff9395c85c7755ba9d1"
 
-"@next/swc-win32-x64-msvc@11.1.3":
-  version "11.1.3"
-  resolved "https://registry.yarnpkg.com/@next/swc-win32-x64-msvc/-/swc-win32-x64-msvc-11.1.3.tgz#2951cbc127f6ea57032a241fb94439cddb5d2482"
+"@next/swc-win32-x64-msvc@11.1.4":
+  version "11.1.4"
+  resolved "https://registry.yarnpkg.com/@next/swc-win32-x64-msvc/-/swc-win32-x64-msvc-11.1.4.tgz#370c310ba197e799235492bf71084d3acbbb2c6a"
 
 "@node-rs/helper@1.2.1":
   version "1.2.1"
@@ -1124,16 +1124,16 @@ native-url@0.3.4:
   dependencies:
     querystring "^0.2.0"
 
-next@11.1.3:
-  version "11.1.3"
-  resolved "https://registry.npmjs.org/next/-/next-11.1.3.tgz"
+next@11.1.4:
+  version "11.1.4"
+  resolved "https://registry.yarnpkg.com/next/-/next-11.1.4.tgz#2381eeeffae80f58e6d80d8335ab56d2e157064e"
   dependencies:
     "@babel/runtime" "7.15.3"
     "@hapi/accept" "5.0.2"
-    "@next/env" "11.1.3"
-    "@next/polyfill-module" "11.1.3"
-    "@next/react-dev-overlay" "11.1.3"
-    "@next/react-refresh-utils" "11.1.3"
+    "@next/env" "11.1.4"
+    "@next/polyfill-module" "11.1.4"
+    "@next/react-dev-overlay" "11.1.4"
+    "@next/react-refresh-utils" "11.1.4"
     "@node-rs/helper" "1.2.1"
     assert "2.0.0"
     ast-types "0.13.2"
@@ -1155,7 +1155,7 @@ next@11.1.3:
     image-size "1.0.0"
     jest-worker "27.0.0-next.5"
     native-url "0.3.4"
-    node-fetch "2.6.1"
+    node-fetch "2.6.7"
     node-html-parser "1.4.9"
     node-libs-browser "^2.2.1"
     os-browserify "0.3.0"
@@ -1179,14 +1179,16 @@ next@11.1.3:
     vm-browserify "1.1.2"
     watchpack "2.1.1"
   optionalDependencies:
-    "@next/swc-darwin-arm64" "11.1.3"
-    "@next/swc-darwin-x64" "11.1.3"
-    "@next/swc-linux-x64-gnu" "11.1.3"
-    "@next/swc-win32-x64-msvc" "11.1.3"
+    "@next/swc-darwin-arm64" "11.1.4"
+    "@next/swc-darwin-x64" "11.1.4"
+    "@next/swc-linux-x64-gnu" "11.1.4"
+    "@next/swc-win32-x64-msvc" "11.1.4"
 
-node-fetch@2.6.1:
-  version "2.6.1"
-  resolved "https://registry.npmjs.org/node-fetch/-/node-fetch-2.6.1.tgz"
+node-fetch@2.6.7:
+  version "2.6.7"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.7.tgz#24de9fba827e3b4ae44dc8b20256a379160052ad"
+  dependencies:
+    whatwg-url "^5.0.0"
 
 node-html-parser@1.4.9:
   version "1.4.9"
@@ -1741,6 +1743,10 @@ tr46@^1.0.1:
   dependencies:
     punycode "^2.1.0"
 
+tr46@~0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/tr46/-/tr46-0.0.3.tgz#8184fd347dac9cdc185992f3a6622e14b9d9ab6a"
+
 ts-pnp@^1.1.6:
   version "1.2.0"
   resolved "https://registry.npmjs.org/ts-pnp/-/ts-pnp-1.2.0.tgz"
@@ -1825,9 +1831,20 @@ watchpack@2.1.1:
     glob-to-regexp "^0.4.1"
     graceful-fs "^4.1.2"
 
+webidl-conversions@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-3.0.1.tgz#24534275e2a7bc6be7bc86611cc16ae0a5654871"
+
 webidl-conversions@^4.0.2:
   version "4.0.2"
   resolved "https://registry.npmjs.org/webidl-conversions/-/webidl-conversions-4.0.2.tgz"
+
+whatwg-url@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/whatwg-url/-/whatwg-url-5.0.0.tgz#966454e8765462e37644d3626f6742ce8b70965d"
+  dependencies:
+    tr46 "~0.0.3"
+    webidl-conversions "^3.0.0"
 
 whatwg-url@^7.0.0:
   version "7.1.0"
