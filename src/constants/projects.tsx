@@ -1,7 +1,7 @@
 export const projects = [
     {
       title: 'TensorFaux',
-      description: "A neural network implementation which utilizes a similar API to TensorFlow Keras. Includes a documentation website and is accessible via PIP.",
+      description: "A neural network implementation which utilizes a similar API to TensorFlow Keras. Written in just Python/Numpy, and includes a documentation website and is accessible via PIP.",
         image: '/images/tensorfaux.png',
         tags: ['Python', 'Numpy', 'PIP'],
       source: 'https://github.com/rudyorre/TensorFaux',
