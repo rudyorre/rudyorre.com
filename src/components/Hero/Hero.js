@@ -14,7 +14,7 @@ const Hero = (props) => (
         Rudy Orre.
       </SectionTitle>
       <SectionText>
-      I am a Junior studying computer science at UCLA.
+      I am a Senior studying computer science at UCLA.
       </SectionText>
         <a
           style={{ color: "white" }}

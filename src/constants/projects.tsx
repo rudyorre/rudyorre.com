@@ -1,5 +1,14 @@
 export const projects = [
     {
+      title: 'TensorFaux',
+      description: "A neural network implementation which utilizes a similar API to TensorFlow Keras. Includes a documentation website and is accessible via PIP.",
+        image: '/images/tensorfaux.png',
+        tags: ['Python', 'Numpy', 'PIP'],
+      source: 'https://github.com/rudyorre/TensorFaux',
+      visit: 'https://rudyorre.github.io/TensorFaux',
+      id: 0,
+    },
+    {
       title: 'Scramble! Web App',
       description: "Matches users to restaurants based off of their preferences using a swiping feature similar to Tinder. User filters and preferences persist via MongoDB.",
         image: '/images/scramble.png',

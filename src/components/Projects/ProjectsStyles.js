@@ -3,8 +3,9 @@ import styled from 'styled-components';
 export const Img = styled.img`
   width:100%;
   height:100%;
-  object-fit: cover;
+  object-fit: fill;
   overflow: hidden;
+  border-radius: 10px 10px 0px 0px;
 `
 
 export const GridContainer = styled.section`
@@ -35,7 +36,9 @@ export const TitleContent = styled.div`
   text-align: center;
   z-index: 20;
   width: 100%;
-
+  line-height: 2em;
+  height: 7em;
+  overflow: hidden;
 `;
 
 
