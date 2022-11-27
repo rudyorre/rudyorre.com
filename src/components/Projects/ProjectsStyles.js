@@ -3,9 +3,10 @@ import styled from 'styled-components';
 export const Img = styled.img`
   width:100%;
   height:100%;
-  object-fit: fill;
+  object-fit: cover;
   overflow: hidden;
   border-radius: 10px 10px 0px 0px;
+  aspect-ratio: 16/9;
 `
 
 export const GridContainer = styled.section`
