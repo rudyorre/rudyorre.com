@@ -7,6 +7,7 @@ export const projects = [
       source: 'https://github.com/rudyorre/brewin',
       visit: '',
       id: 0,
+      featured: true,
     },
     {
       title: 'TensorFaux',
@@ -16,6 +17,7 @@ export const projects = [
       source: 'https://github.com/rudyorre/TensorFaux',
       visit: 'https://rudyorre.github.io/TensorFaux',
       id: 0,
+      featured: true,
     },
     {
       title: 'Scramble! Web App',
@@ -26,6 +28,7 @@ export const projects = [
       source: 'https://github.com/rudyorre/restaurant-tinder',
       visit: '',
       id: 0,
+      featured: true,
     },
     {
       title: 'Cannabis Sales Forecasting',
@@ -35,6 +38,7 @@ export const projects = [
       source: 'https://github.com/rudyorre/m148-project3',
       visit: '',
       id: 1,
+      featured: true,
     },
     {
       title: 'Multivariable Linear Regression',
@@ -44,6 +48,7 @@ export const projects = [
       source: 'https://github.com/rudyorre/machine-learning-projects/tree/master/Multivariate-Linear-Regression',
       visit: '',
       id: 2,
+      featured: true,
     },
     {
       title: 'C++ Shared Pointer',
@@ -53,6 +58,7 @@ export const projects = [
       source: 'https://github.com/rudyorre/smart-shared-ptr',
       visit: '',
       id: 3,
+      featured: false,
     },
     {
       title: 'C++ Map (BST Container)',
@@ -62,6 +68,7 @@ export const projects = [
       source: 'https://github.com/rudyorre/El-Camino-College/tree/main/CS-30/Project%201.2%20-%20Map%20(Binary%20Search%20Tree)',
       visit: '',
       id: 2,
+      featured: false,
     },
     {
       title: 'Portfolio Site for Myself',
@@ -71,5 +78,6 @@ export const projects = [
       source: 'https://github.com/rudyorre/rudyorre.com',
       visit: 'https://rudyorre.com/',
       id: 3,
+      featured: true,
     },
   ];
