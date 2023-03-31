@@ -1,11 +1,6 @@
 name: Deploy to Github Pages
 
-on:
-  push:
-    branches:
-      - main
-
-  workflow_dispatch:
+on: [push]
 
 jobs:
   deployment:
