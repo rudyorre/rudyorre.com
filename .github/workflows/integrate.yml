@@ -1,11 +1,16 @@
-name: Build and Deploy
-on: [push]
+name: Deploy to Github Pages
+
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
 jobs:
-  build-and-deploy:
+  deployment:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./src
+
     steps:
       - uses: actions/checkout@v3
 
@@ -20,11 +25,9 @@ jobs:
           npm i
           npm run build
           npm run export
-      
+
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: ./out
-          CLEAN: true # Removes deleted files from the deployed branch
+          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          publish_dir: ./out
