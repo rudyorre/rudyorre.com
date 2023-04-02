@@ -12,9 +12,9 @@ const Header = () =>  (
   <Container>
     <Div1>
       <Link href='/'>
-        <a style={{ display: "flex", alignItems: "center", color: "white", marginBottom: "20px" }}>
+        <div style={{ display: "flex", alignItems: "center", color: "white", marginBottom: "20px" }}>
           <HiCubeTransparent size="3rem" style={{ paddingRight: '5px' }}/><Span>Rudy Orre</Span>
-        </a>
+        </div>
       </Link>
     </Div1>
     <Div2>
