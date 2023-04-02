@@ -1,5 +1,15 @@
 export const projects = [
     {
+      title: 'ViT: Vision Transformer',
+      description: 'An implementation of the Vision Transformer in Pytorch. ViT processes an input image as a sequence of patches and then feeds these patches to a transformer-based network.',
+      image: '/images/vit.png',
+      tags: ['PyTorch'],
+      source: 'https://github.com/rudyorre/vit',
+      visit: '',
+      id: 0,
+      featured: true,
+    },
+    {
       title: 'Brewin',
       description: 'An interpreted and statically typed programming language built in pure Python. Includes I/O, primitives, objects, looping, functions and lexical scoping. Also supports error handling.',
       image: '/images/brewin-logo.png',
