@@ -10,6 +10,16 @@ export const projects = [
       featured: true,
     },
     {
+      title: 'Parts-of-Speech Tagger',
+      description: 'Parts-Of-Speech (POS) tagger using Hidden Markov Models (HMM) and the Viterbi algorithm. Trained on a pre-tagged corpus and integrates NLTK\'s version for comparison.',
+      image: '/images/pos-tagger.jpg',
+      tags: ['Python', 'NLTK'],
+      source: 'https://github.com/rudyorre/pos-tagger',
+      visit: '',
+      id: 0,
+      featured: true,
+    },
+    {
       title: 'Brewin',
       description: 'An interpreted and statically typed programming language built in pure Python. Includes I/O, primitives, objects, looping, functions and lexical scoping. Also supports error handling.',
       image: '/images/brewin-logo.png',
