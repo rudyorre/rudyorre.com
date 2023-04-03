@@ -20,6 +20,16 @@ export const projects = [
       featured: true,
     },
     {
+      title: 'N-Gram Language Model',
+      description: 'An n-gram language model that implements add-k smoothing and greedy sentence generation. This model probabilistically predicts the rest of a sentence via an (n - 1)-order Markov model.',
+      image: '/images/ngram.png',
+      tags: ['Python', 'NLTK'],
+      source: 'https://github.com/rudyorre/ngram',
+      visit: '',
+      id: 0,
+      featured: true,
+    },
+    {
       title: 'Brewin',
       description: 'An interpreted and statically typed programming language built in pure Python. Includes I/O, primitives, objects, looping, functions and lexical scoping. Also supports error handling.',
       image: '/images/brewin-logo.png',
