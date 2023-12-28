@@ -19,31 +19,13 @@ interface CardProps {
   icon: string;
   title: string;
   subtitle: string;
+  parentMouseX: number;
+  parentMouseY: number;
 }
 
 function Cards() {
-  return (
-    <div className={cn(
-      "items-center flex justify-center m-0 overflow-hidden p-0",
-      styles.cards
-    )}
-    >
-      <div id="cards" className="flex flex-wrap gap-[4px] max-w-[916px] mx-auto">
-        <Card icon="fa-duotone fa-apartment" title="Apartments" subtitle="Places to be apart. Wait, what?" />
-        <Card icon="fa-duotone fa-unicorn" title="Unicorns" subtitle="A single corn. Er, I mean horn." />
-        <Card icon="fa-duotone fa-apartment" title="Apartments" subtitle="Places to be apart. Wait, what?" />
-        <Card icon="fa-duotone fa-unicorn" title="Unicorns" subtitle="A single corn. Er, I mean horn." />
-        <Card icon="fa-duotone fa-apartment" title="Apartments" subtitle="Places to be apart. Wait, what?" />
-        <Card icon="fa-duotone fa-unicorn" title="Unicorns" subtitle="A single corn. Er, I mean horn." />
-      </div>
-    </div>
-  );
-}
-
-function Card({ icon, title, subtitle }: CardProps) {
   const [mouseX, setMouseX] = useState<number>(0);
   const [mouseY, setMouseY] = useState<number>(0);
-  const [isHovered, setIsHovered] = useState(false);
   const cardsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -59,13 +41,59 @@ function Card({ icon, title, subtitle }: CardProps) {
     };
 
     cardsRef.current?.addEventListener('mousemove', handleMouseMove);
-    cardsRef.current?.addEventListener('mouseenter', () => setIsHovered(true));
-    cardsRef.current?.addEventListener('mouseleave', () => setIsHovered(false));
 
     return () => {
       cardsRef.current?.removeEventListener('mousemove', handleMouseMove);
     };
   }, [cardsRef]);
+
+  return (
+    <div className={cn(
+      "items-center flex justify-center m-0 overflow-hidden p-0",
+      styles.cards
+    )}
+    >
+      <div ref={cardsRef} id="cards" className="flex flex-wrap gap-[4px] max-w-[916px] mx-auto">
+        <Card icon="fa-duotone fa-apartment" title="Apartments" subtitle="Places to be apart. Wait, what?" parentMouseX={mouseX} parentMouseY={mouseY} />
+        <Card icon="fa-duotone fa-unicorn" title="Unicorns" subtitle="A single corn. Er, I mean horn." parentMouseX={mouseX} parentMouseY={mouseY} />
+        <Card icon="fa-duotone fa-apartment" title="Apartments" subtitle="Places to be apart. Wait, what?" parentMouseX={mouseX} parentMouseY={mouseY} />
+        <Card icon="fa-duotone fa-unicorn" title="Unicorns" subtitle="A single corn. Er, I mean horn." parentMouseX={mouseX} parentMouseY={mouseY} />
+        <Card icon="fa-duotone fa-apartment" title="Apartments" subtitle="Places to be apart. Wait, what?" parentMouseX={mouseX} parentMouseY={mouseY} />
+        <Card icon="fa-duotone fa-unicorn" title="Unicorns" subtitle="A single corn. Er, I mean horn." parentMouseX={mouseX} parentMouseY={mouseY} />
+      </div>
+    </div>
+  );
+}
+
+function Card({ icon, title, subtitle, parentMouseX, parentMouseY }: CardProps) {
+  const [mouseX, setMouseX] = useState<number>(0);
+  const [mouseY, setMouseY] = useState<number>(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const cardsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = cardsRef.current?.getBoundingClientRect();
+      if (!rect?.left || !rect?.top) {
+        return;
+      }
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      setMouseX(x);
+      setMouseY(y);
+    };
+
+    cardsRef.current?.addEventListener('mousemove', handleMouseMove);
+    cardsRef.current?.addEventListener('mouseenter', () => setIsHovered(true));
+    cardsRef.current?.addEventListener('mouseleave', () => setIsHovered(false));
+
+    setMouseX(mouseX);
+    setMouseY(mouseY);
+
+    return () => {
+      cardsRef.current?.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [cardsRef, parentMouseX, parentMouseY]);
 
   const gradientOpacity = isHovered ? 0.06 : 0;
 
