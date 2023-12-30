@@ -9,13 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@mantine/hooks": "^7.3.2",
+    "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-avatar": "^1.0.4",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
     "@radix-ui/react-slot": "^1.0.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "colorsys": "^1.0.22",
     "lucide-react": "^0.301.0",
-    "next": "14.0.4",
+    "next": "^14.0.4",
     "next-themes": "^0.2.1",
     "node": "^21.2.0",
     "react": "^18",
@@ -30,7 +33,9 @@
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.0.4",
-    "postcss": "^8",
+    "postcss": "^8.4.32",
+    "postcss-preset-mantine": "^1.12.2",
+    "postcss-simple-vars": "^7.0.1",
     "tailwindcss": "^3.3.0",
     "typescript": "^5"
   }

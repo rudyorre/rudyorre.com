@@ -1,0 +1,25 @@
+/*!**********************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[11].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[11].oneOf[7].use[3]!./src/components/styles/cards.module.css ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************/
+.cards_cards__DubO9 {
+}
+
+.cards_card__tPn8E {
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+    cursor: pointer;
+    height: 260px;
+    position: relative;
+    width: 300px;
+}
+
+.cards_card__tPn8E::before {
+    border-radius: inherit;
+    content: "";
+    height: 100%;
+    left: 0px;
+    position: absolute;
+    top: 0px;
+    width: 100%;
+    z-index: 2;
+}

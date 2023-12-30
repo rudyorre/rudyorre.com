@@ -23,25 +23,25 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <div className="border-b">
-            <div className="flex h-16 items-center px-4">
-              <div className="font-extrabold">rudyorre</div>.com
-              <MainNav className="mx-6" />
-              <div className="ml-auto flex items-center space-x-4">
-                <Search />
-                <UserNav />
-                <ModeToggle />
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+              <div className="border-b">
+                <div className="flex h-16 items-center px-4">
+                  <div className="font-extrabold">rudyorre</div>.com
+                  <MainNav className="mx-6" />
+                  <div className="ml-auto flex items-center space-x-4">
+                    <Search />
+                    <UserNav />
+                    <ModeToggle />
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          {children}
-        </ThemeProvider>
+              {children}
+          </ThemeProvider>
       </body>
     </html>
   )

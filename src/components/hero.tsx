@@ -1,0 +1,31 @@
+import { Animation } from '@/components/animation';
+import { Button } from '@/components/ui/button';
+
+const Hero = () => (
+    <div className="grid grid-cols-2">
+      <div className="col-auto m-auto">
+        <h2 className="text-accent-foreground">
+          Hi, my name is
+        </h2>
+        <h1 className="text-6xl font-bold tracking-tight">
+          Rudy Orre.
+        </h1>
+        <div>
+            I build full-stack solutions.
+        </div>
+          {/* <a
+            style={{ color: "white" }}
+            target="_blank"
+            href="https://drive.google.com/file/d/1kJLOVkapYpOdyiCdLuMI2IjGSwhzzyH7/view?usp=sharing">
+            <Button>
+              Resume
+            </Button>
+          </a> */}
+      </div>
+      <div className="col-auto max-w-[520px]">
+        <Animation />
+      </div>
+    </div>
+  );
+  
+  export default Hero;
