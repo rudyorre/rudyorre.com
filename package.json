@@ -1,25 +1,47 @@
 {
-  "name": "portfolio_nextjs",
+  "name": "rudyorre.com",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && next export",
-    "start": "next start"
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
-    "ansi-regex": "^6.0.1",
-    "next": "13.2.4",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-icons": "^4.2.0",
-    "react-router-dom": "^6.2.1",
-    "styled-components": "^5.3.0",
-    "styled-normalize": "^8.0.7"
+    "@fortawesome/fontawesome-svg-core": "^6.5.1",
+    "@fortawesome/free-brands-svg-icons": "^6.5.1",
+    "@fortawesome/free-solid-svg-icons": "^6.5.1",
+    "@fortawesome/react-fontawesome": "^0.2.0",
+    "@mantine/hooks": "^7.3.2",
+    "@radix-ui/react-accordion": "^1.1.2",
+    "@radix-ui/react-avatar": "^1.0.4",
+    "@radix-ui/react-dropdown-menu": "^2.0.6",
+    "@radix-ui/react-slot": "^1.0.2",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.0.0",
+    "colorsys": "^1.0.22",
+    "lucide-react": "^0.301.0",
+    "next": "^14.0.4",
+    "next-themes": "^0.2.1",
+    "node": "^21.2.0",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-intersection-observer": "^9.5.3",
+    "tailwind-merge": "^2.2.0",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "@types/node": "^17.0.10",
-    "@types/react": "^17.0.38",
-    "typescript": "^4.5.5"
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "autoprefixer": "^10.0.1",
+    "eslint": "^8",
+    "eslint-config-next": "14.0.4",
+    "postcss": "^8.4.32",
+    "postcss-preset-mantine": "^1.12.2",
+    "postcss-simple-vars": "^7.0.1",
+    "tailwindcss": "^3.3.0",
+    "typescript": "^5"
   }
 }
