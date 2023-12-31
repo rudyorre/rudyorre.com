@@ -13,11 +13,12 @@ import { Button } from '@/components/ui/button';
 
 export const Experience = () => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
-    return <>
+
+    return <div>
         <Timeline jobs={jobs.filter((job: Job) => job.featured)} />
         <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="item-1">
-                <AccordionContent>
+                <AccordionContent className="bg-muted pt-4 rounded-lg">
                     <Timeline jobs={jobs.filter((job: Job) => !job.featured)} />
                 </AccordionContent>
                 <AccordionTrigger className="mx-20">
@@ -25,5 +26,5 @@ export const Experience = () => {
                 </AccordionTrigger>
             </AccordionItem>
         </Accordion>
-    </>;
+    </div>;
 };

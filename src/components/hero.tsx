@@ -2,16 +2,16 @@ import { Animation } from '@/components/animation';
 import { Button } from '@/components/ui/button';
 
 const Hero = () => (
-    <div className="grid grid-cols-2">
+    <div className="grid sm:grid-cols-2">
       <div className="col-auto m-auto">
         <h2 className="text-accent-foreground">
           Hi, my name is
         </h2>
-        <h1 className="text-6xl font-bold tracking-tight">
+        <h1 className="text-6xl font-bold tracking-tight my-1">
           Rudy Orre.
         </h1>
         <div>
-            I build full-stack solutions.
+            I craft solutions through code.
         </div>
           {/* <a
             style={{ color: "white" }}
@@ -22,7 +22,7 @@ const Hero = () => (
             </Button>
           </a> */}
       </div>
-      <div className="col-auto max-w-[520px]">
+      <div className="sm:block hidden col-auto max-w-[520px]">
         <Animation />
       </div>
     </div>

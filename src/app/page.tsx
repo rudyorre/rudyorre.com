@@ -1,4 +1,5 @@
-import { Cards } from '@/components/cards';
+
+import { Projects } from '@/components/projects';
 import { Experience } from '@/components/experience';
 import Hero from '@/components/hero';
 import { Timeline } from '@/components/timeline';
@@ -12,9 +13,12 @@ export default function Home() {
       rudyorre/<h1 className="text-6xl font-bold tracking-tight">Experience</h1>
       <br />
       <Experience />
+      <br />
+      <br />
+      <br />
       rudyorre/<h1 className="text-6xl font-bold tracking-tight">Projects</h1>
       <br />
-      <Cards />
+      <Projects />
     </div>
   )
 }

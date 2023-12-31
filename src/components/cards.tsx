@@ -2,18 +2,18 @@
 
 import { Button } from '@/components/ui/button';
 import React, { useState, useEffect, useRef } from 'react';
+import { useInView } from 'react-intersection-observer';
 import { cn } from '@/lib/utils';
 import styles from '@/components/styles/cards.module.css';
+import { Project as ProjectType } from '@/constants/projects';
 
 interface CardProps {
-icon: string;
-title: string;
-subtitle: string;
-parentMouseX: number;
-parentMouseY: number;
+    project: ProjectType;
+    parentMouseX: number;
+    parentMouseY: number;
 }
 
-export function Cards() {
+export function Cards({projects}: {projects: ProjectType[]}) {
 const [mouseX, setMouseX] = useState<number>(0);
 const [mouseY, setMouseY] = useState<number>(0);
 const cardsRef = useRef<HTMLDivElement>(null);
@@ -45,24 +45,25 @@ return (
     )}
     >
     <div ref={cardsRef} id="cards" className="flex flex-wrap gap-[8px] justify-center mx-auto">
-        <Card icon="fa-duotone fa-apartment" title="Apartments" subtitle="Places to be apart. Wait, what?" parentMouseX={mouseX} parentMouseY={mouseY} />
-        <Card icon="fa-duotone fa-unicorn" title="Unicorns" subtitle="A single corn. Er, I mean horn." parentMouseX={mouseX} parentMouseY={mouseY} />
-        <Card icon="fa-duotone fa-apartment" title="Apartments" subtitle="Places to be apart. Wait, what?" parentMouseX={mouseX} parentMouseY={mouseY} />
-        <Card icon="fa-duotone fa-unicorn" title="Unicorns" subtitle="A single corn. Er, I mean horn." parentMouseX={mouseX} parentMouseY={mouseY} />
-        <Card icon="fa-duotone fa-apartment" title="Apartments" subtitle="Places to be apart. Wait, what?" parentMouseX={mouseX} parentMouseY={mouseY} />
-        <Card icon="fa-duotone fa-unicorn" title="Unicorns" subtitle="A single corn. Er, I mean horn." parentMouseX={mouseX} parentMouseY={mouseY} />
-        <Card icon="fa-duotone fa-apartment" title="Apartments" subtitle="Places to be apart. Wait, what?" parentMouseX={mouseX} parentMouseY={mouseY} />
-        <Card icon="fa-duotone fa-unicorn" title="Unicorns" subtitle="A single corn. Er, I mean horn." parentMouseX={mouseX} parentMouseY={mouseY} />
+        {projects.map((project: ProjectType, i: number) => (
+            <Card
+                key={i}
+                project={project}
+                parentMouseX={mouseX}
+                parentMouseY={mouseY}
+            />
+        ))}
     </div>
     </div>
 );
 }
 
-function Card({ icon, title, subtitle, parentMouseX, parentMouseY }: CardProps) {
+function Card({ project, parentMouseX, parentMouseY }: CardProps) {
 const [mouseX, setMouseX] = useState<number>(0);
 const [mouseY, setMouseY] = useState<number>(0);
 const [isHovered, setIsHovered] = useState(false);
 const cardsRef = useRef<HTMLDivElement>(null);
+const { ref, inView } = useInView({ threshold: 0.9 });
 
 useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -86,7 +87,7 @@ useEffect(() => {
     return () => {
     cardsRef.current?.removeEventListener('mousemove', handleMouseMove);
     };
-}, [cardsRef, parentMouseX, parentMouseY]);
+}, [cardsRef, parentMouseX, parentMouseY, inView]);
 
 const gradientOpacity = isHovered ? 0.1 : 0;
 
@@ -95,8 +96,9 @@ const hsl = window.getComputedStyle(document.documentElement).getPropertyValue('
 
 return (
     <div
-    className="bg-[rgba(255,255,255,0.1)] rounded-lg group"
-    style={{ background: `radial-gradient(800px circle at ${mouseX}px ${mouseY}px, hsla(${hsl[0]}, ${hsl[1]}, ${hsl[2]}, ${gradientOpacity * 5}), transparent 40%)` }}
+        ref={ref}
+        className={`bg-[rgba(255,255,255,0.1)] group rounded-lg`}
+        style={{ background: `radial-gradient(800px circle at ${mouseX}px ${mouseY}px, hsla(${hsl[0]}, ${hsl[1]}, ${hsl[2]}, ${gradientOpacity * 5}), transparent 40%)` }}
     >
     <div
         className="bg-muted rounded-lg h-[calc(100%-2px)] w-[calc(100%-2px)] m-[1px]"
@@ -109,7 +111,7 @@ return (
         <div className="overflow-hidden">
             <img
             className="w-full transform transition-transform duration-300 ease-in-out group-hover:scale-105"
-            src="http://rudyorre.com/images/brewin-logo.png"
+            src={project.image}
             style={{
                 aspectRatio: "450/200",
                 objectFit: "cover",
@@ -117,14 +119,14 @@ return (
             />
         </div>
         <div className="p-4">
-        <h3 className="text-lg font-bold">Performance RNN</h3>
-        <p className="text-sm">Enjoy a real-time piano performance by a neural network.</p>
+        <h3 className="text-lg font-bold">{project.title}</h3>
+        <p className="text-sm">{project.description}</p>
         <div className="flex space-x-2 mt-4">
             <Button className="block" variant="default">
-            Explore demo
+                Explore demo
             </Button>
-            <Button className="block" variant="outline">
-            View code
+            <Button className="block" variant="default">
+                View code
             </Button>
         </div>
         </div>

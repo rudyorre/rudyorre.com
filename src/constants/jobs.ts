@@ -12,10 +12,7 @@ export const jobs: Job[] = [
         role: 'Software Engineer Intern',
         company: 'Arista Networks',
         dates: 'Jun 2023 - Current',
-        tags: [
-            'https://img.shields.io/badge/Python-3670A0?style=flat&logo=python&logoColor=ffdd54',
-            'https://img.shields.io/badge/Gitlab%20CI/CD-%23181717.svg?style=flat&logo=gitlab&logoColor=white',
-        ],
+        tags: ['python', 'shell', 'gitlab ci/cd'],
         featured: true,
         description: [
             "Developed a Python-based tool that automates the testing of Arista's Two-Way Active Measurement Protocol (TWAMP) implementations, enabling comprehensive and efficient testing processes. Uncovered and addressed scalability challenges by revealing a limitation preventing TWAMP from efficiently handling more than 1000 concurrent sessions, a discovery crucial for future optimizations.",
@@ -27,9 +24,7 @@ export const jobs: Job[] = [
         role: 'Data Scientist Intern',
         company: 'Southern California Edison',
         dates: 'Jun 2022 - Sep 2022',
-        tags: [
-            'https://img.shields.io/badge/Python-3670A0?style=flat&logo=python&logoColor=ffdd54',
-        ],
+        tags: ['python', 'sklearn', 'tensorflow'],
         featured: true,
         description: [
             "Facilitated the development of an internal project management/intake tool by compiling a product backlog and organizing meetings with a team of 3 developers and regularly meeting with 6 distinct stakeholder groups for updates and requirements.",
@@ -41,11 +36,7 @@ export const jobs: Job[] = [
         role: 'Software Engineer',
         company: 'Daily Bruin',
         dates: 'Jan 2022 - Jun 2022',
-        tags: [
-            'https://img.shields.io/badge/Next-black?style=flat&logo=next.js&logoColor=white',
-            'https://img.shields.io/badge/Postgres-%23316192.svg?style=flat&logo=postgresql&logoColor=white',
-            'https://img.shields.io/badge/Docker-%230db7ed.svg?style=flat&logo=docker&logoColor=white',
-        ],
+        tags: ['next', 'postgres', 'docker'],
         featured: true,
         description: [
             "Maintained and developed dailybruin.com, a high-traffic website receiving hundreds of thousands of views monthly, emphasizing scalability and maintainability.",
@@ -57,11 +48,7 @@ export const jobs: Job[] = [
         role: 'AI Researcher (stipend)',
         company: 'UCLA Interactive Systems Lab',
         dates: 'Jun 2021 - Oct 2021',
-        tags: [
-            'https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=flat&logo=PyTorch&logoColor=white',
-            'https://img.shields.io/badge/Pandas-%23150458.svg?style=flat&logo=pandas&logoColor=white',
-            'https://img.shields.io/badge/Jupyter-%23FA0F00.svg?style=flat&logo=jupyter&logoColor=white',
-        ],
+        tags: ['pytorch', 'pandas', 'jupyter'],
         featured: true,
         description: [
             "Collaborated with faculty and graduate students to investigate reinforcement learning (RL) in the context of partial information environments.",
@@ -73,7 +60,7 @@ export const jobs: Job[] = [
         role: 'Automation Specialist / Tutor',
         company: 'Outlier.org',
         dates: 'Apr 2021 - Nov 2021',
-        tags: [],
+        tags: ['python', 'selenium'],
         featured: false,
         description: [
             "Provided academic assistance for Calculus I and Intro to Statistics.",
@@ -85,7 +72,7 @@ export const jobs: Job[] = [
         role: 'Software Engineer',
         company: 'Berkeley ACE Lab',
         dates: 'Jun 2021 - Sep 2021',
-        tags: [],
+        tags: ['python', 'javascript'],
         featured: false,
         description: [
             "Contributed significantly to the Algorithms and Computing for Education (ACE) Lab, demonstrating proficiency in developing 10+ dynamic problem sets for El Camino College and UC Berkeley's Foundations of Data Science courses (1,500 students).",
@@ -96,7 +83,7 @@ export const jobs: Job[] = [
         role: 'Computer Science and Mathematics Tutor',
         company: 'El Camino College',
         dates: 'Dec 2019 - Jun 2021',
-        tags: [],
+        tags: ['cpp', 'java', 'vs'],
         featured: false,
         description: [
             "Provided academic assistance on courses spanning computer science, mathematics, and statistics.",
@@ -108,7 +95,7 @@ export const jobs: Job[] = [
         role: "Statistics Teacher's Assistant",
         company: 'El Camino College',
         dates: 'Jun 2020 - Aug 2020',
-        tags: [],
+        tags: ['scipy'],
         featured: false,
         description: [
             "Supplemented course with tutoring sessions.",
@@ -120,7 +107,7 @@ export const jobs: Job[] = [
         role: 'Software Engineer Intern',
         company: 'Vision13',
         dates: 'Aug 2020 - Dec 2020',
-        tags: [],
+        tags: ['pytorch'],
         featured: false,
         description: [
             "Employed advanced techniques in PyTorch to fortify the learning models' robustness, resulting in a 25% reduction in model inference time.",
@@ -132,11 +119,19 @@ export const jobs: Job[] = [
         role: 'Google CSSI Scholar',
         company: 'Google',
         dates: 'Aug 2019 - Sep 2019',
-        tags: [],
+        tags: ['django'],
         featured: false,
         description: [
             "Worked collaboratively with peers, professors, and Googlers to design and implement a dynamic website. Leveraged the Python-based Django framework running on the Google App Engine to tie the front-end to a robust database.",
             "Demonstrated proficiency in problem-solving and coding practices while actively contributing to the development of a website that utilized the skills acquired during the CSSI program.",
         ],
+    },
+    {
+        role: 'Assistant Track Coach',
+        company: 'Redondo Premier Youth Track Club',
+        dates: 'Sep 2018 - Sep 2019',
+        tags: [],
+        featured: false,
+        description: [],
     },
 ] as const;

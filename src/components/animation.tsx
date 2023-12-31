@@ -1,4 +1,16 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+
 export const Animation = () => {
+    // const [hsl, setHsl] = useState<string[]>([]);
+    // useEffect(() => {
+    //     const HSL = window.getComputedStyle(document.documentElement)
+    //         .getPropertyValue('--destructive')
+    //         .split(/\s+/);
+    //     setHsl(HSL);
+    // }, []);
+
     return <div>
       <svg
         className="BgAnimation__svg"
@@ -40,7 +52,8 @@ export const Animation = () => {
         <path
           d="M294.685 193.474L268.932 219.258"
           transform="translate(-294.685 -193.474) rotate(45 294.685 193.474)"
-          stroke="url(#paint3_linear)"
+        //   stroke={`hsl(${hsl[0]}, ${hsl[1]}, ${hsl[2]})`}
+            stroke="url(#paint3_linear)"
         >
           <animateMotion dur="10s" repeatCount="indefinite" rotate="auto">
             <mpath xlinkHref="#path_2" />
