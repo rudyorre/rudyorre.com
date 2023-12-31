@@ -126,13 +126,21 @@ return (
         <h3 className="text-lg font-bold">{project.title}</h3>
         <p className="text-sm">{project.description}</p>
         <div className="flex space-x-2 mt-4">
-            <Link className="block group/link" href="/">
-                View code <FontAwesomeIcon icon={faGithub} className="transform transition-transform duration-300 ease-in-out group-hover/link:translate-x-1"/>
-            </Link>
+            {project.source !== '' ?
+                <Link className="block group/link" href={project.source} target="_blank">
+                    View code <FontAwesomeIcon icon={faGithub} className="transform transition-transform duration-300 ease-in-out group-hover/link:translate-x-1"/>
+                </Link>
+            :
+                <></>
+            }
             <p>   </p>
-            <Link className="block group/link" href="/">
-                Explore demo <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="transform transition-transform duration-300 ease-in-out group-hover/link:translate-x-1" />
-            </Link>
+            {project.visit !== '' ?
+                <Link className="block group/link" href={project.visit} target="_blank">
+                    Explore demo <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="transform transition-transform duration-300 ease-in-out group-hover/link:translate-x-1" />
+                </Link>
+            :
+                <></>
+            }
         </div>
         </div>
         </div>

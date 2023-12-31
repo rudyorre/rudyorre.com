@@ -8,6 +8,7 @@ import { Search } from '@/components/search'
 import { MainNav } from '@/components/main-nav'
 import { ModeToggle } from '@/components/mode-toggle'
 import Link from 'next/link'
+import { Footer } from '@/components/footer'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -43,7 +44,9 @@ export default function RootLayout({
                 </div>
               </div>
             </div>
+            <div className="h-16"></div>
             {children}
+            <Footer />
           </ThemeProvider>
       </body>
     </html>

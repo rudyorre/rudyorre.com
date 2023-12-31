@@ -1,5 +1,8 @@
 import { Animation } from '@/components/animation';
 import { Button } from '@/components/ui/button';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGithub, faLinkedin, faInstagram } from '@fortawesome/free-brands-svg-icons';
+import Link from 'next/link';
 
 const Hero = () => (
     <div className="grid sm:grid-cols-2">
@@ -10,17 +13,34 @@ const Hero = () => (
         <h1 className="text-6xl font-bold tracking-tight my-1">
           Rudy Orre.
         </h1>
-        <div>
-            I craft solutions through code.
+        <div className="text-lg">
+            I build full-stack applications, automate workflows, and
+            mess around with AI/ML. Also just graduated UCLA.
         </div>
-          {/* <a
-            style={{ color: "white" }}
-            target="_blank"
-            href="https://drive.google.com/file/d/1kJLOVkapYpOdyiCdLuMI2IjGSwhzzyH7/view?usp=sharing">
-            <Button>
-              Resume
-            </Button>
-          </a> */}
+        <div className="flex gap-4 mt-4">
+          <Link href="https://github.com/rudyorre" target="_blank">
+            <FontAwesomeIcon icon={faGithub} className={`fa-3x text-accent-foreground cursor-pointer
+              "transform transition-transform duration-300 ease-in-out hover:translate-x-1`
+              }
+            />
+          </Link>
+          <Link href="https://linkedin.com/in/rudyorre" target="_blank">
+            <FontAwesomeIcon icon={faLinkedin} className={`fa-3x text-accent-foreground cursor-pointer
+              "transform transition-transform duration-300 ease-in-out hover:translate-x-1`
+              }
+            />
+          </Link>
+          <Link href="https:/instagram.com/rudyorre" target="_blank">
+            <FontAwesomeIcon icon={faInstagram} className={`fa-3x text-accent-foreground cursor-pointer
+              "transform transition-transform duration-300 ease-in-out hover:translate-x-1`
+              }
+            />
+          </Link>
+        </div>
+        
+
+
+        
       </div>
       <div className="sm:block hidden col-auto max-w-[520px]">
         <Animation />

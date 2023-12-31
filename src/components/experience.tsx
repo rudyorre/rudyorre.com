@@ -22,7 +22,7 @@ export const Experience = () => {
                     <Timeline jobs={jobs.filter((job: Job) => !job.featured)} />
                 </AccordionContent>
                 <AccordionTrigger className="mx-20">
-                    <Button onClick={() => setIsOpen(!isOpen)}>{(isOpen) ? 'Close' : 'See More'}</Button>
+                    <Button className="transition-transform active:scale-95 duration-50 ease-in-out" onClick={() => setIsOpen(!isOpen)}>{(isOpen) ? 'Close' : 'See More'}</Button>
                 </AccordionTrigger>
             </AccordionItem>
         </Accordion>
