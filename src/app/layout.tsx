@@ -7,6 +7,7 @@ import { UserNav } from '@/components/user-nav'
 import { Search } from '@/components/search'
 import { MainNav } from '@/components/main-nav'
 import { ModeToggle } from '@/components/mode-toggle'
+import Link from 'next/link'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,26 +22,28 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className="scroll-smooth">
       <body className={inter.className}>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange
-          >
-              <div className="border-b">
-                <div className="flex h-16 items-center px-4">
+          > 
+            <div className={`border-b fixed top-0 z-20 w-screen backdrop-filter backdrop-blur-lg bg-background/[0.7]`}>
+              <div className="flex h-16 items-center px-4">
+                <Link href="/" className="inline-flex">
                   <div className="font-extrabold">rudyorre</div>.com
-                  <MainNav className="mx-6" />
-                  <div className="ml-auto flex items-center space-x-4">
-                    <Search />
-                    <UserNav />
-                    <ModeToggle />
-                  </div>
+                </Link>
+                <MainNav className="mx-6" />
+                <div className="ml-auto flex items-center space-x-4">
+                  <Search />
+                  <UserNav />
+                  <ModeToggle />
                 </div>
               </div>
-              {children}
+            </div>
+            {children}
           </ThemeProvider>
       </body>
     </html>

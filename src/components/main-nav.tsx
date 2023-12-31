@@ -11,12 +11,12 @@ export function MainNav({
       className={cn("flex items-center space-x-4 lg:space-x-6", className)}
       {...props}
     >
-      <Link
+      {/* <Link
         href="#overview"
         className="text-sm font-medium transition-colors hover:text-primary"
       >
         Overview
-      </Link>
+      </Link> */}
       <Link
         href="#experience"
         className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
@@ -29,12 +29,12 @@ export function MainNav({
       >
         Projects
       </Link>
-      <Link
+      {/* <Link
         href="#more"
         className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
       >
         More
-      </Link>
+      </Link> */}
     </nav>
   )
 }

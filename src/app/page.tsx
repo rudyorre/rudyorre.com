@@ -10,12 +10,14 @@ export default function Home() {
       <br />
       <Hero />
       <br />
+      <div id="experience" />
       rudyorre/<h1 className="text-6xl font-bold tracking-tight">Experience</h1>
       <br />
       <Experience />
       <br />
       <br />
       <br />
+      <div id="projects" />
       rudyorre/<h1 className="text-6xl font-bold tracking-tight">Projects</h1>
       <br />
       <Projects />

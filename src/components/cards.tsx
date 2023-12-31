@@ -2,10 +2,14 @@
 
 import { Button } from '@/components/ui/button';
 import React, { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { useInView } from 'react-intersection-observer';
 import { cn } from '@/lib/utils';
 import styles from '@/components/styles/cards.module.css';
 import { Project as ProjectType } from '@/constants/projects';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
 interface CardProps {
     project: ProjectType;
@@ -122,12 +126,13 @@ return (
         <h3 className="text-lg font-bold">{project.title}</h3>
         <p className="text-sm">{project.description}</p>
         <div className="flex space-x-2 mt-4">
-            <Button className="block" variant="default">
-                Explore demo
-            </Button>
-            <Button className="block" variant="default">
-                View code
-            </Button>
+            <Link className="block group/link" href="/">
+                View code <FontAwesomeIcon icon={faGithub} className="transform transition-transform duration-300 ease-in-out group-hover/link:translate-x-1"/>
+            </Link>
+            <p>   </p>
+            <Link className="block group/link" href="/">
+                Explore demo <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="transform transition-transform duration-300 ease-in-out group-hover/link:translate-x-1" />
+            </Link>
         </div>
         </div>
         </div>
