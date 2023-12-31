@@ -15,8 +15,8 @@ export const Timeline = ({jobs}: TimelineProps) => {
     return (
         <div className="mx-20">
             <ol className="relative border-s border-gray-200 dark:border-gray-700">       
-                {jobs.map((job: Job) => (
-                    <li className="ms-6 mb-5">            
+                {jobs.map((job: Job, i: number) => (
+                    <li key={"jobs" + i} className="ms-6 mb-5">            
                         <Accordion key={job.role + job.company} type="single" collapsible>
                             <AccordionItem value="item-1">
                                 <AccordionTrigger>

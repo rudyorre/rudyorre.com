@@ -51,7 +51,7 @@ return (
     <div ref={cardsRef} id="cards" className="flex flex-wrap gap-[8px] justify-center mx-auto">
         {projects.map((project: ProjectType, i: number) => (
             <Card
-                key={i}
+                key={project.title + i}
                 project={project}
                 parentMouseX={mouseX}
                 parentMouseY={mouseY}
@@ -67,50 +67,60 @@ const [mouseX, setMouseX] = useState<number>(0);
 const [mouseY, setMouseY] = useState<number>(0);
 const [isHovered, setIsHovered] = useState(false);
 const cardsRef = useRef<HTMLDivElement>(null);
-const { ref, inView } = useInView({ threshold: 0.9 });
+// const { ref, inView } = useInView({ threshold: 0.9 });
+// const [hsl, setHsl] = useState({'h': '0', 's': '0%', 'l': '100%'});
 
-useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-    const rect = cardsRef.current?.getBoundingClientRect();
-    if (!rect?.left || !rect?.top) {
-        return;
-    }
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    setMouseX(x);
-    setMouseY(y);
-    };
+// useEffect(() => {
+//     const handleMouseMove = (e: MouseEvent) => {
+//     const rect = cardsRef.current?.getBoundingClientRect();
+//     if (!rect?.left || !rect?.top) {
+//         return;
+//     }
+//     const x = e.clientX - rect.left;
+//     const y = e.clientY - rect.top;
+//     setMouseX(x);
+//     setMouseY(y);
+//     };
 
-    cardsRef.current?.addEventListener('mousemove', handleMouseMove);
-    cardsRef.current?.addEventListener('mouseenter', () => setIsHovered(true));
-    cardsRef.current?.addEventListener('mouseleave', () => setIsHovered(false));
+//     cardsRef.current?.addEventListener('mousemove', handleMouseMove);
+//     cardsRef.current?.addEventListener('mouseenter', () => setIsHovered(true));
+//     cardsRef.current?.addEventListener('mouseleave', () => setIsHovered(false));
 
-    setMouseX(mouseX);
-    setMouseY(mouseY);
-
-    return () => {
-    cardsRef.current?.removeEventListener('mousemove', handleMouseMove);
-    };
-}, [cardsRef, parentMouseX, parentMouseY, inView]);
-
-const gradientOpacity = isHovered ? 0.1 : 0;
-
-const hsl = window.getComputedStyle(document.documentElement).getPropertyValue('--foreground').split(/\s+/);
-// console.log(hsl);
+//     setMouseX(mouseX);
+//     setMouseY(mouseY);
+//     // const foreground = getComputedStyle(document.documentElement).getPropertyValue('--foreground').split(/\s+/);
+//     // setHsl({
+//     //   h: foreground[0],
+//     //   s: foreground[1],
+//     //   l: foreground[2],
+//     // });
+    
+//     return () => {
+//         cardsRef.current?.removeEventListener('mousemove', handleMouseMove);
+//     };
+// }, [cardsRef, parentMouseX, parentMouseY]);
+// const foreground = window.getComputedStyle(document.documentElement).getPropertyValue('--foreground').split(/\s+/);
+// const hsl = {
+//     h: foreground[0],
+//     s: foreground[1],
+//     l: foreground[2],
+// };
+// const gradientOpacity = isHovered ? 0.1 : 0;
+// console.log(document.documentElement.getAttribute('foreground'));
 
 return (
     <div
-        ref={ref}
-        className={`bg-[rgba(255,255,255,0.1)] group rounded-lg`}
-        style={{ background: `radial-gradient(800px circle at ${mouseX}px ${mouseY}px, hsla(${hsl[0]}, ${hsl[1]}, ${hsl[2]}, ${gradientOpacity * 5}), transparent 40%)` }}
+    // ref={ref}
+    className={`bg-[rgba(255,255,255,0.1)] group rounded-lg`}
+    // style={{ background: `radial-gradient(800px circle at ${mouseX}px ${mouseY}px, hsla(${hsl.h}, ${hsl.s}, ${hsl.l}, ${gradientOpacity * 5}), transparent 40%)` }}
     >
     <div
         className="bg-muted rounded-lg h-[calc(100%-2px)] w-[calc(100%-2px)] m-[1px]"
-    >
+        >
         <div
         ref={cardsRef}
-        className="rounded-lg cursor-pointer h-[360px] relative w-[400px] z-10 overflow-hidden"
-        style={{ background: `radial-gradient(600px circle at ${mouseX}px ${mouseY}px, hsla(${hsl[0]}, ${hsl[1]}, ${hsl[2]}, ${gradientOpacity}), transparent 40%)` }}
+        className={`rounded-lg cursor-pointer h-[360px] relative w-[400px] z-10 overflow-hidden`}
+        // style={{ background: `radial-gradient(600px circle at ${mouseX}px ${mouseY}px, hsla(${hsl.h}, ${hsl.s}, ${hsl.l}, ${gradientOpacity}), transparent 40%)` }}
         >
         <div className="overflow-hidden">
             <img
