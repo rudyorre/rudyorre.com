@@ -6,7 +6,7 @@ import { Timeline } from '@/components/timeline';
 
 export default function Home() {
   return (
-    <div className="bg-bg-color mx-auto max-w-screen-xl">
+    <div>
       <br />
       <Hero />
       <br />

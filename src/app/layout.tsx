@@ -47,7 +47,9 @@ export default function RootLayout({
               </div>
             </div>
             <div className="h-16"></div>
-            {children}
+            <div className="bg-bg-color mx-auto max-w-screen-xl">
+              {children}
+            </div>
             <Footer />
           </ThemeProvider>
       </body>

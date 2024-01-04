@@ -99,8 +99,6 @@ export function ModeToggle() {
     if (e.key === 'ArrowUp') {
       setPointer(Math.max(pointer - 1, 0));
     }
-    console.log(pointer);
-    // console.log(themes);
   };
 
   const mapThemeToItem = (t: string, i: number) => (
@@ -110,7 +108,7 @@ export function ModeToggle() {
       onMouseLeave={() => handleMouseLeave()}
       onClick={() => handleClick(t)}
     >
-      <CommandItem  className="cursor-pointer">
+      <CommandItem className="cursor-pointer">
         <FontAwesomeIcon
           icon={faCheck}
           className={cn(
