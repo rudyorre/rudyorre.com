@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Moon, Sun } from "lucide-react"
+import { Moon, Sun, Palette } from "lucide-react"
 import { useTheme } from "next-themes"
 
 import { Button } from "@/components/ui/button"
@@ -18,6 +18,13 @@ import {
   CommandDialog,
 } from "@/components/ui/command"
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from "@fortawesome/free-solid-svg-icons"
 import { cn } from "@/lib/utils"
@@ -28,6 +35,7 @@ export function ModeToggle() {
   const [open, setOpen] = React.useState<boolean>(false);
   const [cachedTheme, setCachedTheme] = React.useState<string | undefined>(undefined);
   const [search, setSearch] = React.useState<string>("");
+  const [pointer, setPointer] = React.useState<number>(0);
  
   React.useEffect(() => {
     if (open) {
@@ -36,6 +44,16 @@ export function ModeToggle() {
     if (!open && cachedTheme) {
       setTheme(cachedTheme);
     }
+
+    const down = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault()
+        setOpen((open) => !open)
+      }
+    }
+
+    document.addEventListener("keydown", down)
+    return () => document.removeEventListener("keydown", down)
   }, [open])
 
   const handleMouseEnter = (t: string) => {
@@ -51,6 +69,7 @@ export function ModeToggle() {
   const handleClick = (t: string) => {
     setTheme(t);
     setCachedTheme(t);
+    setOpen(false);
   }
 
   const handleOnChange = (s: string) => {
@@ -63,17 +82,25 @@ export function ModeToggle() {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key !== 'Enter' || !cachedTheme) {
-      return null;
-    }
-    for (let i = 0; i < themes.length; i++) {
-      if (themes[i].startsWith(search)) {
-        setCachedTheme(themes[i]);
-        break;
+  const handleInputKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || !cachedTheme) {
+      for (let i = 0; i < themes.length; i++) {
+        if (themes[i].startsWith(search)) {
+          setCachedTheme(themes[i]);
+          break;
+        }
       }
+      setOpen(false);
+      return;
     }
-    setOpen(false);
+    if (e.key === 'ArrowDown') {
+      setPointer(Math.min(pointer + 1, themes.length - 1));
+    }
+    if (e.key === 'ArrowUp') {
+      setPointer(Math.max(pointer - 1, 0));
+    }
+    console.log(pointer);
+    // console.log(themes);
   };
 
   const mapThemeToItem = (t: string, i: number) => (
@@ -98,15 +125,24 @@ export function ModeToggle() {
 
   return (
     <>
-      <Button variant="outline" size="icon" className="rounded-lg" onClick={() => setOpen(true)}>
-        <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all" />
-        <span className="sr-only">Toggle theme</span>
-      </Button>
+      <TooltipProvider delayDuration={200}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+              <Button variant="outline" size="icon" className="rounded-lg" onClick={() => setOpen(true)}>
+                <Palette className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all" />
+                <span className="sr-only">Toggle theme</span>
+              </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p><kbd className="px-2 py-1 font-semibold border border-border bg-muted rounded-lg">ESC</kbd> to Open</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput
           placeholder="Type a command or search..."
           onValueChange={handleOnChange}
-          onKeyDown={handleKeyDown}
+          onKeyDown={handleInputKeyDown}
         />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
@@ -115,7 +151,7 @@ export function ModeToggle() {
           </CommandGroup>
           <CommandSeparator />
           <CommandGroup heading="Themes">
-            {themes.slice(3,themes.length - 1).map(mapThemeToItem)}
+            {themes.slice(3,themes.length).map(mapThemeToItem)}
           </CommandGroup>
         </CommandList>
       </CommandDialog>

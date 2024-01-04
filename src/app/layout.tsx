@@ -31,7 +31,7 @@ export default function RootLayout({
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange
-            themes={['light', 'dark', 'paper']}
+            themes={['light', 'dark', 'paper', 'carbon']}
           > 
             <div className={`border-b fixed top-0 z-20 w-screen backdrop-filter backdrop-blur-lg bg-background/[0.7]`}>
               <div className="flex h-16 items-center px-4 max-w-screen-xl mx-auto">

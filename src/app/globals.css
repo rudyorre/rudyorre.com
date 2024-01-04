@@ -67,6 +67,7 @@
     --radius: 0.5rem;
   }
 
+  /* https://github.com/monkeytypegame/monkeytype/blob/master/frontend/static/themes/paper.css */
   [data-theme="paper"] {
     --background: 0 0% 93%;
     --foreground: 0 0% 27%;
@@ -96,6 +97,37 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
  
+    --radius: 0.5rem;
+  }
+
+  [data-theme="carbon"] {
+    --background: 0 0% 19%;
+    --foreground: 25 93% 51%;
+
+    --card: 0 0% 38%;
+    --card-foreground: 222.2 84% 4.9%;
+ 
+    --popover: 0 0% 17%;
+    --popover-foreground: 222.2 84% 4.9%;
+ 
+    --primary: 25 93% 51%;
+    --primary-foreground: 210 40% 98%;
+ 
+    --secondary: 25 93% 51%;
+    --secondary-foreground: 25 93% 51%;
+ 
+    --muted: 0 0% 38%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+ 
+    --accent: 0 0% 38%;
+    --accent-foreground: 25 93% 51%;
+ 
+    --destructive: 0 100% 42%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 25 93% 51%;
+    --input: 25 93% 51%;
+    --ring: 25 93% 51%;
     --radius: 0.5rem;
   }
 }
