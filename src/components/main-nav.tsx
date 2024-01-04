@@ -13,13 +13,13 @@ export function MainNav({
     >
       <Link
         href="/#experience"
-        className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+        className="text-sm font-medium text-secondary-foreground transition-colors hover:text-primary"
       >
         Experience
       </Link>
       <Link
         href="/#projects"
-        className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+        className="text-sm font-medium text-secondary-foreground transition-colors hover:text-primary"
       >
         Projects
       </Link>

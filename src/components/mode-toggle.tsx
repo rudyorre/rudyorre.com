@@ -144,12 +144,12 @@ export function ModeToggle() {
         />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Suggested Themes">
-            {themes.slice(0,3).map(mapThemeToItem)}
+          <CommandGroup heading="Default Themes">
+            {themes.slice(0,2).map(mapThemeToItem)}
           </CommandGroup>
           <CommandSeparator />
-          <CommandGroup heading="Themes">
-            {themes.slice(3,themes.length).map(mapThemeToItem)}
+          <CommandGroup heading="Special Themes">
+            {themes.slice(2,themes.length).map(mapThemeToItem)}
           </CommandGroup>
         </CommandList>
       </CommandDialog>

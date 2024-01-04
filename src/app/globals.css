@@ -94,8 +94,8 @@
     --secondary: 0 0% 70%; /* --sub-color */
     --secondary-foreground: 0 0% 27%; /* text-color */
  
-    --muted: 0 0 87%; /* --sub-alt-color */
-    --muted-foreground: 0 0% 70%; /* --sub-color */
+    --muted: 0 0% 70%; /* --sub-color */
+    --muted-foreground: 0 0 87%; /* --sub-alt-color */
  
     --accent: 0 0% 27%; /* --main-color */
     --accent-foreground: 0 0% 70%; /* --sub-color */
@@ -134,8 +134,8 @@
     --secondary: 0 0% 38%; /* --sub-color */
     --secondary-foreground: 40 69% 87%; /* text-color */
  
-    --muted: 0 0% 17%; /* --sub-alt-color */
-    --muted-foreground: 0 0% 38%; /* --sub-color */
+    --muted: 0 0% 38%; /* --sub-color */
+    --muted-foreground: 0 0% 17%; /* --sub-alt-color */
  
     --accent: 25 93% 51%; /* --main-color */
     --accent-foreground:  0 0% 38%; /* --sub-color */
@@ -146,6 +146,87 @@
     --border: 0 0% 38%; /* --sub-color */
     --input: 40 69% 87%; /* --text-color */
     --ring: 40 69% 87%; /* --text-color */
+    --radius: 0.5rem;
+  }
+
+  /*
+  --bg-color: #2d394d; 218 26% 24%
+  --main-color: #ff7a90; 350 100% 74%
+  --caret-color: #ff7a90; 350 100% 74%
+  --sub-color: #4a768d; 201 31% 42%
+  --sub-alt-color: #263041; 218 26% 20%
+  --text-color: #fffaf8; 17 100% 99%
+  --error-color: #ee2a3a; 355 85% 55%
+  */
+
+  [data-theme="bento"] {
+    --background: 218 26% 24%; /* --bg-color */
+    --foreground: 17 100% 99%; /* --text-color */
+
+    --card: 218 26% 20%; /* --sub-alt-color */
+    --card-foreground: 17 100% 99%; /* --text-color */
+ 
+    --popover: 201 31% 42%; /* --sub-color */
+    --popover-foreground: 17 100% 99%; /* --text-color */
+ 
+    --primary: 350 100% 74%; /* --main-color */
+    --primary-foreground: 201 31% 42%; /* --sub-color */
+ 
+    --secondary:201 31% 42%; /* --sub-color */
+    --secondary-foreground: 17 100% 99%; /* text-color */
+ 
+    --muted: 201 31% 42%; /* --sub-color */
+    --muted-foreground: 218 26% 20%; /* --sub-alt-color */
+ 
+    --accent: 350 100% 74%; /* --main-color */
+    --accent-foreground:  201 31% 42%; /* --sub-color */
+ 
+    --destructive: 355 85% 55%; /* --error-color */
+    --destructive-foreground: 17 100% 99%; /* --text-color */
+
+    --border: 201 31% 42%; /* --sub-color */
+    --input: 17 100% 99%; /* --text-color */
+    --ring: 17 100% 99%; /* --text-color */
+    --radius: 0.5rem;
+  }
+
+  /*
+  --bg-color: #f35588; 341, 87%, 64%
+  --main-color: #05dfd7; 178, 96%, 45%
+  --caret-color: #a3f7bf; 140, 84%, 80%
+  --text-color: #f0e9ec; 334, 19%, 93%
+  --sub-color: #94294c; 340, 57%, 37%
+  --sub-alt-color: #db4979; 340, 67%, 57%
+  --error-color: #fff591; 55, 100%, 78%
+  */
+  [data-theme="miami"] {
+    --background: 341 87% 64%; /* --bg-color */
+    --foreground: 334 19% 93%; /* --text-color */
+
+    --card: 340 67% 57%; /* --sub-alt-color */
+    --card-foreground: 334 19% 93%; /* --text-color */
+ 
+    --popover: 340 57% 37%; /* --sub-color */
+    --popover-foreground: 334 19% 93%; /* --text-color */
+ 
+    --primary: 178 96% 45%; /* --main-color */
+    --primary-foreground: 340 57% 37%; /* --sub-color */
+ 
+    --secondary: 340 57% 37%; /* --sub-color */
+    --secondary-foreground: 334 19% 93%; /* text-color */
+ 
+    --muted: 340 57% 37%; /* --sub-color */
+    --muted-foreground: 340 67% 57%; /* --sub-alt-color */
+ 
+    --accent: 178 96% 45%; /* --main-color */
+    --accent-foreground:  340 57% 37%; /* --sub-color */
+ 
+    --destructive: 55 100% 78%; /* --error-color */
+    --destructive-foreground: 334 19% 93%; /* --text-color */
+
+    --border: 340 57% 37%; /* --sub-color */
+    --input: 334 19% 93%; /* --text-color */
+    --ring: 334 19% 93%; /* --text-color */
     --radius: 0.5rem;
   }
 }

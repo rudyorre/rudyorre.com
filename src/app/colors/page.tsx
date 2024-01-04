@@ -7,7 +7,7 @@ import { Timeline } from '@/components/timeline';
 export default function Test() {
   return (<>
     <div className="h-4"></div>
-    <div className="text-muted-foreground">rudyorre/</div><h1 className="text-6xl font-bold tracking-tight text-primary">Colors</h1>
+    <div className="text-secondary-foreground/50">rudyorre/</div><h1 className="text-6xl font-bold tracking-tight text-primary">Colors</h1>
     All of the colors on this site are derived from these colors.
     <div className="grid grid-cols-2 gap-4">
       <div className="rounded-lg h-20 text-center py-2 bg-background text-foreground">--background</div>

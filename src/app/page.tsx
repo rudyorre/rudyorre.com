@@ -11,14 +11,14 @@ export default function Home() {
       <Hero />
       <br />
       <div id="experience" />
-      <div className="text-muted-foreground">rudyorre/</div><h1 className="text-6xl font-bold tracking-tight text-primary">Experience</h1>
+      <div className="text-secondary-foreground/50">rudyorre/</div><h1 className="text-6xl font-bold tracking-tight text-primary">Experience</h1>
       <br />
       <Experience />
       <br />
       <br />
       <br />
       <div id="projects" />
-      <div className="text-muted-foreground">rudyorre/</div><h1 className="text-6xl font-bold tracking-tight text-primary">Projects</h1>
+      <div className="text-secondary-foreground/50">rudyorre/</div><h1 className="text-6xl font-bold tracking-tight text-primary">Projects</h1>
       <br />
       <Projects />
     </div>

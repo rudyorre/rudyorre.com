@@ -34,10 +34,16 @@ export const Timeline = ({jobs, primary}: TimelineProps) => {
                                         <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
                                     </svg>
                                 </span>
-                                <h3 className="flex items-center mb-1 text-lg font-semibold">{job.role} <span className="hidden sm:block bg-blue-100 bg-primary-foreground/40 text-primary text-sm font-medium me-2 px-2.5 py-0.5 rounded ms-3">{job.company}</span></h3>
-                                <time className="block mb-2 text-sm font-normal leading-none text-muted-foreground">{job.dates}</time>
+                                <h3 className="flex items-center mb-1 text-lg font-semibold">{job.role} <span className={cn(
+                                    "hidden sm:block text-primary text-sm font-medium me-2 px-2.5 py-0.5 rounded ms-3",
+                                    primary ? "bg-primary-foreground" : "bg-background/40"
+                                )}>{job.company}</span></h3>
+                                <time className={cn(
+                                    "block mb-2 text-sm font-normal leading-none ",
+                                    "text-foreground",
+                                )}>{job.dates}</time>
                                 </AccordionTrigger>
-                                <AccordionContent className="mb-4 text-base font-normal text-muted-foreground">
+                                <AccordionContent className="mb-4 text-base font-normal text-foreground/70">
                                     {job.description.map((bullet: string, i: number) => (
                                         <p key={job.role + job.company + 'desc' + i}>
                                             {(job.description.length > 1 ? "• " : "") + bullet}
