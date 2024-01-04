@@ -26,6 +26,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className='scroll-smooth'>
+      <head>
+        <title>Rudy Orre</title>
+      </head>
       <body className={inter.className}>
           <ThemeProvider
             defaultTheme="system"
