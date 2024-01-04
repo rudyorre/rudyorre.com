@@ -10,8 +10,8 @@ export interface Project {
 
 export const projects: Project[] = [
     {
-        title: 'Brewin',
-        description: 'An interpreted and statically typed programming language built in pure Python. Includes I/O, primitives, objects, looping, functions and lexical scoping. Also supports error handling.',
+        title: 'Brewin Language Interpretter',
+        description: 'An interpretted and statically typed programming language built in pure Python. Includes I/O, primitives, objects, looping, functions and lexical scoping. Also supports error handling.',
         image: '/images/brewin-logo.png',
         tags: ['Python'],
         source: 'https://github.com/rudyorre/brewin',
@@ -19,12 +19,39 @@ export const projects: Project[] = [
         featured: true,
     },
     {
-        title: 'TensorFaux',
-        description: "A neural network implementation which utilizes a similar API to TensorFlow Keras. Written in just Python/Numpy, and includes a documentation website and is accessible via PIP.",
+        title: 'TensorFaux Library',
+        description: "A neural network library which utilizes a similar API to TensorFlow Keras. Written in just Python/Numpy, and includes a documentation website and is accessible via PIP.",
           image: '/images/tensorfaux.png',
           tags: ['Python', 'Numpy', 'PIP'],
         source: 'https://github.com/rudyorre/TensorFaux',
         visit: 'https://rudyorre.github.io/TensorFaux',
+        featured: true,
+    },
+    {
+        title: 'Dash',
+        description: "A minimal and dynamic dashboard interface. Dashboard and chart view definitions are stored in Supabase in addition to the raw data.",
+        tags: ['Next', 'Express', 'Supabase', 'Postgres'],
+        image: '/images/dash.png',
+        source: 'https://github.com/rudyorre/dash',
+        visit: '',
+        featured: true,
+    },
+    {
+        title: 'Chatbot.ai',
+        description: "A chatbot interface that uses NLP to convert natural language into SQL queries. Built for JPL FireSat.",
+        tags: ['Flask', 'NLTK', 'SparQL', 'Docker'],
+        image: '/images/chatbotai.png',
+        source: 'https://github.com/rudyorre/chatbot.ai',
+        visit: '',
+        featured: true,
+    },
+    {
+        title: 'UCLA Theta Tau Website',
+        description: 'Built the new site for UCLA Theta Tau from the ground up.',
+        tags: ['React', 'Gatsby'],
+        image: '/images/tt.png',
+        source: 'https://github.com/UCLATT/thetataubruins.org',
+        visit: 'https://thetataubruins.org',
         featured: true,
     },
     {
@@ -55,7 +82,7 @@ export const projects: Project[] = [
         featured: true,
     },
     {
-        title: 'Scramble! Web App',
+        title: 'Tinder for Restuarants',
         description: "Matches users to restaurants based off of their preferences using a swiping feature similar to Tinder. User filters and preferences persist via MongoDB.",
           image: '/images/scramble.png',
           // tags: ['Mongo', 'Express', 'React', 'Node', "Yelp Fusion"],
