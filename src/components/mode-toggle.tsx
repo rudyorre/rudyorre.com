@@ -63,7 +63,7 @@ export function ModeToggle() {
     }
   };
 
-  const handleKeyDown = (e: KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key !== 'Enter' || !cachedTheme) {
       return null;
     }
@@ -106,7 +106,7 @@ export function ModeToggle() {
         <CommandInput
           placeholder="Type a command or search..."
           onValueChange={handleOnChange}
-          onKeyDown={(e) => handleKeyDown(e)}
+          onKeyDown={handleKeyDown}
         />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
