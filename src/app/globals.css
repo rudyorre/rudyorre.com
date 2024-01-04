@@ -67,69 +67,92 @@
     --radius: 0.5rem;
   }
 
+  /* {
+    --bg-color: #eeeeee; 0 0% 93%
+    --main-color: #444444; 0 0% 27%
+    --caret-color: #444444; 0 0% 27%
+    --sub-color: #b2b2b2; 0 0% 70%
+    --sub-alt-color: #dddddd; 0 0 87%
+    --text-color: #444444; 0 0% 27%
+    --error-color: #d70000; 0 100% 42%
+  } */
+
   /* https://github.com/monkeytypegame/monkeytype/blob/master/frontend/static/themes/paper.css */
   [data-theme="paper"] {
-    --background: 0 0% 93%;
-    --foreground: 0 0% 27%;
+    --background: 0 0% 93%; /* --bg-color */
+    --foreground: 0 0% 27%; /* --text-color */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 0 0 87%; /* --sub-alt-color */
+    --card-foreground: 0 0% 27%; /* --text-color */
  
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 70%; /* --sub-color */
+    --popover-foreground: 0 0% 27%; /* --text-color */
  
-    --primary: 0 0% 27%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 0 0% 27%; /* --main-color */
+    --primary-foreground: 0 0% 70%; /* --sub-color */
  
-    --secondary: 0 0% 27%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 0 0% 70%; /* --sub-color */
+    --secondary-foreground: 0 0% 27%; /* text-color */
  
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 0 0 87%; /* --sub-alt-color */
+    --muted-foreground: 0 0% 70%; /* --sub-color */
  
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 0 0% 27%; /* --main-color */
+    --accent-foreground: 0 0% 70%; /* --sub-color */
  
-    --destructive: 0 100% 42%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 79% 54%; /* --error-color */
+    --destructive-foreground: 0 0% 27%; /* --text-color */
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
- 
+    --border: 0 0% 70%; /* --sub-color */
+    --input: 0 0% 27%; /* --text-color */
+    --ring: 0 0% 27%; /* --text-color */
     --radius: 0.5rem;
   }
+
+  /* --bg-color: #313131; 0 0% 19%
+  --main-color: #f66e0d; 25 93% 51%
+  --caret-color: #f66e0d; 25 93% 51%
+  --sub-color: #616161; 0 0% 38%
+  --sub-alt-color: #2b2b2b; 0 0% 17%
+  --text-color: #f5e6c8; 40 69% 87%
+  --error-color: #e72d2d; 0 79% 54%
+  */
 
   [data-theme="carbon"] {
-    --background: 0 0% 19%;
-    --foreground: 25 93% 51%;
+    --background: 0 0% 19%; /* --bg-color */
+    --foreground: 40 69% 87%; /* --text-color */
 
-    --card: 0 0% 38%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 0 0% 17%; /* --sub-alt-color */
+    --card-foreground: 40 69% 87%; /* --text-color */
  
-    --popover: 0 0% 17%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 38%; /* --sub-color */
+    --popover-foreground: 40 69% 87%; /* --text-color */
  
-    --primary: 25 93% 51%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 25 93% 51%; /* --main-color */
+    --primary-foreground: 0 0% 38%; /* --sub-color */
  
-    --secondary: 25 93% 51%;
-    --secondary-foreground: 25 93% 51%;
+    --secondary: 0 0% 38%; /* --sub-color */
+    --secondary-foreground: 40 69% 87%; /* text-color */
  
-    --muted: 0 0% 38%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 0 0% 17%; /* --sub-alt-color */
+    --muted-foreground: 0 0% 38%; /* --sub-color */
  
-    --accent: 0 0% 38%;
-    --accent-foreground: 25 93% 51%;
+    --accent: 25 93% 51%; /* --main-color */
+    --accent-foreground:  0 0% 38%; /* --sub-color */
  
-    --destructive: 0 100% 42%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 79% 54%; /* --error-color */
+    --destructive-foreground: 40 69% 87%; /* --text-color */
 
-    --border: 25 93% 51%;
-    --input: 25 93% 51%;
-    --ring: 25 93% 51%;
+    --border: 0 0% 38%; /* --sub-color */
+    --input: 40 69% 87%; /* --text-color */
+    --ring: 40 69% 87%; /* --text-color */
     --radius: 0.5rem;
   }
+}
+
+::selection {
+  color: hsl(var(--background));
+  background: hsl(var(--primary));
 }
  
 @layer base {

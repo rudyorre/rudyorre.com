@@ -15,7 +15,7 @@ export const Experience = () => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
 
     return <div>
-        <Timeline jobs={jobs.filter((job: Job) => job.featured)} />
+        <Timeline jobs={jobs.filter((job: Job) => job.featured)} primary />
         <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="item-1">
                 <AccordionContent className="bg-muted pt-4 rounded-lg">

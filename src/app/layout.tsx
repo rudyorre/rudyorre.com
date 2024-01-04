@@ -36,12 +36,10 @@ export default function RootLayout({
             <div className={`border-b fixed top-0 z-20 w-screen backdrop-filter backdrop-blur-lg bg-background/[0.7]`}>
               <div className="flex h-16 items-center px-4 max-w-screen-xl mx-auto">
                 <Link href="/" className="inline-flex">
-                  <div className="font-extrabold">rudyorre</div>.com
+                  <div className="font-extrabold text-primary">rudyorre</div>.com
                 </Link>
                 <MainNav className="mx-6" />
                 <div className="ml-auto flex items-center space-x-4">
-                  {/* <Search /> */}
-                  {/* <UserNav /> */}
                   <ModeToggle />
                 </div>
               </div>
