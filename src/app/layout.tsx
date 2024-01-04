@@ -23,13 +23,13 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body className={inter.className}>
+    <html lang="en">
+      <body className={inter.className + "scroll-smooth"}>
           <ThemeProvider
-            attribute="class"
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange
+            themes={['light', 'dark', 'root']}
           > 
             <div className={`border-b fixed top-0 z-20 w-screen backdrop-filter backdrop-blur-lg bg-background/[0.7]`}>
               <div className="flex h-16 items-center px-4 max-w-screen-xl mx-auto">
