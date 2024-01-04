@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import fs from 'fs';
 
 import { ThemeProvider } from '@/components/theme-provider'
 import { UserNav } from '@/components/user-nav'
@@ -9,6 +10,7 @@ import { MainNav } from '@/components/main-nav'
 import { ModeToggle } from '@/components/mode-toggle'
 import Link from 'next/link'
 import { Footer } from '@/components/footer'
+import { cn } from '@/lib/utils';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -23,13 +25,13 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className + "scroll-smooth"}>
+    <html lang="en" className='scroll-smooth'>
+      <body className={inter.className}>
           <ThemeProvider
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange
-            themes={['light', 'dark', 'root']}
+            themes={['light', 'dark', 'paper']}
           > 
             <div className={`border-b fixed top-0 z-20 w-screen backdrop-filter backdrop-blur-lg bg-background/[0.7]`}>
               <div className="flex h-16 items-center px-4 max-w-screen-xl mx-auto">
