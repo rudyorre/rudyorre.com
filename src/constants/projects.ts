@@ -34,7 +34,7 @@ export const projects: Project[] = [
         image: '/images/dash.png',
         source: 'https://github.com/rudyorre/dash',
         visit: '',
-        featured: true,
+        featured: false,
     },
     {
         title: 'Chatbot.ai',
@@ -107,7 +107,7 @@ export const projects: Project[] = [
         tags: ['C++'],
         source: 'https://github.com/rudyorre/machine-learning-projects/tree/master/Multivariate-Linear-Regression',
         visit: '',
-        featured: true,
+        featured: false,
     },
     {
         title: 'C++ Shared Pointer',
@@ -134,6 +134,6 @@ export const projects: Project[] = [
         tags: ['React', 'NextJS'],
         source: 'https://github.com/rudyorre/rudyorre.com',
         visit: 'https://rudyorre.com/',
-        featured: true,
+        featured: false,
     },
 ];
