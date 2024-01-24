@@ -25,7 +25,7 @@ export function MainNav({
     >
       {pathname in anchors ? anchors[pathname].map((link, i) => 
         <Link
-          href={`/#${link}`}
+          href={`#${link}`}
           className="text-sm font-medium text-secondary-foreground transition-colors hover:text-primary"
         >
           {link}
