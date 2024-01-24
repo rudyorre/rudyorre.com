@@ -24,12 +24,12 @@ export function MainNav({
       {...props}
     >
       {pathname in anchors ? anchors[pathname].map((link, i) => 
-        <Link
-          href={`#${link}`}
+        <a
+          href={`/#${link}`}
           className="text-sm font-medium text-secondary-foreground transition-colors hover:text-primary"
         >
           {link}
-        </Link>
+        </a>
       ) : null}
     </nav>
   )
