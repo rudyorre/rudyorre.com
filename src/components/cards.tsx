@@ -48,16 +48,16 @@ return (
     styles.cards
     )}
     >
-    <div ref={cardsRef} id="cards" className="flex flex-wrap gap-[8px] justify-center mx-auto">
-        {projects.map((project: ProjectType, i: number) => (
-            <Card
-                key={project.title + i}
-                project={project}
-                parentMouseX={mouseX}
-                parentMouseY={mouseY}
-            />
-        ))}
-    </div>
+        <div ref={cardsRef} id="cards" className="flex flex-wrap gap-[8px] mx-auto justify-center">
+            {projects.map((project: ProjectType, i: number) => (
+                <Card
+                    key={project.title + i}
+                    project={project}
+                    parentMouseX={mouseX}
+                    parentMouseY={mouseY}
+                />
+            ))}
+        </div>
     </div>
 );
 }

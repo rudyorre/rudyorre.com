@@ -28,13 +28,13 @@ export const projects: Project[] = [
         featured: true,
     },
     {
-        title: 'Dash',
-        description: "A minimal and dynamic dashboard interface. Dashboard and chart view definitions are stored in Supabase in addition to the raw data.",
+        title: 'Dashviz',
+        description: "A minimal dynamic dashboard interface. Dashboard and chart view definitions are stored in Supabase in addition to the raw data.",
         tags: ['Next', 'Express', 'Supabase', 'Postgres'],
-        image: '/images/dash.png',
-        source: 'https://github.com/rudyorre/dash',
+        image: '/images/dashviz.png',
+        source: 'https://github.com/rudyorre/dashviz',
         visit: '',
-        featured: false,
+        featured: true,
     },
     {
         title: 'Chatbot.ai',
@@ -43,7 +43,7 @@ export const projects: Project[] = [
         image: '/images/chatbotai.png',
         source: 'https://github.com/rudyorre/chatbot.ai',
         visit: '',
-        featured: true,
+        featured: false,
     },
     {
         title: 'UCLA Theta Tau Website',
@@ -52,7 +52,7 @@ export const projects: Project[] = [
         image: '/images/tt.png',
         source: 'https://github.com/UCLATT/thetataubruins.org',
         visit: 'https://thetataubruins.org',
-        featured: true,
+        featured: false,
     },
     {
         title: 'ViT: Vision Transformer',
@@ -61,7 +61,7 @@ export const projects: Project[] = [
         tags: ['PyTorch'],
         source: 'https://github.com/rudyorre/vit',
         visit: '',
-        featured: true,
+        featured: false,
     },
     {
         title: 'Parts-of-Speech Tagger',
@@ -70,7 +70,7 @@ export const projects: Project[] = [
         tags: ['Python', 'NLTK'],
         source: 'https://github.com/rudyorre/pos-tagger',
         visit: '',
-        featured: true,
+        featured: false,
     },
     {
         title: 'N-Gram Language Model',
@@ -79,7 +79,7 @@ export const projects: Project[] = [
         tags: ['Python', 'NLTK'],
         source: 'https://github.com/rudyorre/ngram',
         visit: '',
-        featured: true,
+        featured: false,
     },
     {
         title: 'Tinder for Restuarants',
@@ -89,7 +89,7 @@ export const projects: Project[] = [
           tags: ['MERN', 'Yelp API'],
         source: 'https://github.com/rudyorre/restaurant-tinder',
         visit: '',
-        featured: true,
+        featured: false,
     },
     {
         title: 'Cannabis Sales Forecasting',
@@ -98,7 +98,7 @@ export const projects: Project[] = [
           tags: ['Pandas', 'Sci-Kit Learn'],
         source: 'https://github.com/rudyorre/m148-project3',
         visit: '',
-        featured: true,
+        featured: false,
     },
     {
         title: 'Multivariable Linear Regression',
