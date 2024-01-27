@@ -12,8 +12,6 @@ import Link from 'next/link'
 import { Footer } from '@/components/footer'
 import { cn } from '@/lib/utils'
 
-import { useState, useEffect } from 'react'
-
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -26,22 +24,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const [mouseX, setMouseX] = useState<number>(0);
-  const [mouseY, setMouseY] = useState<number>(0);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMouseX(e.clientX);
-      setMouseY(e.clientY);
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, []);
-
   return (
     <html lang="en" className='scroll-smooth'>
       <head>
