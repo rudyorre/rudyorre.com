@@ -23,6 +23,16 @@ const nextConfig = {
     images: {
         unoptimized: true,
     },
+    async redirects() {
+        return [
+          {
+            source: '/resume',
+            destination: 'https://drive.google.com/file/d/1p8nSZYy8jgPrRdBCm4CZ3DQBhIJKudbN/view?usp=sharing',
+            permanent: false,
+            basePath: false
+          },
+        ]
+    },
 }
 
 module.exports = nextConfig
