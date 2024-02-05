@@ -30,7 +30,7 @@ export default function RootLayout({
         <title>Rudy Orre</title>
         <meta property="og:title" content="Rudy Orre Portfolio" />
         <meta property="og:description" content="Portfolio website for Rudy Orre." />
-        <meta property="og:image" content="/images/preview.png" />
+        <meta property="og:image" content="https://rudyorre.com/images/preview.png" />
         <meta property="og:url" content="https://rudyorre.com" />
       </head>
       <body className={inter.className}>
