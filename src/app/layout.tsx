@@ -28,6 +28,10 @@ export default function RootLayout({
     <html lang="en" className='scroll-smooth'>
       <head>
         <title>Rudy Orre</title>
+        <meta property="og:title" content="Rudy Orre Portfolio" />
+        <meta property="og:description" content="Portfolio website for Rudy Orre." />
+        <meta property="og:image" content="/images/preview.png" />
+        <meta property="og:url" content="https://rudyorre.com" />
       </head>
       <body className={inter.className}>
           <ThemeProvider
