@@ -17,6 +17,7 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'Rudy Orre Portfolio',
   description: 'Portfolio website for Rudy Orre. Showcases experience, projects, and more.',
+  openGraph: { "images": "https://rudyorre.com/images/preview.png" }
 }
 
 export default function RootLayout({
