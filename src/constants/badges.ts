@@ -27,5 +27,9 @@ export const badges: Map<string, string> = new Map(
         'shell': 'https://img.shields.io/badge/Shell-%23121011.svg?style=flat&logo=gnu-bash&logoColor=white',
         'scipy': 'https://img.shields.io/badge/SciPy-%230C55A5.svg?style=flat&logo=scipy&logoColor=%white',
         'selenium': 'https://img.shields.io/badge/Selenium-43B02A.svg?&style=flat&logo=selenium&logoColor=white',
+        'react': 'https://img.shields.io/badge/React-%2320232a.svg?style=flat&logo=react&logoColor=%2361DAFB',
+        'node': 'https://img.shields.io/badge/Node-6DA55F?style=flat&logo=node.js&logoColor=white',
+        'flask': 'https://img.shields.io/badge/Flask-%23000.svg?style=flat&logo=flask&logoColor=white',
+        'aws': 'https://img.shields.io/badge/AWS-%23FF9900.svg?style=flat&logo=amazon-aws&logoColor=white',
     })
 );
