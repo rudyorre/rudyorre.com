@@ -5,23 +5,26 @@ import Hero from '@/components/hero';
 import { Timeline } from '@/components/timeline';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { Hobbies } from '@/components/hobbies';
 
 export default function Home() {
   return (
     <div>
-      <br />
       <Hero />
-      <br />
-      <div className="text-secondary-foreground/50">rudyorre/</div><h1 id="Experience" className="scroll-my-24 text-6xl font-bold tracking-tight text-primary">Experience</h1>
-      <br />
+      <div className="text-secondary-foreground/50 mt-20">rudyorre/</div>
+      <h1 id="Experience" className="scroll-my-24 text-6xl font-bold tracking-tight text-primary mb-10">Experience</h1>
       <Experience />
-      <br />
-      <br />
-      <br />
-      <div className="text-secondary-foreground/50">rudyorre/</div><h1 id="Projects" className="scroll-my-24 text-6xl font-bold tracking-tight text-primary">Projects</h1>
-      <br />
+      <div className="text-secondary-foreground/50 mt-20">rudyorre/</div>
+      <h1 id="Projects" className="scroll-my-24 text-6xl font-bold tracking-tight text-primary mb-10">Projects</h1>
       <Projects onlyFeatured />
-      <div className="flex justify-center items-center mt-5"><Link href="/projects"><Button>See more</Button></Link></div>
+      <div className="flex justify-center items-center mt-5">
+        <Link href="/projects">
+          <Button>See more</Button>
+        </Link>
+      </div>
+      <div className="text-secondary-foreground/50 mt-20">rudyorre/</div>
+      <h1 id="Hobbies" className="scroll-my-24 text-6xl font-bold tracking-tight text-primary mb-10">Hobbies</h1>
+      <Hobbies />
     </div>
   )
 }
