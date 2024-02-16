@@ -10,8 +10,8 @@ export interface Project {
 
 export const projects: Project[] = [
     {
-        title: 'Brewin Language Interpretter',
-        description: 'An interpretted and statically typed programming language built in pure Python. Includes I/O, primitives, objects, looping, functions and lexical scoping. Also supports error handling.',
+        title: 'Brewin Language Interpreter',
+        description: 'An interpreted and statically typed programming language built in pure Python. Includes I/O, primitives, objects, looping, functions and lexical scoping. Also supports error handling.',
         image: '/images/brewin-logo.png',
         tags: ['Python'],
         source: 'https://github.com/rudyorre/brewin',

@@ -13,8 +13,8 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
 interface CardProps {
     project: ProjectType;
-    parentMouseX: number;
-    parentMouseY: number;
+    parentMouseX?: number;
+    parentMouseY?: number;
 }
 
 export function Cards({projects}: {projects: ProjectType[]}) {
@@ -62,7 +62,7 @@ return (
 );
 }
 
-function Card({ project, parentMouseX, parentMouseY }: CardProps) {
+export function Card({ project, parentMouseX, parentMouseY }: CardProps) {
 const [mouseX, setMouseX] = useState<number>(0);
 const [mouseY, setMouseY] = useState<number>(0);
 const [isHovered, setIsHovered] = useState(false);
