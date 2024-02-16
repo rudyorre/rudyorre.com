@@ -6,7 +6,7 @@ import { ThemeProvider } from '@/components/theme-provider'
 import { UserNav } from '@/components/user-nav'
 import { Search } from '@/components/search'
 import { MainNav } from '@/components/main-nav'
-import { ModeToggle } from '@/components/mode-toggle'
+
 import { Background } from '@/components/background'
 import Link from 'next/link'
 import { Footer } from '@/components/footer'
@@ -42,14 +42,15 @@ export default function RootLayout({
             themes={['light', 'dark', 'paper', 'carbon', 'bento', 'miami']}
           > 
             <Background />
-            <div className={`border-b fixed top-0 z-20 w-screen backdrop-filter backdrop-blur-lg bg-background/[0.7]`}>
+            {/* <div className={`border-b fixed top-0 z-20 w-screen backdrop-filter backdrop-blur-lg bg-background/[0.7]`}>
               <div className="flex h-16 items-center px-4 max-w-screen-xl mx-auto">
                 <MainNav className="mx-6" />
                 <div className="ml-auto flex items-center space-x-4">
                   <ModeToggle />
                 </div>
               </div>
-            </div>
+            </div> */}
+            <MainNav className="mx-6" />
             <div className="h-16"></div>
             <div className="bg-bg-color mx-auto max-w-screen-xl">
               {children}
