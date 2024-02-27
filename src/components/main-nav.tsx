@@ -11,6 +11,7 @@ const anchors: {[pathname: string]: string[]} = {
     "Experience",
     "Projects",
     "Hobbies",
+    "Contact",
   ],
   "/projects": [],
 };

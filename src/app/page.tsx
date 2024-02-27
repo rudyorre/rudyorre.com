@@ -6,6 +6,7 @@ import { Timeline } from '@/components/timeline';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Hobbies } from '@/components/hobbies';
+import { Contact } from '@/components/contact';
 
 export default function Home() {
   return (
@@ -25,6 +26,9 @@ export default function Home() {
       <div className="text-secondary-foreground/50 mt-20">rudyorre/</div>
       <h1 id="Hobbies" className="scroll-my-24 text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-primary mb-10">Hobbies</h1>
       <Hobbies />
+      <div className="text-secondary-foreground/50 mt-20">rudyorre/</div>
+      <h1 id="Contact" className="scroll-my-24 text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-primary mb-10">Contact</h1>
+      <Contact />
     </div>
   )
 }
