@@ -10,19 +10,19 @@ export interface Job {
 export const jobs: Job[] = [
     {
         role: 'Full-Stack Software Engineer',
-        company: 'Freelance',
-        dates: 'Oct 2023 - Current',
-        tags: ['react', 'next', 'node', 'flask', 'aws'],
+        company: 'Utah Tech Labs',
+        dates: 'Nov 2023 - Current',
+        tags: ['react', 'node', 'flask', 'aws'],
         featured: true,
         description: [
-            "Successfully completed 3+ contracts for startup clients building both customer-facing and internal web apps and services",
-            "Developed solutions such as dynamic dashboards with React/Next, deployed cloud infrastructures on both AWS and GCP, and developed back-end APIs that integrate with other services/databases in Node and Flask",
+            "Contributed to the development of production-ready client projects, ensuring timely delivery and exceeding expectations. Simultaneously, led the effort of building and maintaining a comprehensive library of reusable React components and Flask utilities, expediting development for future client projects and measured a 20% increase in developer productivity.",
+            "Played a pivotal role in securing over 10 client projects exceeding $300,000 in cumulative value by leveraging technical expertise to provide accurate milestone timelines and assessing technical feasibility during project intake.",
         ]
     },
     {
         role: 'Software Engineer Intern',
         company: 'Arista Networks',
-        dates: 'Jun 2023 - Current',
+        dates: 'Jun 2023 - Oct 2023',
         tags: ['python', 'shell', 'gitlab ci/cd'],
         featured: true,
         description: [
