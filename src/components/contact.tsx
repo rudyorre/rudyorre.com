@@ -18,7 +18,7 @@ export const Contact = ({ className }: ContactProps) => {
             </div>
             <div className="flex-grow flex flex-col lg:block justify-center items-center my-auto">
                 <div className="text-md sm:text-lg">
-                    Feel free to contact me at nay time via email. I try to
+                    Feel free to contact me at any time via email. I try to
                     respond to all inquiries within 24 hours.
                 </div>
                 <Snippet symbol="" className="text-3xl">rudyorre@gmail.com</Snippet>
