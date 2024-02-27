@@ -28,15 +28,17 @@ export function MainNav({
 }: React.HTMLAttributes<HTMLElement>) {
   const pathname: string = usePathname();
   return (
-    // <div className="border-b fixed top-0 z-20 w-screen">
-      // <div className="flex h-16 items-center px-4 max-w-screen-xl mx-auto">
         <Navbar className="border-b">
           <NavbarBrand>
-            {/* <AcmeLogo /> */}
-            <button onClick={scrollToTop} className="inline-flex">
-              <div className="font-extrabold text-primary">rudyorre</div>.com
-            </button>
-            {/* <p className="font-bold text-inherit">ACME</p> */}
+            {pathname === "/" ?
+              <button onClick={scrollToTop} className="inline-flex">
+                <div className="font-extrabold text-primary">rudyorre</div>.com
+              </button>
+            :
+              <Link href="/" className="inline-flex">
+                <div className="font-extrabold text-primary">rudyorre</div>.com
+              </Link>
+            }
           </NavbarBrand>
           <NavbarContent className="hidden sm:flex gap-4" justify="center">
             {pathname in anchors ? anchors[pathname].map((link, i) => 
@@ -56,31 +58,5 @@ export function MainNav({
             </NavbarItem>
           </NavbarContent>
         </Navbar>
-      // </div>
-    // </div>
   );
-  // return (
-  //   <nav
-  //     className={cn("flex items-center space-x-4 lg:space-x-6", className)}
-  //     {...props}
-  //   >
-  //     {pathname === "/" ?
-  //       <button onClick={scrollToTop} className="inline-flex">
-  //         <div className="font-extrabold text-primary">rudyorre</div>.com
-  //       </button>
-  //     :
-  //       <Link href="/" className="inline-flex">
-  //         <div className="font-extrabold text-primary">rudyorre</div>.com
-  //       </Link>
-  //     }
-      // {pathname in anchors ? anchors[pathname].map((link, i) => 
-      //   <a
-      //     href={`/#${link}`}
-      //     className="text-sm font-medium text-secondary-foreground transition-colors hover:text-primary"
-      //   >
-      //     {link}
-      //   </a>
-      // ) : null}
-  //   </nav>
-  // )
 }
