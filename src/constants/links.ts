@@ -3,4 +3,5 @@ export const links: Record<string, string> = {
     'linkedin': 'https://linkedin.com/in/rudyorre',
     'instagram': 'https://instagram.com/rudyorre',
     'twitter': 'https://twitter.com/rudyorre',
+    'resume': 'https://drive.google.com/file/d/1p8nSZYy8jgPrRdBCm4CZ3DQBhIJKudbN/view?usp=sharing',
 };

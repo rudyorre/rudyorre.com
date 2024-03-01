@@ -1,5 +1,6 @@
 import { permanentRedirect } from 'next/navigation'
 import type { Metadata } from 'next'
+import { links } from '@/constants/links';
 
 export const metadata: Metadata = {
     title: 'Rudy Orre Resume',
@@ -7,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 export default function ResumePage() {
-    permanentRedirect('https://drive.google.com/file/d/1p8nSZYy8jgPrRdBCm4CZ3DQBhIJKudbN/view?usp=sharing');
+    permanentRedirect(links.resume);
     return <>
         Redirecting to Resume...
     </>;
