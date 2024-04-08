@@ -27,8 +27,9 @@ export function MainNav({
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
   const pathname: string = usePathname();
+  
   return (
-        <Navbar className="border-b">
+        <Navbar className={cn("border-b", className)}>
           <NavbarBrand>
             {pathname === "/" ?
               <button onClick={scrollToTop} className="inline-flex">
@@ -40,7 +41,7 @@ export function MainNav({
               </Link>
             }
           </NavbarBrand>
-          <NavbarContent className="hidden sm:flex gap-4" justify="center">
+          <NavbarContent className="gap-4" justify="center">
             {pathname in anchors ? anchors[pathname].map((link, i) => 
               <NavbarItem key={i}>
                 <a

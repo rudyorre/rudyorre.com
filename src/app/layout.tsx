@@ -6,6 +6,7 @@ import { ThemeProvider } from '@/components/theme-provider'
 import { UserNav } from '@/components/user-nav'
 import { Search } from '@/components/search'
 import { MainNav } from '@/components/main-nav'
+import { BreadCrumb } from '@/components/breadcrumb'
 
 import { Background } from '@/components/background'
 import Link from 'next/link'
@@ -45,15 +46,16 @@ export default function RootLayout({
               <Background />
               {/* <div className={`border-b fixed top-0 z-20 w-screen backdrop-filter backdrop-blur-lg bg-background/[0.7]`}>
                 <div className="flex h-16 items-center px-4 max-w-screen-xl mx-auto">
-                  <MainNav className="mx-6" />
-                  <div className="ml-auto flex items-center space-x-4">
-                    <ModeToggle />
-                  </div>
+                <MainNav className="mx-6" />
+                <div className="ml-auto flex items-center space-x-4">
+                <ModeToggle />
+                </div>
                 </div>
               </div> */}
-              <MainNav className="mx-6" />
+              <MainNav className="mx-0" />
               <div className="h-16"></div>
-              <div className="bg-bg-color mx-auto max-w-screen-xl flex-grow">
+              <div className="bg-bg-color mx-4 sm:mx-auto max-w-screen-lg flex-grow">
+                <BreadCrumb />
                 {children}
               </div>
               <Footer />
