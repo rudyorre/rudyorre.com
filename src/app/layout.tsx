@@ -41,21 +41,23 @@ export default function RootLayout({
             disableTransitionOnChange
             themes={['light', 'dark', 'paper', 'carbon', 'bento', 'miami']}
           > 
-            <Background />
-            {/* <div className={`border-b fixed top-0 z-20 w-screen backdrop-filter backdrop-blur-lg bg-background/[0.7]`}>
-              <div className="flex h-16 items-center px-4 max-w-screen-xl mx-auto">
-                <MainNav className="mx-6" />
-                <div className="ml-auto flex items-center space-x-4">
-                  <ModeToggle />
+            <div className="flex flex-col min-h-screen">
+              <Background />
+              {/* <div className={`border-b fixed top-0 z-20 w-screen backdrop-filter backdrop-blur-lg bg-background/[0.7]`}>
+                <div className="flex h-16 items-center px-4 max-w-screen-xl mx-auto">
+                  <MainNav className="mx-6" />
+                  <div className="ml-auto flex items-center space-x-4">
+                    <ModeToggle />
+                  </div>
                 </div>
+              </div> */}
+              <MainNav className="mx-6" />
+              <div className="h-16"></div>
+              <div className="bg-bg-color mx-auto max-w-screen-xl flex-grow">
+                {children}
               </div>
-            </div> */}
-            <MainNav className="mx-6" />
-            <div className="h-16"></div>
-            <div className="bg-bg-color mx-auto max-w-screen-xl">
-              {children}
+              <Footer />
             </div>
-            <Footer />
           </ThemeProvider>
       </body>
     </html> 
