@@ -51,7 +51,7 @@ export const projects: Project[] = [
         tags: ['React', 'Gatsby'],
         image: '/images/tt.png',
         source: 'https://github.com/UCLATT/thetataubruins.org',
-        visit: 'https://thetataubruins.org',
+        visit: 'https://www.thetataubruins.org/',
         featured: false,
     },
     {

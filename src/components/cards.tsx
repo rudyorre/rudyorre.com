@@ -145,7 +145,7 @@ return (
             }
             <p>   </p>
             {project.visit !== '' ?
-                <Link className="block group/link" href={project.visit} target="_blank">
+                <Link className="block group/link" href={project.visit} target="_blank" onClick={(e) => e.stopPropagation()}>
                     Explore demo <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="transform transition-transform duration-300 ease-in-out group-hover/link:translate-x-1" />
                 </Link>
             :
