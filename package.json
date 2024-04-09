@@ -27,7 +27,7 @@
     "colorsys": "^1.0.22",
     "framer-motion": "^11.0.5",
     "lucide-react": "^0.301.0",
-    "next": "^14.0.4",
+    "next": "^14.1.4",
     "next-themes": "^0.2.1",
     "node": "^21.2.0",
     "postcss": "^8.4.32",
