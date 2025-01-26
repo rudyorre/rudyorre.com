@@ -41,7 +41,7 @@ export function MainNav({
               </Link>
             }
           </NavbarBrand>
-          <NavbarContent className="gap-4" justify="center">
+          <NavbarContent className="gap-4 hidden sm:flex" justify="center">
             {pathname in anchors ? anchors[pathname].map((link, i) => 
               <NavbarItem key={i}>
                 <a
