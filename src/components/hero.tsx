@@ -16,7 +16,7 @@ const Hero = () => (
         </h1>
         <div className="text-lg">
             I build full-stack applications, automate workflows, and
-            mess around with AI/ML. Also just graduated UCLA.
+            mess around with AI/ML. Also just graduated UCLA. And stuff like that
         </div>
         <div className="flex gap-4 mt-4">
           <Link href={links.linkedin} target="_blank">

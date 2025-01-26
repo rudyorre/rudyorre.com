@@ -1,19 +1,18 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Open_Sans } from 'next/font/google'
 import './globals.css'
 
 import { ThemeProvider } from '@/components/theme-provider'
-import { UserNav } from '@/components/user-nav'
-import { Search } from '@/components/search'
 import { MainNav } from '@/components/main-nav'
 import { BreadCrumb } from '@/components/breadcrumb'
 
 import { Background } from '@/components/background'
-import Link from 'next/link'
 import { Footer } from '@/components/footer'
-import { cn } from '@/lib/utils'
 
-const inter = Inter({ subsets: ['latin'] })
+const openSans = Open_Sans({
+  subsets: ["latin"],
+  display: "swap",
+})
 
 export const metadata: Metadata = {
   title: 'Rudy Orre Portfolio',
@@ -35,7 +34,7 @@ export default function RootLayout({
         <meta property="og:image" content="https://rudyorre.com/images/preview.png" />
         <meta property="og:url" content="https://rudyorre.com" />
       </head>
-      <body className={inter.className}>
+      <body className={openSans.className}>
           <ThemeProvider
             defaultTheme="system"
             enableSystem
