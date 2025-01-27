@@ -29,35 +29,35 @@ export function MainNav({
   const pathname: string = usePathname();
   
   return (
-        <Navbar className={cn("border-b", className)}>
-          <NavbarBrand>
-            {pathname === "/" ?
-              <button onClick={scrollToTop} className="inline-flex">
-                <div className="font-extrabold text-primary">rudyorre</div>.com
-              </button>
-            :
-              <Link href="/" className="inline-flex">
-                <div className="font-extrabold text-primary">rudyorre</div>.com
-              </Link>
-            }
-          </NavbarBrand>
-          <NavbarContent className="gap-4 hidden sm:flex" justify="center">
-            {pathname in anchors ? anchors[pathname].map((link, i) => 
-              <NavbarItem key={i}>
-                <a
-                  href={`/#${link}`}
-                  className="text-sm font-medium text-secondary-foreground transition-colors hover:text-primary"
-                >
-                  {link}
-                </a>
-              </NavbarItem>
-            ) : null}
-          </NavbarContent>
-          <NavbarContent justify="end">
-            <NavbarItem>
-              <ModeToggle />
-            </NavbarItem>
-          </NavbarContent>
-        </Navbar>
+    <Navbar className={cn("border-b", className)}>
+      <NavbarBrand>
+        {pathname === "/" ?
+          <button onClick={scrollToTop} className="inline-flex">
+            <div className="font-bold text-primary">rudyorre</div>.com
+          </button>
+        :
+          <Link href="/" className="inline-flex">
+            <div className="font-bold text-primary">rudyorre</div>.com
+          </Link>
+        }
+      </NavbarBrand>
+      <NavbarContent className="gap-4 hidden sm:flex" justify="center">
+        {pathname in anchors ? anchors[pathname].map((link, i) => 
+          <NavbarItem key={i}>
+            <a
+              href={`/#${link}`}
+              className="text-sm font-medium text-secondary-foreground transition-colors hover:text-primary"
+            >
+              {link}
+            </a>
+          </NavbarItem>
+        ) : null}
+      </NavbarContent>
+      <NavbarContent justify="end">
+        <NavbarItem>
+          <ModeToggle />
+        </NavbarItem>
+      </NavbarContent>
+    </Navbar>
   );
 }

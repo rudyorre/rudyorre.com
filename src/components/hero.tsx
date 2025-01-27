@@ -11,7 +11,7 @@ const Hero = () => (
         <h2 className="text-secondary-foreground/50">
           Hi, my name is
         </h2>
-        <h1 className="text-6xl font-bold tracking-tight my-1 text-primary">
+        <h1 className="text-6xl font-semibold tracking-tight my-1 text-primary">
           Rudy Orre.
         </h1>
         <div className="text-lg text-primary/50">
