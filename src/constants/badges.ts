@@ -31,5 +31,9 @@ export const badges: Map<string, string> = new Map(
         'node': 'https://img.shields.io/badge/Node-6DA55F?style=flat&logo=node.js&logoColor=white',
         'flask': 'https://img.shields.io/badge/Flask-%23000.svg?style=flat&logo=flask&logoColor=white',
         'aws': 'https://img.shields.io/badge/AWS-%23FF9900.svg?style=flat&logo=amazon-aws&logoColor=white',
+        'gcp': 'https://img.shields.io/badge/Google%20Cloud-%234285F4.svg?style=flat&logo=google-cloud&logoColor=white',
+        'go': 'https://img.shields.io/badge/Go-%2300ADD8.svg?style=flat&&logo=go&logoColor=white',
+        'vue': 'https://img.shields.io/badge/Vue.js-4FC08D?style=flat&logo=vuedotjs&logoColor=fff',
+        'ts': 'https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=fff',
     })
 );

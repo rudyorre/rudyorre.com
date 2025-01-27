@@ -9,8 +9,28 @@ export interface Job {
 
 export const jobs: Job[] = [
     {
+        role: 'Software Engineer',
+        company: 'Google X',
+        dates: 'June 2024 - Current',
+        tags: ['java', 'react', 'ts', 'gcp'],
+        featured: true,
+        description: [
+            "Building Chorus",
+        ],
+    },
+    {
+        role: 'Software Engineer',
+        company: 'One Step GPS',
+        dates: 'Feb 2024 - June 2024',
+        tags: ['go', 'vue', 'ts'],
+        featured: true,
+        description: [
+            "Architected and shipped critical features for real-time vehicle tracking platform using Vue/TypeScript frontend and Golang/SQL backend, including a streamlined web app entry point with WebSocket integration for live updates.",
+        ]
+    },
+    {
         role: 'Full-Stack Software Engineer',
-        company: 'Utah Tech Labs',
+        company: 'rudyorre.com',
         dates: 'Nov 2023 - Current',
         tags: ['react', 'node', 'flask', 'aws'],
         featured: true,
@@ -24,7 +44,7 @@ export const jobs: Job[] = [
         company: 'Arista Networks',
         dates: 'Jun 2023 - Oct 2023',
         tags: ['python', 'shell', 'gitlab ci/cd'],
-        featured: true,
+        featured: false,
         description: [
             "Developed a Python-based tool that automates the testing of Arista's Two-Way Active Measurement Protocol (TWAMP) implementations, enabling comprehensive and efficient testing processes. Uncovered and addressed scalability challenges by revealing a limitation preventing TWAMP from efficiently handling more than 1000 concurrent sessions, a discovery crucial for future optimizations.",
             "Implemented extensive network interactions via API requests, demonstrating adeptness at handling complex, large-scale network sessions.",
@@ -32,11 +52,11 @@ export const jobs: Job[] = [
         ]
     },
     {
-        role: 'Data Scientist Intern',
+        role: 'Technical Product Manager Intern',
         company: 'Southern California Edison',
         dates: 'Jun 2022 - Sep 2022',
         tags: ['python', 'sklearn', 'tensorflow'],
-        featured: true,
+        featured: false,
         description: [
             "Facilitated the development of an internal project management/intake tool by compiling a product backlog and organizing meetings with a team of 3 developers and regularly meeting with 6 distinct stakeholder groups for updates and requirements.",
             "Designed the architecture of the data processing pipeline of this project management tool, which spans 5 levels of management from start to end.",
@@ -48,7 +68,7 @@ export const jobs: Job[] = [
         company: 'Daily Bruin',
         dates: 'Jan 2022 - Jun 2022',
         tags: ['next', 'postgres', 'docker'],
-        featured: true,
+        featured: false,
         description: [
             "Maintained and developed dailybruin.com, a high-traffic website receiving hundreds of thousands of views monthly, emphasizing scalability and maintainability.",
             "Utilized a robust tech stack including Next.js for front-end development, PostgreSQL for database management, and Docker for containerization, ensuring the platform's reliability and performance.",
@@ -60,7 +80,7 @@ export const jobs: Job[] = [
         company: 'UCLA Interactive Systems Lab',
         dates: 'Jun 2021 - Oct 2021',
         tags: ['pytorch', 'pandas', 'jupyter'],
-        featured: true,
+        featured: false,
         description: [
             "Collaborated with faculty and graduate students to investigate reinforcement learning (RL) in the context of partial information environments.",
             "Utilized Python libraries and frameworks including NumPy, SciPy, Pandas, MatPlotLib, and PyTorch to produce RL agents and analyze their performance.",
