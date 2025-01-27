@@ -14,9 +14,8 @@ const Hero = () => (
         <h1 className="text-6xl font-bold tracking-tight my-1 text-primary">
           Rudy Orre.
         </h1>
-        <div className="text-lg">
-            I build full-stack applications, automate workflows, and
-            mess around with AI/ML. Also just graduated UCLA. And stuff like that
+        <div className="text-lg text-primary/50">
+          I'm a software engineer at <a href="https://x.company" target="_blank" className="text-primary hover:text-primary/25 cursor-pointer transition-colors">Google X</a> building <a href="https://x.company/blog/posts/introducing-chorus/" target="_blank" className="text-primary hover:text-primary/25 cursor-pointer transition-colors">Chorus</a>.
         </div>
         <div className="flex gap-4 mt-4">
           <Link href={links.linkedin} target="_blank">
