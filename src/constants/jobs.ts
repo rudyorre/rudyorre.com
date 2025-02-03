@@ -31,7 +31,7 @@ export const jobs: Job[] = [
     {
         role: 'Full-Stack Software Engineer',
         company: 'rudyorre.com',
-        dates: 'Nov 2023 - Current',
+        dates: 'Nov 2023 - Jan 2024',
         tags: ['react', 'node', 'flask', 'aws'],
         featured: true,
         description: [
