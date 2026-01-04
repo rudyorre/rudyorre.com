@@ -26,6 +26,7 @@ export default function Home() {
     )
 
     sectionsRef.current.forEach((section) => {
+      console.log(section)
       if (section) observer.observe(section)
     })
 
@@ -40,7 +41,7 @@ export default function Home() {
     <div className="min-h-screen bg-background text-foreground relative">
       <nav className="fixed left-8 top-1/2 -translate-y-1/2 z-10 hidden lg:block">
         <div className="flex flex-col gap-4">
-          {["intro", "work", "projects", "thoughts", "connect"].map((section) => (
+          {["intro", "work", "connect"].map((section) => (
             <button
               key={section}
               onClick={() => document.getElementById(section)?.scrollIntoView({ behavior: "smooth" })}
@@ -62,7 +63,7 @@ export default function Home() {
           <div className="grid lg:grid-cols-5 gap-12 sm:gap-16 w-full">
             <div className="lg:col-span-3 space-y-6 sm:space-y-8">
               <div className="space-y-3 sm:space-y-2">
-                <div className="text-sm text-muted-foreground font-mono tracking-wider">PORTFOLIO / 2025</div>
+                <div className="text-sm text-muted-foreground font-mono tracking-wider">PORTFOLIO / {new Date().getFullYear()}</div>
                 <h1 className="text-5xl sm:text-6xl lg:text-7xl font-light tracking-tight">
                   Rudy
                   <br />
@@ -72,8 +73,8 @@ export default function Home() {
 
               <div className="space-y-6 max-w-md">
                 <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed">
-                  Software Engineer working on
-                  <span className="text-foreground"> Google Chronicle Detections</span>, building systems at the
+                  Software Engineer working on the
+                  <span className="text-foreground"> Google SecOps Detections Platform</span>, building systems at the
                   intersection of
                   <span className="text-foreground"> security</span> and
                   <span className="text-foreground"> scale</span>.
@@ -82,9 +83,9 @@ export default function Home() {
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 text-sm text-muted-foreground">
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                    Available for work
+                    Available to chat
                   </div>
-                  <div>Philippines</div>
+                  <div>California, USA</div>
                 </div>
               </div>
             </div>
@@ -94,20 +95,20 @@ export default function Home() {
                 <div className="text-sm text-muted-foreground font-mono">CURRENTLY</div>
                 <div className="space-y-2">
                   <div className="text-foreground">Software Engineer</div>
-                  <div className="text-muted-foreground">@ Google Chronicle Detections</div>
-                  <div className="text-xs text-muted-foreground">2023 — Present</div>
+                  <div className="text-muted-foreground">@ Google</div>
+                  <div className="text-xs text-muted-foreground">July 2025 — Present</div>
                 </div>
               </div>
 
               <div className="space-y-4">
                 <div className="text-sm text-muted-foreground font-mono">PREVIOUS</div>
                 <div className="space-y-2">
-                  <div className="text-foreground">Building Chorus</div>
-                  <div className="text-muted-foreground">@ Google X</div>
+                  <div className="text-foreground">Software Engineer</div>
+                  <div className="text-muted-foreground">@ Google X, Chorus</div>
                 </div>
               </div>
 
-              <div className="space-y-4">
+              {/* <div className="space-y-4">
                 <div className="text-sm text-muted-foreground font-mono">FOCUS</div>
                 <div className="flex flex-wrap gap-2">
                   {["Security", "Python", "TypeScript", "Detection Engineering", "Distributed Systems"].map((skill) => (
@@ -119,7 +120,7 @@ export default function Home() {
                     </span>
                   ))}
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </header>
@@ -132,38 +133,38 @@ export default function Home() {
           <div className="space-y-12 sm:space-y-16">
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
               <h2 className="text-3xl sm:text-4xl font-light">Selected Work</h2>
-              <div className="text-sm text-muted-foreground font-mono">2019 — 2025</div>
+              <div className="text-sm text-muted-foreground font-mono">2023 — {new Date().getFullYear()}</div>
             </div>
 
             <div className="space-y-8 sm:space-y-12">
               {[
                 {
-                  year: "2023",
-                  role: "Senior Frontend Engineer",
-                  company: "Vercel",
-                  description: "Leading frontend architecture for developer tools and AI-powered features.",
-                  tech: ["React", "TypeScript", "Next.js"],
-                },
-                {
-                  year: "2022",
-                  role: "Frontend Engineer",
-                  company: "Linear",
-                  description: "Built performant interfaces for project management and team collaboration.",
-                  tech: ["React", "GraphQL", "Framer Motion"],
-                },
-                {
-                  year: "2021",
-                  role: "Full Stack Developer",
-                  company: "Stripe",
-                  description: "Developed payment infrastructure and merchant-facing dashboard features.",
-                  tech: ["Ruby", "React", "PostgreSQL"],
-                },
-                {
-                  year: "2019",
+                  year: "Jul 2025",
                   role: "Software Engineer",
-                  company: "Airbnb",
-                  description: "Created booking flow optimizations and host management tools.",
-                  tech: ["React", "Node.js", "MySQL"],
+                  company: "Google",
+                  description: "SecOps Detections Platform",
+                  tech: [],
+                },
+                {
+                  year: "Jun 2024",
+                  role: "Software Engineer",
+                  company: "Google X",
+                  description: "Chorus Ingestion Platform + UI",
+                  tech: [],
+                },
+                {
+                  year: "Feb 2024",
+                  role: "Software Engineer",
+                  company: "One Step GPS",
+                  description: "Real-time tracking",
+                  tech: [],
+                },
+                {
+                  year: "Sep 2023",
+                  role: "Freelance Software Engineer",
+                  company: "Self-Employed",
+                  description: "Some stuff here and there",
+                  tech: [],
                 },
               ].map((job, index) => (
                 <div
@@ -200,7 +201,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section
+        {/* <section
           id="projects"
           ref={(el) => (sectionsRef.current[2] = el)}
           className="min-h-screen py-20 sm:py-32 opacity-0"
@@ -285,9 +286,9 @@ export default function Home() {
               ))}
             </div>
           </div>
-        </section>
+        </section> */}
 
-        <section
+        {/* <section
           id="thoughts"
           ref={(el) => (sectionsRef.current[3] = el)}
           className="min-h-screen py-20 sm:py-32 opacity-0"
@@ -362,24 +363,24 @@ export default function Home() {
               ))}
             </div>
           </div>
-        </section>
+        </section> */}
 
-        <section id="connect" ref={(el) => (sectionsRef.current[4] = el)} className="py-20 sm:py-32 opacity-0">
+        <section id="connect" ref={(el) => (sectionsRef.current[2] = el)} className="py-20 sm:py-32 opacity-0">
           <div className="grid lg:grid-cols-2 gap-12 sm:gap-16">
             <div className="space-y-6 sm:space-y-8">
               <h2 className="text-3xl sm:text-4xl font-light">Let's Connect</h2>
 
               <div className="space-y-6">
                 <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed">
-                  Always interested in new opportunities, collaborations, and conversations about technology and design.
+                  Always interested in new opportunities, collaborations, and conversations about technology.
                 </p>
 
                 <div className="space-y-4">
                   <Link
-                    href="mailto:test@example.com"
+                    href="mailto:rudyorre@gmail.com"
                     className="group flex items-center gap-3 text-foreground hover:text-muted-foreground transition-colors duration-300"
                   >
-                    <span className="text-base sm:text-lg">test@example.com</span>
+                    <span className="text-base sm:text-lg">rudyorre@gmail.com</span>
                     <svg
                       className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300"
                       fill="none"
@@ -398,14 +399,13 @@ export default function Home() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {[
-                  { name: "GitHub", handle: "@felixmacaspac", url: "#" },
-                  { name: "v0.dev", handle: "@felixmacaspac", url: "#" },
-                  { name: "HubSpot Community", handle: "@felixmacaspac", url: "#" },
-                  { name: "LinkedIn", handle: "felixmacaspac", url: "#" },
+                  { name: "GitHub", handle: "@rudyorre", url: "https://github.com/rudyorre" },
+                  { name: "LinkedIn", handle: "rudyorre", url: "https://www.linkedin.com/in/rudyorre" },
                 ].map((social) => (
                   <Link
                     key={social.name}
                     href={social.url}
+                    target="_blank"
                     className="group p-4 border border-border rounded-lg hover:border-muted-foreground/50 transition-all duration-300 hover:shadow-sm"
                   >
                     <div className="space-y-2">
@@ -424,8 +424,8 @@ export default function Home() {
         <footer className="py-12 sm:py-16 border-t border-border">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 sm:gap-8">
             <div className="space-y-2">
-              <div className="text-sm text-muted-foreground">© 2025 Rudy Orre. All rights reserved.</div>
-              <div className="text-xs text-muted-foreground">Built with v0.dev by Rudy Orre</div>
+              <div className="text-sm text-muted-foreground">© {new Date().getFullYear()} Rudy Orre. All rights reserved.</div>
+              {/* <div className="text-xs text-muted-foreground">Built with v0.dev by Rudy Orre</div> */}
             </div>
 
             <div className="flex items-center gap-4">
