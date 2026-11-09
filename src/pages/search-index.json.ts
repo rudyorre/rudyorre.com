@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
-import { projects, jobs, links } from '../data/site';
+import { projects, jobs } from '../data/site';
 
 export interface SearchDocument {
   title: string;
@@ -34,13 +34,6 @@ export const GET: APIRoute = async () => {
       kind: 'page',
       snippet: 'Selected open-source and academic projects.',
       body: 'projects open source code github',
-    },
-    {
-      title: 'Resume (PDF)',
-      url: '/resume',
-      kind: 'page',
-      snippet: 'View or download my resume.',
-      body: `resume cv ${links.resume}`,
     },
     ...posts.map((post) => ({
       title: post.data.title,

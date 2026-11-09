@@ -45,12 +45,12 @@ Edit the `projects` array in [`src/data/site.ts`](../src/data/site.ts):
 
 If you omit both `icon` and `image`, the project automatically gets a deterministic square SVG glyph generated from `proj:<title>`.
 
-## 3. Updating experience or redirect links
+## 3. Updating experience or external links
 
 Both live in [`src/data/site.ts`](../src/data/site.ts):
 
 - **`jobs`**: rendered on `/` and indexed in site search.
-- **`links`**: controls social links and the `/resume`, `/meet`, and `/zoom` redirect pages.
+- **`links`**: controls external social/contact links (`github`, `linkedin`, `twitter`, `email`).
 
 ## 4. Adding a command to the `⌘K` palette
 

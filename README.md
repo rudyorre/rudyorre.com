@@ -16,14 +16,13 @@ npm run preview   # preview ./dist locally
 1. **Zero required client JS.** Pages are static HTML + CSS. The only inline scripts in [`src/layouts/BaseLayout.astro`](./src/layouts/BaseLayout.astro) are the synchronous `<head>` theme/font restorer and the `⌘K` search/command modal + toggles.
 2. **Single stylesheet.** All styling lives in [`src/styles/global.css`](./src/styles/global.css) using CSS custom properties. No CSS frameworks or UI component libraries.
 3. **Performance budget.** `/` HTML + CSS stays well under 50 KB gzipped (~7 KB gzipped today).
-4. **Permanent redirects.** `/resume`, `/meet`, and `/zoom` redirect to the URLs in [`src/data/site.ts`](./src/data/site.ts).
 
 ## Key Files
 
 | Path | Purpose |
 | --- | --- |
 | [`src/content/writing/`](./src/content/writing/) | Blog posts in `.md` or `.mdx` (schema in [`src/content.config.ts`](./src/content.config.ts)) |
-| [`src/data/site.ts`](./src/data/site.ts) | Projects, experience (`jobs`), and external/redirect `links` |
+| [`src/data/site.ts`](./src/data/site.ts) | Projects, experience (`jobs`), and external `links` |
 | [`src/components/ProceduralGlyph.astro`](./src/components/ProceduralGlyph.astro) | 3-tier square thumbnail/banner component (`image` → `icon` → procedural SVG fallback) |
 | [`src/layouts/BaseLayout.astro`](./src/layouts/BaseLayout.astro) | Header, footer font switcher, `<dialog>` search/command palette |
 | [`src/pages/search-index.json.ts`](./src/pages/search-index.json.ts) | Build-time JSON search index |
