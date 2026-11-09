@@ -1,0 +1,120 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProceduralGlyph from '../components/ProceduralGlyph.astro';
+import { versions, links } from '../data/site';
+---
+
+<BaseLayout
+  title="Time Machine"
+  description="Archived iterations of rudyorre.com across different eras and web stacks."
+>
+  <header class="post-header" style="margin-bottom: 1.75rem;">
+    <div class="lab-breadcrumbs">
+      <a href="/lab" class="post-back-link" style="margin-bottom: 0;">← lab</a>
+      <span class="mono muted" style="font-size: 0.78rem;">·</span>
+      <a href="/writing/rebuilding-this-site" class="post-back-link" style="margin-bottom: 0;">
+        notes on rebuilding this site →
+      </a>
+    </div>
+    <h1 style="margin-top: 0.65rem;">Time Machine</h1>
+    <p class="muted" style="margin-bottom: 0; max-width: 65ch;">
+      Every few years I rebuild this site from scratch with a different architecture. Instead of
+      keeping legacy Node and React toolchains alive in CI, each retired iteration is compiled once
+      to a static snapshot on an orphan <code>archive</code> branch and mounted directly into the
+      production deployment tree.
+    </p>
+  </header>
+
+  <ul class="media-list">
+    {
+      versions.map((ver) => {
+        const isLive = ver.status === 'current' || ver.status === 'archived';
+        return (
+          <li class="media-item">
+            {isLive && ver.path ? (
+              <a href={ver.path} class="media-thumb-link" tabindex="-1" aria-hidden="true">
+                <ProceduralGlyph seed={`version:${ver.id}`} size="md" />
+              </a>
+            ) : (
+              <div class="media-thumb-link" aria-hidden="true" style="opacity: 0.6;">
+                <ProceduralGlyph seed={`version:${ver.id}`} size="md" />
+              </div>
+            )}
+            <div class="media-body">
+              <div class="stack-item-header">
+                <span class="stack-item-title">
+                  {isLive && ver.path ? (
+                    <a href={ver.path}>
+                      {ver.label}
+                      {ver.status === 'archived' ? ' — Launch snapshot →' : ' (Current)'}
+                    </a>
+                  ) : (
+                    <span class="muted">{ver.label}</span>
+                  )}
+                  {' '}
+                  <span
+                    class={`version-badge version-badge-${ver.status}`}
+                  >
+                    {ver.status === 'current'
+                      ? 'current'
+                      : ver.status === 'archived'
+                        ? `mounted at ${ver.path}`
+                        : 'snapshot pending'}
+                  </span>
+                </span>
+                <span class="stack-item-meta">
+                  {ver.era}
+                  {ver.commit && (
+                    <>
+                      {' · '}
+                      <a
+                        href={`${links.github}/rudyorre.com/tree/${ver.tag || ver.commit}`}
+                        target="_blank"
+                        rel="noopener"
+                        class="mono muted"
+                        title={`View source at ${ver.tag || ver.commit}`}
+                      >
+                        {ver.tag ? `${ver.tag} (${ver.commit})` : ver.commit} ↗
+                      </a>
+                    </>
+                  )}
+                </span>
+              </div>
+              <p class="stack-item-desc">{ver.summary}</p>
+              <div class="tag-row">
+                {ver.stack.map((tech) => (
+                  <span class="tag">{tech}</span>
+                ))}
+              </div>
+            </div>
+          </li>
+        );
+      })
+    }
+  </ul>
+
+  <div class="section-heading" style="margin-top: 2.5rem;">
+    <span>How It Works</span>
+  </div>
+  <div class="prose" style="font-size: 0.92rem;">
+    <p class="muted">
+      Old frontend frameworks and dependency trees eventually bit-rot in CI. Rather than running
+      multiple Node versions and legacy bundlers on every push:
+    </p>
+    <ol class="muted">
+      <li>
+        <strong>Pin source by Git tag:</strong> Each major iteration is tagged at its final commit
+        (e.g. <code>v3</code> at <code>976eb30</code>).
+      </li>
+      <li>
+        <strong>Freeze static output once:</strong> The historical version is built once with its
+        base path scoped to <code>/vN</code> and committed into an orphan <code>archive</code> branch.
+      </li>
+      <li>
+        <strong>Zero-cost CI overlay:</strong> After Astro builds <code>./dist</code>,{' '}
+        <code>git archive origin/archive | tar -x -C ./dist</code> overlays the frozen snapshots in
+        under a second with zero legacy dependencies.
+      </li>
+    </ol>
+  </div>
+</BaseLayout>

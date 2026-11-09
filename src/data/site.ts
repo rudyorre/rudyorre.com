@@ -147,3 +147,63 @@ export const projects: Project[] = [
     featured: false,
   },
 ];
+
+export interface SiteVersion {
+  id: string;
+  label: string;
+  era: string;
+  status: 'current' | 'archived' | 'planned';
+  path?: string;
+  tag?: string;
+  commit?: string;
+  stack: string[];
+  summary: string;
+}
+
+export const versions: SiteVersion[] = [
+  {
+    id: 'v4',
+    label: 'v4.0',
+    era: '2026 — Present',
+    status: 'current',
+    path: '/',
+    tag: 'v4.0.0',
+    commit: '01a80d8',
+    stack: ['Astro 5', 'Vanilla CSS', 'MDX', 'Procedural SVG'],
+    summary:
+      'Minimalist static writing and systems lab with deterministic FNV-1a/SplitMix32 SVG glyphs, user-switchable typography, and zero required client JS.',
+  },
+  {
+    id: 'v3',
+    label: 'v3.0',
+    era: '2024 — 2025',
+    status: 'archived',
+    path: '/v3/',
+    tag: 'v3',
+    commit: '976eb30',
+    stack: ['Next.js 14', 'Tailwind CSS', 'shadcn/ui', 'NextUI', 'Framer Motion'],
+    summary:
+      'App Router portfolio featuring six switchable color themes (light, dark, paper, carbon, bento, miami), cursor-tracking radial gradients, and bento hobby cards.',
+  },
+  {
+    id: 'v2',
+    label: 'v2.0',
+    era: '2022 — 2023',
+    status: 'planned',
+    commit: 'f440bec',
+    stack: ['Next.js 12', 'React 18', 'Styled Components'],
+    summary:
+      'Single-page React portfolio with timeline milestones, project filtering, and GitHub Actions static export.',
+  },
+  {
+    id: 'v1',
+    label: 'v1.0',
+    era: '2020 — 2021',
+    status: 'planned',
+    commit: 'ea1b25d',
+    stack: ['HTML5', 'CSS3', 'jQuery'],
+    summary:
+      'First personal website built during community college—hand-edited HTML pages for coursework, C++ projects, and transcripts.',
+  },
+];
+

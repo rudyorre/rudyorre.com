@@ -140,6 +140,9 @@ describe('dist: static build verification', () => {
       'projects/index.html',
       'lab/index.html',
       'lab/glyphs/index.html',
+      'versions/index.html',
+      'v3/index.html',
+      'v3/projects/index.html',
       'search-index.json',
       'rss.xml',
     ];
@@ -149,7 +152,18 @@ describe('dist: static build verification', () => {
       assert.ok(fs.existsSync(full), `Missing built file: dist/${rel}`);
     }
 
-    // Verify search-index.json includes /lab/glyphs
+    // Verify archived v3 snapshot includes noindex and Time Machine return banner
+    const v3Html = fs.readFileSync(path.join(distDir, 'v3/index.html'), 'utf8');
+    assert.ok(
+      v3Html.includes('name="robots" content="noindex'),
+      'v3/index.html should contain noindex meta tag'
+    );
+    assert.ok(
+      v3Html.includes('Return to current site'),
+      'v3/index.html should contain the Time Machine return banner'
+    );
+
+    // Verify search-index.json includes /lab/glyphs, /versions, and /v3/
     const searchIndex = JSON.parse(
       fs.readFileSync(path.join(distDir, 'search-index.json'), 'utf8')
     );
@@ -158,5 +172,14 @@ describe('dist: static build verification', () => {
       searchIndex.some((d) => d.url === '/lab/glyphs'),
       'search-index.json should include /lab/glyphs'
     );
+    assert.ok(
+      searchIndex.some((d) => d.url === '/versions'),
+      'search-index.json should include /versions'
+    );
+    assert.ok(
+      searchIndex.some((d) => d.url === '/v3/'),
+      'search-index.json should include /v3/'
+    );
   });
 });
+

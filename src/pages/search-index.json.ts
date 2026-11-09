@@ -49,6 +49,20 @@ export const GET: APIRoute = async () => {
       snippet: 'Interactive FNV-1a + SplitMix32 SVG glyph synthesizer across 10 motif families.',
       body: 'lab glyphs svg generator visualizer procedural fnv1a splitmix32 seed hash lissajous hilbert',
     },
+    {
+      title: 'Time Machine — Site Version Archive',
+      url: '/versions',
+      kind: 'page',
+      snippet: 'Archived iterations of rudyorre.com across different eras and web stacks (v1–v4).',
+      body: 'time machine versions archive history v1 v2 v3 v4 nextjs astro static snapshot',
+    },
+    {
+      title: 'rudyorre.com v3 (2024 — 2025 Snapshot)',
+      url: '/v3/',
+      kind: 'page',
+      snippet: 'Archived Next.js 14 + Tailwind CSS portfolio with 6 color themes and bento cards.',
+      body: 'time machine v3 archive 2024 2025 nextjs tailwind shadcn nextui framer motion themes',
+    },
     ...posts.map((post) => ({
       title: post.data.title,
       url: `/writing/${post.id}`,

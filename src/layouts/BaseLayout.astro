@@ -170,6 +170,8 @@ const isActive = (prefix: string) =>
             <a href={links.linkedin} target="_blank" rel="noopener">linkedin</a>
             {' · '}
             <a href="/rss.xml">rss</a>
+            {' · '}
+            <a href="/versions">time machine</a>
           </span>
         </div>
       </div>
@@ -193,7 +195,7 @@ const isActive = (prefix: string) =>
       <ul id="search-results" class="search-results" role="listbox"></ul>
       <div class="search-footer">
         <span class="search-footer-nav">↑↓ navigate · ↵ run / open</span>
-        <span>type "font" or "theme" for commands</span>
+        <span>type "font", "theme", or "v3" for commands</span>
       </div>
     </dialog>
 
@@ -333,6 +335,20 @@ const isActive = (prefix: string) =>
               kind: 'command',
               body: 'theme system auto os preference reset',
               run: function () { setTheme('system'); },
+            },
+            {
+              title: 'Time Machine: Launch v3 (2025)',
+              snippet: 'Open the archived Next.js 14 + Tailwind v3 site at /v3/',
+              kind: 'command',
+              body: 'time machine v3 2025 archive history old version nextjs',
+              run: function () { window.location.href = '/v3/'; },
+            },
+            {
+              title: 'Time Machine: All Site Versions',
+              snippet: 'Browse the full version history and architecture timeline (v1–v4)',
+              kind: 'command',
+              body: 'time machine versions archive history v1 v2 v3 v4',
+              run: function () { window.location.href = '/versions'; },
             },
           ];
         }
