@@ -1,0 +1,206 @@
+---
+interface Props {
+  seed: string;
+  size?: 'sm' | 'md' | 'banner';
+  image?: string;
+  alt?: string;
+}
+
+const { seed, size = 'sm', image, alt = '' } = Astro.props;
+
+// Deterministic FNV-1a 32-bit hash
+function hash(str: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+const h0 = hash(seed);
+const h1 = hash(seed + ':1');
+const h2 = hash(seed + ':2');
+const h3 = hash(seed + ':3');
+
+// 5 tasteful restrained technical motifs:
+// 0: Concentric phase rings + crosshair
+// 1: Isometric wave / signal interference lines
+// 2: Dot-matrix bitfield (active nodes + sparse links)
+// 3: Architectural nested subdivisions
+// 4: Radial vector field ticks
+const variant = h0 % 5;
+
+// Subtle accent hue from a curated technical palette (slate, teal, amber, rust, indigo)
+const accents = [
+  'var(--glyph-accent-1)',
+  'var(--glyph-accent-2)',
+  'var(--glyph-accent-3)',
+  'var(--glyph-accent-4)',
+  'var(--glyph-accent-5)',
+];
+const accent = accents[(h0 >>> 4) % accents.length];
+
+const w = size === 'banner' ? 640 : 64;
+const h = size === 'banner' ? 140 : 64;
+---
+
+<div class={`glyph-frame glyph-${size}`} aria-hidden={alt ? undefined : 'true'}>
+  {
+    image ? (
+      <img src={image} alt={alt} loading="lazy" decoding="async" />
+    ) : (
+      <svg
+        viewBox={`0 0 ${w} ${h}`}
+        xmlns="http://www.w3.org/2000/svg"
+        class="glyph-svg"
+        style={`--glyph-accent: ${accent};`}
+      >
+        <rect width={w} height={h} fill="var(--glyph-bg)" />
+
+        {/* Subtle baseline coordinate grid */}
+        <g stroke="var(--glyph-grid)" stroke-width="1">
+          {size === 'banner' ? (
+            <>
+              <line x1="0" y1={h / 2} x2={w} y2={h / 2} />
+              <line x1={w * 0.25} y1="0" x2={w * 0.25} y2={h} />
+              <line x1={w * 0.5} y1="0" x2={w * 0.5} y2={h} />
+              <line x1={w * 0.75} y1="0" x2={w * 0.75} y2={h} />
+            </>
+          ) : (
+            <>
+              <line x1="0" y1="32" x2="64" y2="32" />
+              <line x1="32" y1="0" x2="32" y2="64" />
+            </>
+          )}
+        </g>
+
+        {variant === 0 && (
+          /* Motif 0: Phase rings & offset node */
+          <g fill="none">
+            { [0, 1, 2].map((i) => {
+              const cx = size === 'banner' ? w * (0.28 + ((h1 & 0xff) / 255) * 0.44) : 24 + ((h1 >> (i * 3)) & 15);
+              const cy = size === 'banner' ? h * 0.5 : 24 + ((h2 >> (i * 3)) & 15);
+              const r = (size === 'banner' ? 22 : 9) + i * (size === 'banner' ? 18 : 8);
+              return (
+                <circle
+                  cx={cx}
+                  cy={cy}
+                  r={r}
+                  stroke={i === 0 ? 'var(--glyph-accent)' : 'var(--glyph-ink)'}
+                  stroke-width={i === 0 ? '1.5' : '1'}
+                  stroke-dasharray={i === 2 ? '3 3' : undefined}
+                  opacity={1 - i * 0.22}
+                />
+              );
+            })}
+            <circle
+              cx={size === 'banner' ? w * (0.28 + ((h1 & 0xff) / 255) * 0.44) : 24 + (h1 & 15)}
+              cy={size === 'banner' ? h * 0.5 : 24 + (h2 & 15)}
+              r="2.5"
+              fill="var(--glyph-accent)"
+            />
+          </g>
+        )}
+
+        {variant === 1 && (
+          /* Motif 1: Harmonic stepped signal traces */
+          <g fill="none">
+            {[0, 1, 2, 3, 4].map((row) => {
+              const yBase = (h / 6) * (row + 1);
+              const amp = (size === 'banner' ? 14 : 6) * (((h1 >> row) & 1) ? 1 : -1);
+              const mid1 = w * (0.25 + (((h2 >> (row * 2)) & 3) * 0.08));
+              const mid2 = w * (0.62 + (((h3 >> (row * 2)) & 3) * 0.07));
+              const d = `M 0 ${yBase} C ${mid1} ${yBase - amp}, ${mid2} ${yBase + amp}, ${w} ${yBase}`;
+              const isPrimary = row === (h0 % 5);
+              return (
+                <path
+                  d={d}
+                  stroke={isPrimary ? 'var(--glyph-accent)' : 'var(--glyph-ink)'}
+                  stroke-width={isPrimary ? '1.5' : '1'}
+                  opacity={isPrimary ? '0.95' : '0.45'}
+                />
+              );
+            })}
+          </g>
+        )}
+
+        {variant === 2 && (
+          /* Motif 2: Bitfield lattice */
+          <g>
+            {Array.from({ length: size === 'banner' ? 11 : 5 }).map((_, gx) =>
+              Array.from({ length: 5 }).map((__, gy) => {
+                const bit = ((h1 ^ (gx * 2654435761) ^ (gy * 1597334677)) >>> 0) % 7;
+                const x = (w / (size === 'banner' ? 12 : 6)) * (gx + 1);
+                const y = (h / 6) * (gy + 1);
+                if (bit === 0) {
+                  return <circle cx={x} cy={y} r="2.4" fill="var(--glyph-accent)" />;
+                }
+                if (bit < 3) {
+                  return <circle cx={x} cy={y} r="1.6" fill="var(--glyph-ink)" opacity="0.65" />;
+                }
+                return <circle cx={x} cy={y} r="0.9" fill="var(--glyph-ink)" opacity="0.22" />;
+              })
+            )}
+          </g>
+        )}
+
+        {variant === 3 && (
+          /* Motif 3: Recursive partition blocks */
+          <g fill="none" stroke="var(--glyph-ink)" stroke-width="1">
+            {(() => {
+              const pad = size === 'banner' ? 18 : 10;
+              const splitX = pad + ((w - pad * 2) * (0.35 + ((h1 & 0x3f) / 63) * 0.3));
+              const splitY = pad + ((h - pad * 2) * (0.35 + ((h2 & 0x3f) / 63) * 0.3));
+              return (
+                <>
+                  <rect x={pad} y={pad} width={w - pad * 2} height={h - pad * 2} opacity="0.65" />
+                  <line x1={splitX} y1={pad} x2={splitX} y2={h - pad} opacity="0.65" />
+                  <line x1={splitX} y1={splitY} x2={w - pad} y2={splitY} opacity="0.65" />
+                  <rect
+                    x={pad + 3}
+                    y={pad + 3}
+                    width={Math.max(4, splitX - pad - 6)}
+                    height={Math.max(4, splitY - pad - 6)}
+                    fill="var(--glyph-accent)"
+                    stroke="none"
+                    opacity="0.22"
+                  />
+                  <circle cx={splitX} cy={splitY} r="2.2" fill="var(--glyph-accent)" stroke="none" />
+                </>
+              );
+            })()}
+          </g>
+        )}
+
+        {variant === 4 && (
+          /* Motif 4: Vector field orientation ticks */
+          <g stroke-linecap="round">
+            {Array.from({ length: size === 'banner' ? 9 : 4 }).map((_, gx) =>
+              Array.from({ length: 4 }).map((__, gy) => {
+                const cx = (w / (size === 'banner' ? 10 : 5)) * (gx + 1);
+                const cy = (h / 5) * (gy + 1);
+                const angle = (((h1 >> ((gx + gy) % 16)) + gx * 23 + gy * 47) % 180) * (Math.PI / 180);
+                const len = size === 'banner' ? 7 : 5;
+                const dx = Math.cos(angle) * len;
+                const dy = Math.sin(angle) * len;
+                const highlight = (gx + gy * 3) % 7 === h0 % 7;
+                return (
+                  <line
+                    x1={cx - dx}
+                    y1={cy - dy}
+                    x2={cx + dx}
+                    y2={cy + dy}
+                    stroke={highlight ? 'var(--glyph-accent)' : 'var(--glyph-ink)'}
+                    stroke-width={highlight ? '1.6' : '1.1'}
+                    opacity={highlight ? '0.95' : '0.5'}
+                  />
+                );
+              })
+            )}
+          </g>
+        )}
+      </svg>
+    )
+  }
+</div>
