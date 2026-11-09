@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProceduralGlyph from '../../components/ProceduralGlyph.astro';
+
+const tools = [
+  {
+    slug: 'glyphs',
+    title: 'Procedural SVG Glyph Workbench',
+    url: '/lab/glyphs',
+    seed: 'post:procedural-glyphs',
+    status: '10 motif families',
+    description:
+      'Interactive synthesizer and bit-level inspector for deterministic 64×64 badges and 640×140 banners generated via FNV-1a, Murmur3 avalanche mixing, and SplitMix32.',
+    tags: ['svg', 'prng', 'geometry', 'design-systems'],
+  },
+];
+---
+
+<BaseLayout
+  title="Lab"
+  description="Interactive systems experiments, visualizers, and technical tools by Rudy Orre."
+>
+  <h1>Lab</h1>
+  <p class="muted">
+    Interactive visualizers, sandboxes, and browser-native companions to technical essays.
+  </p>
+
+  <ul class="media-list" style="margin-top: 1.75rem;">
+    {
+      tools.map((tool) => (
+        <li class="media-item">
+          <a href={tool.url} class="media-thumb-link" tabindex="-1" aria-hidden="true">
+            <ProceduralGlyph seed={tool.seed} size="md" />
+          </a>
+          <div class="media-body">
+            <div class="stack-item-header">
+              <span class="stack-item-title">
+                <a href={tool.url}>{tool.title}</a>
+              </span>
+              <span class="stack-item-meta">{tool.status}</span>
+            </div>
+            <p class="stack-item-desc">{tool.description}</p>
+            <div class="tag-row">
+              {tool.tags.map((tag) => (
+                <span class="tag">{tag}</span>
+              ))}
+            </div>
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+</BaseLayout>

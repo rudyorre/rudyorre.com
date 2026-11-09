@@ -6,12 +6,14 @@ interface Props {
   title?: string;
   description?: string;
   canonical?: string;
+  wide?: boolean;
 }
 
 const {
   title = 'Rudy Orre',
   description = 'Software engineer at Google working on the SecOps Detections Platform.',
   canonical,
+  wide = false,
 } = Astro.props;
 
 const pageTitle = title === 'Rudy Orre' ? title : `${title} · Rudy Orre`;
@@ -82,6 +84,14 @@ const isActive = (prefix: string) =>
                 projects
               </a>
             </li>
+            <li>
+              <a
+                href="/lab"
+                aria-current={isActive('/lab') ? 'page' : undefined}
+              >
+                lab
+              </a>
+            </li>
           </ul>
           <div class="toolbar">
             <button
@@ -137,7 +147,7 @@ const isActive = (prefix: string) =>
     </header>
 
     <main>
-      <div class="container">
+      <div class={wide ? 'container container-wide' : 'container'}>
         <slot />
       </div>
     </main>

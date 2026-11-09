@@ -1,0 +1,617 @@
+---
+import {
+  GLYPH_FAMILIES,
+  GLYPH_ACCENTS,
+  GLYPH_GRIDS,
+  renderProceduralGlyph,
+} from '../lib/glyph-engine';
+
+interface Props {
+  mode?: 'inline' | 'full';
+  initialSeed?: string;
+}
+
+const { mode = 'inline', initialSeed = 'post:procedural-glyphs' } = Astro.props;
+const uid = mode === 'full' ? 'gw-full' : 'gw-inline';
+
+const initialSquare = renderProceduralGlyph({ seed: initialSeed, size: 'md' });
+const initialBanner = renderProceduralGlyph({ seed: initialSeed, size: 'banner' });
+
+const presetSeeds = [
+  'post:procedural-glyphs',
+  'post:rebuilding-this-site',
+  'post:wal-compaction',
+  'post:raft-leases',
+  'post:bloom-filters',
+  'post:lsm-trees',
+  'post:zero-copy-io',
+  'post:ebpf-tracing',
+  'post:simd-parsing',
+  'post:consistent-hashing',
+  'sys:paxos-quorum',
+  'sys:vector-clocks',
+];
+---
+
+<section
+  class={`glyph-workbench glyph-workbench--${mode}`}
+  data-glyph-workbench
+  data-mode={mode}
+  data-initial-seed={initialSeed}
+  id={uid}
+  aria-label="Interactive procedural SVG glyph workbench"
+>
+  <div class="gw-topbar">
+    <div class="gw-seed-group">
+      <label class="gw-label" for={`${uid}-seed-input`}>SEED</label>
+      <div class="gw-seed-input-wrap">
+        <input
+          id={`${uid}-seed-input`}
+          type="text"
+          class="gw-seed-input"
+          value={initialSeed}
+          spellcheck="false"
+          autocomplete="off"
+          placeholder="Enter any seed string…"
+          data-gw-seed
+        />
+        <span class="gw-hash-pill" data-gw-hash title="32-bit FNV-1a + Murmur3 avalanche hash">
+          {initialSquare.diagnostics.hashHex}
+        </span>
+      </div>
+    </div>
+
+    <div class="gw-actions">
+      <button type="button" class="control-btn" data-gw-random title="Generate a random technical seed">
+        <span>randomize</span>
+        <kbd>🎲</kbd>
+      </button>
+      {
+        mode === 'full' && (
+          <>
+            <button type="button" class="control-btn" data-gw-copy-svg title="Copy raw SVG markup to clipboard">
+              <span data-gw-copy-label>copy svg</span>
+            </button>
+            <button type="button" class="control-btn" data-gw-download-svg title="Download .svg file">
+              <span>download</span>
+            </button>
+          </>
+        )
+      }
+      {
+        mode === 'inline' && (
+          <a href="/lab/glyphs" class="control-btn gw-lab-link" data-gw-lab-link>
+            <span>open full lab →</span>
+          </a>
+        )
+      }
+    </div>
+  </div>
+
+  <div class="gw-presets" aria-label="Preset seeds">
+    <span class="gw-presets-label">presets:</span>
+    <div class="gw-preset-chips">
+      {
+        presetSeeds.slice(0, mode === 'full' ? 12 : 7).map((s) => (
+          <button
+            type="button"
+            class="gw-chip"
+            data-gw-preset={s}
+            aria-pressed={s === initialSeed ? 'true' : 'false'}
+          >
+            {s.replace(/^(post|sys):/, '')}
+          </button>
+        ))
+      }
+    </div>
+  </div>
+
+  {
+    mode === 'full' && (
+      <div class="gw-overrides">
+        <div class="gw-override-field">
+          <label class="gw-label" for={`${uid}-family`}>MOTIF FAMILY</label>
+          <select id={`${uid}-family`} class="gw-select" data-gw-family>
+            <option value="auto">Auto (from hash mod 10)</option>
+            {GLYPH_FAMILIES.map((f) => (
+              <option value={String(f.id)}>{f.label}</option>
+            ))}
+          </select>
+        </div>
+
+        <div class="gw-override-field">
+          <label class="gw-label" for={`${uid}-accent`}>ACCENT PALETTE</label>
+          <select id={`${uid}-accent`} class="gw-select" data-gw-accent>
+            <option value="auto">Auto (from bits 4..6)</option>
+            {GLYPH_ACCENTS.map((a) => (
+              <option value={String(a.id)}>{a.name}</option>
+            ))}
+          </select>
+        </div>
+
+        <div class="gw-override-field">
+          <label class="gw-label" for={`${uid}-grid`}>REGISTRATION GRID</label>
+          <select id={`${uid}-grid`} class="gw-select" data-gw-grid>
+            <option value="auto">Auto (from bits 11..12)</option>
+            {GLYPH_GRIDS.map((g) => (
+              <option value={String(g.id)}>{g.name}</option>
+            ))}
+          </select>
+        </div>
+
+        <div class="gw-override-field gw-override-reset-wrap">
+          <button type="button" class="control-btn" data-gw-reset-overrides title="Reset overrides to pure deterministic seed mode">
+            reset to auto
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  <div class="gw-stage">
+    <div class="gw-card gw-card-badge">
+      <div class="gw-card-header">
+        <span class="gw-card-title">BADGE · 64×64</span>
+        <span class="gw-card-sub" data-gw-family-short>{initialSquare.diagnostics.family.shortLabel}</span>
+      </div>
+      <div class="gw-badge-stage">
+        <div class="glyph-frame glyph-xl" data-gw-square-mount set:html={initialSquare.svg} />
+        <div class="gw-badge-scales">
+          <div class="gw-scale-item">
+            <div class="glyph-frame glyph-md" data-gw-md-mount set:html={initialSquare.svg} />
+            <span class="mono muted">52px</span>
+          </div>
+          <div class="gw-scale-item">
+            <div class="glyph-frame glyph-sm" data-gw-sm-mount set:html={initialSquare.svg} />
+            <span class="mono muted">44px</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gw-card gw-card-banner">
+      <div class="gw-card-header">
+        <span class="gw-card-title">HEADER BANNER · 640×140</span>
+        <span class="gw-card-sub" data-gw-submode>{initialSquare.diagnostics.subMode}</span>
+      </div>
+      <div class="glyph-frame glyph-banner" data-gw-banner-mount set:html={initialBanner.svg} />
+      <p class="gw-family-desc" data-gw-family-desc>
+        {initialSquare.diagnostics.family.description}
+      </p>
+    </div>
+  </div>
+
+  <div class="gw-telemetry">
+    <div class="gw-telemetry-item">
+      <span class="gw-telemetry-key">FNV-1a + Murmur3</span>
+      <span class="gw-telemetry-val" data-gw-tel-hash>{initialSquare.diagnostics.hashHex}</span>
+    </div>
+    <div class="gw-telemetry-item">
+      <span class="gw-telemetry-key">Motif (h mod 10)</span>
+      <span class="gw-telemetry-val" data-gw-tel-family>{initialSquare.diagnostics.family.shortLabel}</span>
+    </div>
+    <div class="gw-telemetry-item">
+      <span class="gw-telemetry-key">Palette (bits 4..10)</span>
+      <span class="gw-telemetry-val" data-gw-tel-accent>
+        {initialSquare.diagnostics.accentName} + {initialSquare.diagnostics.accentSecondaryName}
+      </span>
+    </div>
+    <div class="gw-telemetry-item">
+      <span class="gw-telemetry-key">Grid (bits 11..12)</span>
+      <span class="gw-telemetry-val" data-gw-tel-grid>{initialSquare.diagnostics.gridName}</span>
+    </div>
+  </div>
+
+  {
+    mode === 'full' && (
+      <div class="gw-inspector-grid">
+        <div class="gw-panel">
+          <div class="gw-panel-header">
+            <span>EXTRACTED GEOMETRY PARAMETERS</span>
+            <span class="mono muted">SplitMix32 stream</span>
+          </div>
+          <dl class="gw-param-list" data-gw-params>
+            {initialSquare.diagnostics.params.map((p) => (
+              <div class="gw-param-row">
+                <dt>{p.label}</dt>
+                <dd>{p.value}</dd>
+              </div>
+            ))}
+          </dl>
+          <div class="gw-prng-strip">
+            <span class="gw-prng-label">PRNG [0..5]:</span>
+            <div class="gw-prng-bars" data-gw-prng>
+              {initialSquare.diagnostics.prngSamples.slice(0, 6).map((v, idx) => (
+                <div class="gw-prng-cell" title={`r[${idx}] = ${v.toFixed(4)}`}>
+                  <div class="gw-prng-fill" style={`height: ${Math.round(v * 100)}%`} />
+                  <span>{v.toFixed(2)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div class="gw-panel">
+          <div class="gw-panel-header">
+            <span>AVALANCHE SENSITIVITY · 1-CHAR NEIGHBORS</span>
+            <span class="mono muted">click to inspect</span>
+          </div>
+          <p class="gw-panel-note">
+            Single-character mutations to the active seed cascade across all 32 hash bits,
+            shifting motif family, accent palette, and PRNG state:
+          </p>
+          <div class="gw-neighbors-grid" data-gw-neighbors />
+        </div>
+      </div>
+    )
+  }
+</section>
+
+<script>
+  import {
+    renderProceduralGlyph,
+    GLYPH_FAMILIES,
+    GLYPH_ACCENTS,
+    GLYPH_GRIDS,
+  } from '../lib/glyph-engine';
+
+  const RANDOM_WORDS = [
+    'paxos', 'raft', 'merkle', 'b-tree', 'lsm', 'wal', 'ebpf', 'simd',
+    'quorum', 'gossip', 'crdt', 'ring-buffer', 'zero-copy', 'mmap',
+    'bloom', 'hyperloglog', 'skip-list', 'btree-page', 'mvcc', 'snapshot',
+    'clock-skew', 'lamport', 'vector-clock', 'backpressure', 'circuit-breaker',
+    'shard-key', 'consistent-hash', 'two-phase', 'saga-log', 'parquet',
+    'columnar', 'roaring-bitmap', 'inverted-index', 'fst-automaton', ' suffix-array',
+  ];
+
+  function generateRandomSeed(): string {
+    const prefixes = ['post:', 'sys:', 'proj:', 'node:'];
+    const p = prefixes[Math.floor(Math.random() * prefixes.length)];
+    const w1 = RANDOM_WORDS[Math.floor(Math.random() * RANDOM_WORDS.length)].trim();
+    const w2 = RANDOM_WORDS[Math.floor(Math.random() * RANDOM_WORDS.length)].trim();
+    const suffix = Math.random() > 0.65 ? `-${Math.floor(Math.random() * 99)}` : '';
+    return `${p}${w1}-${w2}${suffix}`;
+  }
+
+  function mutateNeighbors(seed: string): { label: string; seed: string }[] {
+    const base = seed || 'seed';
+    const lastChar = base.charCodeAt(base.length - 1);
+    const nextChar = String.fromCharCode(lastChar === 122 ? 97 : lastChar + 1);
+    return [
+      { label: 'base (active)', seed: base },
+      { label: '+1 char end', seed: base.slice(0, -1) + nextChar },
+      { label: 'append "-v2"', seed: `${base}-v2` },
+      { label: 'upper prefix', seed: base.charAt(0).toUpperCase() + base.slice(1) },
+    ];
+  }
+
+  function initWorkbenches() {
+    const roots = document.querySelectorAll<HTMLElement>('[data-glyph-workbench]');
+    roots.forEach((root) => {
+      if (root.dataset.initialized === 'true') return;
+      root.dataset.initialized = 'true';
+
+      const mode = root.dataset.mode || 'inline';
+      const seedInput = root.querySelector<HTMLInputElement>('[data-gw-seed]');
+      const hashEl = root.querySelector<HTMLElement>('[data-gw-hash]');
+      const randomBtn = root.querySelector<HTMLButtonElement>('[data-gw-random]');
+      const copyBtn = root.querySelector<HTMLButtonElement>('[data-gw-copy-svg]');
+      const copyLabel = root.querySelector<HTMLElement>('[data-gw-copy-label]');
+      const downloadBtn = root.querySelector<HTMLButtonElement>('[data-gw-download-svg]');
+      const labLink = root.querySelector<HTMLAnchorElement>('[data-gw-lab-link]');
+
+      const familySelect = root.querySelector<HTMLSelectElement>('[data-gw-family]');
+      const accentSelect = root.querySelector<HTMLSelectElement>('[data-gw-accent]');
+      const gridSelect = root.querySelector<HTMLSelectElement>('[data-gw-grid]');
+      const resetOverridesBtn = root.querySelector<HTMLButtonElement>('[data-gw-reset-overrides]');
+
+      const sqMount = root.querySelector<HTMLElement>('[data-gw-square-mount]');
+      const mdMount = root.querySelector<HTMLElement>('[data-gw-md-mount]');
+      const smMount = root.querySelector<HTMLElement>('[data-gw-sm-mount]');
+      const bannerMount = root.querySelector<HTMLElement>('[data-gw-banner-mount]');
+
+      const familyShortEl = root.querySelector<HTMLElement>('[data-gw-family-short]');
+      const submodeEl = root.querySelector<HTMLElement>('[data-gw-submode]');
+      const familyDescEl = root.querySelector<HTMLElement>('[data-gw-family-desc]');
+
+      const telHash = root.querySelector<HTMLElement>('[data-gw-tel-hash]');
+      const telFamily = root.querySelector<HTMLElement>('[data-gw-tel-family]');
+      const telAccent = root.querySelector<HTMLElement>('[data-gw-tel-accent]');
+      const telGrid = root.querySelector<HTMLElement>('[data-gw-tel-grid]');
+
+      const paramsEl = root.querySelector<HTMLElement>('[data-gw-params]');
+      const prngEl = root.querySelector<HTMLElement>('[data-gw-prng]');
+      const neighborsEl = root.querySelector<HTMLElement>('[data-gw-neighbors]');
+      const presetBtns = root.querySelectorAll<HTMLButtonElement>('[data-gw-preset]');
+
+      function resolveSelectOption(
+        selectEl: HTMLSelectElement | null,
+        rawParam: string | null,
+        items: { id: number; name?: string; slug?: string; shortLabel?: string }[]
+      ) {
+        if (!selectEl || rawParam === null || rawParam === '') return;
+        const clean = rawParam.trim().toLowerCase();
+        if (clean === 'auto') {
+          selectEl.value = 'auto';
+          return;
+        }
+        // Direct numeric match
+        if (/^\d+$/.test(clean)) {
+          const id = parseInt(clean, 10);
+          if (items.some((it) => it.id === id)) {
+            selectEl.value = String(id);
+            return;
+          }
+        }
+        // Name or slug match
+        const match = items.find(
+          (it) =>
+            it.slug?.toLowerCase() === clean ||
+            it.name?.toLowerCase() === clean ||
+            it.shortLabel?.toLowerCase() === clean
+        );
+        if (match) {
+          selectEl.value = String(match.id);
+        }
+      }
+
+      function hydrateFromUrl() {
+        if (mode !== 'full') return;
+        const searchStr =
+          window.location.search ||
+          (window.location.hash.includes('?')
+            ? window.location.hash.slice(window.location.hash.indexOf('?'))
+            : window.location.hash.startsWith('#seed=')
+            ? '?' + window.location.hash.slice(1)
+            : '');
+        const params = new URLSearchParams(searchStr);
+        const qSeed = params.get('seed') ?? params.get('post') ?? params.get('s');
+        const qFam = params.get('family') ?? params.get('motif');
+        const qAcc = params.get('accent') ?? params.get('palette') ?? params.get('color');
+        const qGrid = params.get('grid');
+
+        if (qSeed !== null && qSeed.trim() !== '' && seedInput) {
+          seedInput.value = qSeed;
+        }
+        resolveSelectOption(familySelect, qFam, GLYPH_FAMILIES);
+        resolveSelectOption(accentSelect, qAcc, GLYPH_ACCENTS);
+        resolveSelectOption(gridSelect, qGrid, GLYPH_GRIDS);
+      }
+
+      hydrateFromUrl();
+
+      let lastSquareSvg = '';
+
+      function update() {
+        const seed = seedInput ? seedInput.value : 'post:procedural-glyphs';
+        const famVal = familySelect && familySelect.value !== 'auto' ? parseInt(familySelect.value, 10) : null;
+        const accVal = accentSelect && accentSelect.value !== 'auto' ? parseInt(accentSelect.value, 10) : null;
+        const gridVal = gridSelect && gridSelect.value !== 'auto' ? parseInt(gridSelect.value, 10) : null;
+
+        const sq = renderProceduralGlyph({
+          seed,
+          size: 'md',
+          familyOverride: famVal,
+          accentOverride: accVal,
+          gridOverride: gridVal,
+        });
+        const bn = renderProceduralGlyph({
+          seed,
+          size: 'banner',
+          familyOverride: famVal,
+          accentOverride: accVal,
+          gridOverride: gridVal,
+        });
+
+        lastSquareSvg = sq.svg;
+
+        if (sqMount) sqMount.innerHTML = sq.svg;
+        if (mdMount) mdMount.innerHTML = sq.svg;
+        if (smMount) smMount.innerHTML = sq.svg;
+        if (bannerMount) bannerMount.innerHTML = bn.svg;
+
+        if (hashEl) hashEl.textContent = sq.diagnostics.hashHex;
+        if (familyShortEl) familyShortEl.textContent = sq.diagnostics.family.shortLabel;
+        if (submodeEl) submodeEl.textContent = sq.diagnostics.subMode;
+        if (familyDescEl) familyDescEl.textContent = sq.diagnostics.family.description;
+
+        if (telHash) telHash.textContent = sq.diagnostics.hashHex;
+        if (telFamily) {
+          telFamily.textContent =
+            famVal !== null
+              ? `${sq.diagnostics.family.shortLabel} (pinned)`
+              : sq.diagnostics.family.shortLabel;
+        }
+        if (telAccent) {
+          const accText = `${sq.diagnostics.accentName} + ${sq.diagnostics.accentSecondaryName}`;
+          telAccent.textContent = accVal !== null ? `${accText} (pinned)` : accText;
+        }
+        if (telGrid) {
+          telGrid.textContent =
+            gridVal !== null ? `${sq.diagnostics.gridName} (pinned)` : sq.diagnostics.gridName;
+        }
+
+        if (labLink) {
+          labLink.href = `/lab/glyphs?seed=${encodeURIComponent(seed)}`;
+        }
+
+        presetBtns.forEach((btn) => {
+          btn.setAttribute('aria-pressed', btn.dataset.gwPreset === seed ? 'true' : 'false');
+        });
+
+        if (paramsEl) {
+          paramsEl.innerHTML = sq.diagnostics.params
+            .map(
+              (p) =>
+                `<div class="gw-param-row"><dt>${p.label}</dt><dd>${p.value}</dd></div>`
+            )
+            .join('');
+        }
+
+        if (prngEl) {
+          prngEl.innerHTML = sq.diagnostics.prngSamples
+            .slice(0, 6)
+            .map(
+              (v, idx) =>
+                `<div class="gw-prng-cell" title="r[${idx}] = ${v.toFixed(4)}">
+                  <div class="gw-prng-fill" style="height: ${Math.round(v * 100)}%"></div>
+                  <span>${v.toFixed(2)}</span>
+                </div>`
+            )
+            .join('');
+        }
+
+        if (neighborsEl) {
+          const neighbors = mutateNeighbors(seed);
+          neighborsEl.innerHTML = neighbors
+            .map((item, idx) => {
+              const r = renderProceduralGlyph({
+                seed: item.seed,
+                size: 'sm',
+                familyOverride: famVal,
+                accentOverride: accVal,
+                gridOverride: gridVal,
+              });
+              return `
+                <button type="button" class="gw-neighbor-card ${idx === 0 ? 'is-active' : ''}" data-neighbor-seed="${item.seed.replace(/"/g, '&quot;')}">
+                  <div class="glyph-frame glyph-md">${r.svg}</div>
+                  <div class="gw-neighbor-meta">
+                    <span class="gw-neighbor-tag">${item.label}</span>
+                    <span class="gw-neighbor-seed">${item.seed}</span>
+                    <span class="gw-neighbor-hash">${r.diagnostics.hashHex} · ${r.diagnostics.family.shortLabel}</span>
+                  </div>
+                </button>
+              `;
+            })
+            .join('');
+        }
+
+        if (mode === 'full') {
+          const url = new URL(window.location.href);
+          url.searchParams.set('seed', seed);
+          if (famVal !== null && GLYPH_FAMILIES[famVal]) {
+            url.searchParams.set('family', GLYPH_FAMILIES[famVal].slug);
+          } else {
+            url.searchParams.delete('family');
+          }
+          if (accVal !== null && GLYPH_ACCENTS[accVal]) {
+            url.searchParams.set('accent', GLYPH_ACCENTS[accVal].name);
+          } else {
+            url.searchParams.delete('accent');
+          }
+          if (gridVal !== null) url.searchParams.set('grid', String(gridVal));
+          else url.searchParams.delete('grid');
+          window.history.replaceState({}, '', url.toString());
+
+          window.dispatchEvent(
+            new CustomEvent('gw:seed-change', {
+              detail: {
+                seed,
+                diagnostics: sq.diagnostics,
+                familyOverride: famVal,
+                accentOverride: accVal,
+                gridOverride: gridVal,
+              },
+            })
+          );
+        }
+      }
+
+      if (seedInput) {
+        seedInput.addEventListener('input', update);
+      }
+      [familySelect, accentSelect, gridSelect].forEach((sel) => {
+        if (!sel) return;
+        sel.addEventListener('change', update);
+        sel.addEventListener('input', update);
+      });
+
+      if (resetOverridesBtn) {
+        resetOverridesBtn.addEventListener('click', () => {
+          if (familySelect) familySelect.value = 'auto';
+          if (accentSelect) accentSelect.value = 'auto';
+          if (gridSelect) gridSelect.value = 'auto';
+          update();
+        });
+      }
+
+      if (randomBtn) {
+        randomBtn.addEventListener('click', () => {
+          if (seedInput) {
+            seedInput.value = generateRandomSeed();
+            update();
+          }
+        });
+      }
+
+      presetBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          if (seedInput && btn.dataset.gwPreset) {
+            seedInput.value = btn.dataset.gwPreset;
+            update();
+          }
+        });
+      });
+
+      if (neighborsEl) {
+        neighborsEl.addEventListener('click', (e) => {
+          const target = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-neighbor-seed]');
+          if (target && seedInput && target.dataset.neighborSeed) {
+            seedInput.value = target.dataset.neighborSeed;
+            update();
+          }
+        });
+      }
+
+      if (copyBtn) {
+        copyBtn.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(lastSquareSvg);
+            if (copyLabel) {
+              copyLabel.textContent = 'copied!';
+              setTimeout(() => {
+                copyLabel.textContent = 'copy svg';
+              }, 1400);
+            }
+          } catch (_) {}
+        });
+      }
+
+      if (downloadBtn) {
+        downloadBtn.addEventListener('click', () => {
+          const seed = (seedInput?.value || 'glyph').replace(/[^a-z0-9-_]/gi, '-');
+          const blob = new Blob([lastSquareSvg], { type: 'image/svg+xml;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `glyph-${seed}.svg`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+        });
+      }
+
+      // Allow external elements on `/lab/glyphs` (like the 10-family matrix) to set seed/family
+      window.addEventListener('gw:set-state', ((e: CustomEvent) => {
+        const { seed, family } = e.detail || {};
+        if (typeof seed === 'string' && seedInput) seedInput.value = seed;
+        if (family !== undefined && familySelect) {
+          familySelect.value = family === null ? 'auto' : String(family);
+        }
+        update();
+      }) as EventListener);
+
+      window.addEventListener('popstate', () => {
+        if (mode === 'full') {
+          hydrateFromUrl();
+          update();
+        }
+      });
+
+      update();
+    });
+  }
+
+  initWorkbenches();
+</script>

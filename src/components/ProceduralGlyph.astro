@@ -1,7 +1,12 @@
 ---
+import { renderProceduralGlyph } from '../lib/glyph-engine';
+
 interface Props {
   seed: string;
   size?: 'sm' | 'md' | 'banner';
+  familyOverride?: number | null;
+  accentOverride?: number | null;
+  gridOverride?: number | null;
   icon?:
     | 'brewin'
     | 'tensorfaux'
@@ -16,152 +21,27 @@ interface Props {
   alt?: string;
 }
 
-const { seed, size = 'sm', icon, image, alt = '' } = Astro.props;
+const {
+  seed,
+  size = 'sm',
+  familyOverride = null,
+  accentOverride = null,
+  gridOverride = null,
+  icon,
+  image,
+  alt = '',
+} = Astro.props;
 
-// Deterministic FNV-1a 32-bit hash + SplitMix32 stream for rich procedural geometry
-function hash(str: string): number {
-  let h = 2166136261;
-  for (let i = 0; i < str.length; i++) {
-    h ^= str.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
-  return h >>> 0;
-}
-
-function makeRng(seedStr: string) {
-  let state = hash(seedStr) || 1;
-  return () => {
-    state = (state + 0x9e3779b9) >>> 0;
-    let z = state;
-    z = Math.imul(z ^ (z >>> 16), 0x85ebca6b) >>> 0;
-    z = Math.imul(z ^ (z >>> 13), 0xc2b2ae35) >>> 0;
-    return ((z ^ (z >>> 16)) >>> 0) / 4294967296;
-  };
-}
-
-const h0 = hash(seed);
-const variant = h0 % 5;
-
-const accents = [
-  'var(--glyph-accent-1)',
-  'var(--glyph-accent-2)',
-  'var(--glyph-accent-3)',
-  'var(--glyph-accent-4)',
-  'var(--glyph-accent-5)',
-];
-const accent = accents[(h0 >>> 3) % accents.length];
-const accentSecondary = accents[((h0 >>> 3) + 2) % accents.length];
-
-const w = size === 'banner' ? 640 : 64;
-const h = size === 'banner' ? 140 : 64;
-const cx = w / 2;
-const cy = h / 2;
-const scale = size === 'banner' ? 1.85 : 1;
-
-// Precompute geometry per variant so markup stays clean
-const rng = makeRng(seed);
-
-// Variant 0: Orbital phase system (nested rotated ellipses + Lissajous arc + satellite nodes)
-const orbits = Array.from({ length: 3 }).map((_, i) => {
-  const rx = (18 - i * 3.5) * scale;
-  const ry = (7.5 + rng() * 5) * scale;
-  const rot = Math.round(rng() * 150 - 75);
-  const theta = rng() * Math.PI * 2;
-  const rad = (rot * Math.PI) / 180;
-  const px = rx * Math.cos(theta);
-  const py = ry * Math.sin(theta);
-  const sx = cx + px * Math.cos(rad) - py * Math.sin(rad);
-  const sy = cy + px * Math.sin(rad) + py * Math.cos(rad);
-  return { rx, ry, rot, sx, sy, dashed: i === 1 };
-});
-
-// Variant 1: Stacked topographic / Fourier ridge horizon
-const ridgeCount = size === 'banner' ? 7 : 6;
-const ridges = Array.from({ length: ridgeCount }).map((_, idx) => {
-  const yBase = (h * 0.2) + (idx / (ridgeCount - 1)) * (h * 0.62);
-  const freq1 = 1.5 + rng() * 2.0;
-  const freq2 = 3.0 + rng() * 2.5;
-  const phase1 = rng() * Math.PI * 2;
-  const phase2 = rng() * Math.PI * 2;
-  const peakX = 0.22 + rng() * 0.56;
-  const steps = size === 'banner' ? 40 : 20;
-  const pts: string[] = [];
-  for (let s = 0; s <= steps; s++) {
-    const t = s / steps;
-    const x = t * w;
-    const env = Math.exp(-Math.pow((t - peakX) / 0.24, 2));
-    const dy =
-      (Math.sin(t * Math.PI * freq1 + phase1) * 6.5 +
-        Math.cos(t * Math.PI * freq2 + phase2) * 3.2) *
-      env *
-      scale;
-    pts.push(`${s === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${(yBase - dy).toFixed(1)}`);
-  }
-  const d = pts.join(' ');
-  const areaD = `${d} L ${w} ${h} L 0 ${h} Z`;
-  const isAccent = idx === Math.floor(ridgeCount / 2);
-  return { d, areaD, isAccent, opacity: (0.35 + (idx / ridgeCount) * 0.6).toFixed(2) };
-});
-
-// Variant 2: Constellation / Delaunay-style mesh graph
-const nodeCount = size === 'banner' ? 14 : 8;
-const meshNodes = Array.from({ length: nodeCount }).map((_, i) => {
-  const angle = (i / nodeCount) * Math.PI * 2 + (rng() - 0.5) * 0.55;
-  const radius = (0.18 + rng() * 0.62) * (size === 'banner' ? h * 0.44 : 23);
-  const spreadX = size === 'banner' ? 3.2 : 1;
-  return {
-    x: cx + Math.cos(angle) * radius * spreadX,
-    y: cy + Math.sin(angle) * radius,
-    hub: i < 2,
-  };
-});
-const meshEdges: { x1: number; y1: number; x2: number; y2: number; primary: boolean }[] = [];
-for (let i = 0; i < meshNodes.length; i++) {
-  for (let j = i + 1; j < meshNodes.length; j++) {
-    const dx = (meshNodes[i].x - meshNodes[j].x) / (size === 'banner' ? 2.2 : 1);
-    const dy = meshNodes[i].y - meshNodes[j].y;
-    const dist = Math.hypot(dx, dy);
-    if (dist < (size === 'banner' ? 42 : 24)) {
-      meshEdges.push({
-        x1: meshNodes[i].x,
-        y1: meshNodes[i].y,
-        x2: meshNodes[j].x,
-        y2: meshNodes[j].y,
-        primary: meshNodes[i].hub || meshNodes[j].hub,
-      });
-    }
-  }
-}
-
-// Variant 3: Isometric stacked planes + signal bus (triggered by post:rebuilding-this-site)
-const isoLayers = [-1, 0, 1].map((offset, idx) => {
-  const yCenter = cy + offset * (size === 'banner' ? 14 : 8.5);
-  const rx = (size === 'banner' ? 54 : 19) - idx * 1.5;
-  const ry = (size === 'banner' ? 18 : 8.5) - idx * 0.5;
-  const points = [
-    `${cx},${yCenter - ry}`,
-    `${cx + rx},${yCenter}`,
-    `${cx},${yCenter + ry}`,
-    `${cx - rx},${yCenter}`,
-  ].join(' ');
-  return { points, yCenter, rx, ry, isMiddle: offset === 0, isTop: offset === -1 };
-});
-const isoRot = Math.round((rng() - 0.5) * 16);
-
-// Variant 4: Radial polar sonar / harmonic burst
-const spokeCount = size === 'banner' ? 28 : 16;
-const spokes = Array.from({ length: spokeCount }).map((_, i) => {
-  const a = (i / spokeCount) * Math.PI * 2;
-  const rInner = (5 + (i % 2) * 3) * scale;
-  const rOuter = (11 + rng() * 13) * scale;
-  return {
-    x1: cx + Math.cos(a) * rInner,
-    y1: cy + Math.sin(a) * rInner,
-    x2: cx + Math.cos(a) * rOuter,
-    y2: cy + Math.sin(a) * rOuter,
-    highlight: i % 5 === h0 % 5,
-  };
-});
+const rendered =
+  !image && !icon
+    ? renderProceduralGlyph({
+        seed,
+        size,
+        familyOverride,
+        accentOverride,
+        gridOverride,
+      })
+    : null;
 ---
 
 <div class={`glyph-frame glyph-${size}`} aria-hidden={alt ? undefined : 'true'}>
@@ -400,201 +280,7 @@ const spokes = Array.from({ length: spokeCount }).map((_, i) => {
         )}
       </svg>
     ) : (
-      /* Fallback: Deterministic procedural generator from seed */
-      <svg
-        viewBox={`0 0 ${w} ${h}`}
-        xmlns="http://www.w3.org/2000/svg"
-        class="glyph-svg"
-        style={`--glyph-accent: ${accent}; --glyph-accent-alt: ${accentSecondary};`}
-      >
-        <rect width={w} height={h} fill="var(--glyph-bg)" />
-
-        {/* Subtle technical registration grid + corner ticks */}
-        <g stroke="var(--glyph-grid)" stroke-width="1">
-          <line x1="0" y1={cy} x2={w} y2={cy} />
-          <line x1={cx} y1="0" x2={cx} y2={h} />
-          {size === 'banner' && (
-            <>
-              <line x1={w * 0.25} y1="0" x2={w * 0.25} y2={h} />
-              <line x1={w * 0.75} y1="0" x2={w * 0.75} y2={h} />
-            </>
-          )}
-          <circle cx={cx} cy={cy} r={22 * scale} fill="none" stroke-dasharray="2 3" />
-        </g>
-
-        {variant === 0 && (
-          /* Motif 0: Orbital phase system (tilted ellipses + satellite nodes) */
-          <g fill="none">
-            {orbits.map((o, idx) => (
-              <g>
-                <ellipse
-                  cx={cx}
-                  cy={cy}
-                  rx={o.rx}
-                  ry={o.ry}
-                  transform={`rotate(${o.rot} ${cx} ${cy})`}
-                  stroke={idx === 0 ? 'var(--glyph-accent)' : 'var(--glyph-ink)'}
-                  stroke-width={idx === 0 ? '1.4' : '1.05'}
-                  stroke-dasharray={o.dashed ? '3 2.5' : undefined}
-                  opacity={idx === 0 ? '0.95' : '0.55'}
-                />
-                <circle
-                  cx={o.sx}
-                  cy={o.sy}
-                  r={idx === 0 ? '2.4' : '1.7'}
-                  fill={idx === 0 ? 'var(--glyph-accent)' : 'var(--glyph-ink)'}
-                />
-              </g>
-            ))}
-            <circle cx={cx} cy={cy} r={3 * scale} fill="var(--glyph-accent)" fill-opacity="0.22" stroke="var(--glyph-accent)" stroke-width="1.3" />
-          </g>
-        )}
-
-        {variant === 1 && (
-          /* Motif 1: Stacked Fourier / Joy Division horizon ridges */
-          <g>
-            {ridges.map((r) => (
-              <g>
-                <path d={r.areaD} fill="var(--glyph-bg)" opacity="0.85" />
-                <path
-                  d={r.d}
-                  fill="none"
-                  stroke={r.isAccent ? 'var(--glyph-accent)' : 'var(--glyph-ink)'}
-                  stroke-width={r.isAccent ? '1.6' : '1.05'}
-                  opacity={r.isAccent ? '1' : r.opacity}
-                />
-              </g>
-            ))}
-          </g>
-        )}
-
-        {variant === 2 && (
-          /* Motif 2: Constellation / Delaunay network mesh */
-          <g>
-            {meshEdges.map((e) => (
-              <line
-                x1={e.x1}
-                y1={e.y1}
-                x2={e.x2}
-                y2={e.y2}
-                stroke={e.primary ? 'var(--glyph-accent)' : 'var(--glyph-ink)'}
-                stroke-width={e.primary ? '1.25' : '0.95'}
-                opacity={e.primary ? '0.75' : '0.38'}
-              />
-            ))}
-            {meshNodes.map((n) => (
-              <circle
-                cx={n.x}
-                cy={n.y}
-                r={n.hub ? '2.7' : '1.8'}
-                fill={n.hub ? 'var(--glyph-accent)' : 'var(--glyph-bg)'}
-                stroke={n.hub ? 'var(--glyph-accent)' : 'var(--glyph-ink)'}
-                stroke-width="1.3"
-              />
-            ))}
-          </g>
-        )}
-
-        {variant === 3 && (
-          /* Motif 3: Isometric stacked system planes + vertical bus */
-          <g transform={`rotate(${isoRot} ${cx} ${cy})`} stroke-linejoin="round">
-            {/* Vertical alignment pillars connecting bottom & top planes */}
-            <line
-              x1={cx - isoLayers[0].rx}
-              y1={isoLayers[0].yCenter}
-              x2={cx - isoLayers[2].rx}
-              y2={isoLayers[2].yCenter}
-              stroke="var(--glyph-ink)"
-              stroke-width="1"
-              stroke-dasharray="2 2"
-              opacity="0.45"
-            />
-            <line
-              x1={cx + isoLayers[0].rx}
-              y1={isoLayers[0].yCenter}
-              x2={cx + isoLayers[2].rx}
-              y2={isoLayers[2].yCenter}
-              stroke="var(--glyph-ink)"
-              stroke-width="1"
-              stroke-dasharray="2 2"
-              opacity="0.45"
-            />
-
-            {/* Bottom, Middle (accent), and Top isometric planes */}
-            {isoLayers
-              .slice()
-              .reverse()
-              .map((layer) => (
-                <g>
-                  <polygon
-                    points={layer.points}
-                    fill={layer.isMiddle ? 'var(--glyph-accent)' : 'var(--glyph-bg)'}
-                    fill-opacity={layer.isMiddle ? '0.2' : '0.82'}
-                    stroke={layer.isMiddle ? 'var(--glyph-accent)' : 'var(--glyph-ink)'}
-                    stroke-width={layer.isMiddle ? '1.5' : '1.15'}
-                  />
-                  {layer.isTop && (
-                    /* Inner subdivision crosslines on top plane */
-                    <g stroke="var(--glyph-ink)" stroke-width="0.9" opacity="0.55">
-                      <line
-                        x1={cx - layer.rx * 0.5}
-                        y1={layer.yCenter - layer.ry * 0.5}
-                        x2={cx + layer.rx * 0.5}
-                        y2={layer.yCenter + layer.ry * 0.5}
-                      />
-                      <line
-                        x1={cx + layer.rx * 0.5}
-                        y1={layer.yCenter - layer.ry * 0.5}
-                        x2={cx - layer.rx * 0.5}
-                        y2={layer.yCenter + layer.ry * 0.5}
-                      />
-                    </g>
-                  )}
-                </g>
-              ))}
-
-            {/* Central spine & active core nodes */}
-            <line
-              x1={cx}
-              y1={isoLayers[0].yCenter - 4}
-              x2={cx}
-              y2={isoLayers[2].yCenter + 4}
-              stroke="var(--glyph-accent)"
-              stroke-width="1.5"
-            />
-            <circle cx={cx} cy={isoLayers[0].yCenter} r="2.3" fill="var(--glyph-accent)" />
-            <circle cx={cx} cy={isoLayers[1].yCenter} r="2.6" fill="var(--glyph-bg)" stroke="var(--glyph-accent)" stroke-width="1.5" />
-          </g>
-        )}
-
-        {variant === 4 && (
-          /* Motif 4: Polar harmonic burst / sonar dial */
-          <g stroke-linecap="round">
-            <circle
-              cx={cx}
-              cy={cy}
-              r={14 * scale}
-              fill="var(--glyph-accent)"
-              fill-opacity="0.1"
-              stroke="var(--glyph-accent)"
-              stroke-width="1"
-              stroke-dasharray="2 3"
-            />
-            {spokes.map((s) => (
-              <line
-                x1={s.x1}
-                y1={s.y1}
-                x2={s.x2}
-                y2={s.y2}
-                stroke={s.highlight ? 'var(--glyph-accent)' : 'var(--glyph-ink)'}
-                stroke-width={s.highlight ? '1.6' : '1.15'}
-                opacity={s.highlight ? '0.95' : '0.6'}
-              />
-            ))}
-            <circle cx={cx} cy={cy} r={3.5 * scale} fill="var(--glyph-bg)" stroke="var(--glyph-accent)" stroke-width="1.5" />
-          </g>
-        )}
-      </svg>
+      <Fragment set:html={rendered!.svg} />
     )
   }
 </div>

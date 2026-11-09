@@ -1,49 +1,75 @@
 ---
 title: "Deterministic SVG glyphs at build time"
 date: 2026-11-08
-description: "How this site generates zero-runtime geometric thumbnails from post slugs using FNV-1a and SplitMix32."
+description: "How this site generates zero-runtime geometric thumbnails from post slugs using FNV-1a, Murmur3 avalanche mixing, and SplitMix32."
 tags: ["design", "svg", "systems"]
 draft: false
 ---
 
 import ProceduralGlyph from '../../components/ProceduralGlyph.astro';
+import GlyphWorkbench from '../../components/GlyphWorkbench.astro';
+import { familyLabel } from '../../lib/glyph-engine';
 
 Technical blogs have an awkward thumbnail problem: most posts don't have a
 natural hero photo, and slapping stock art onto a post about a CLI tool or SQL
 query planning feels wrong. On the other hand, a list of twenty titles and dates
 with no visual anchor quickly turns into a wall of text.
 
-To hopefully fix this, every post and project on this site gets a deterministic
-`64x64` geometric badge (and a `640x140` header banner) compiled into static
-inline `<svg>` markup during build time.
+To fix this, every post and project on this site gets a deterministic `64×64`
+geometric badge (and a `640×140` header banner) compiled into static inline
+`<svg>` markup during build time.
+
+## Interactive seed tester
+
+Type any seed string below (or hit **randomize**) to synthesize both the `64×64`
+icon badge and the `640×140` header banner in real time:
+
+<GlyphWorkbench mode="inline" initialSeed="post:procedural-glyphs" />
 
 ## How a seed becomes a glyph
 
-Given a seed string like `"post:rebuilding-this-site"`, the build step runs two
-tiny functions:
+Given a seed string like `"post:rebuilding-this-site"`, the generator runs two
+tiny, zero-dependency stages:
 
-1. **32-bit FNV-1a hash (`hash(seed)`):** Picks one of **5 geometric motif
-   families** (`variant = h0 % 5`) and one of **5 muted technical accent
-   colors** (`(h0 >>> 3) % 5`).
-2. **SplitMix32 PRNG stream (`makeRng(seed)`):** Produces a repeatable stream of
-   floats in `[0, 1)` from that 32-bit state to drive orbital angles, wave
-   frequencies, node coordinates, and layer rotations.
+1. **32-bit FNV-1a + MurmurHash3 finalizer (`hashSeed(seed)`):** Computes an
+   FNV-1a hash over the UTF-16 code units and finishes with a 32-bit Murmur3
+   avalanche mixer so even a single-character edit cascades across all 32 bits.
+   Independent bit slices select:
+   - **Motif family (`h0 % 10`):** Picks one of **10 geometric motif families** (`orbits`, `ridges`, `mesh`, `iso-stack`, `polar`, `lissajous`, `bus-routing`, `interference`, `hilbert`, or `automata`).
+   - **Dual accent palette (`(h0 >>> 4) % 8`):** Picks primary and secondary
+     technical accents from an 8-color HSL-balanced palette.
+   - **Registration grid (`(h0 >>> 11) % 4`):** Selects between crosshair rings,
+     octagonal target frames, axis ruler ticks, or corner brackets.
+2. **SplitMix32 PRNG stream (`makeRng(h0)`):** Produces a repeatable stream of
+   floats in `[0, 1)` from that 32-bit state to drive sub-topologies, orbital
+   eccentricity, Fourier carrier frequencies, Lissajous ratios, and Hamiltonian
+   lattice walks.
 
 ```ts
-function hash(str: string): number {
+export function hashSeed(str: string): number {
   let h = 2166136261;
   for (let i = 0; i < str.length; i++) {
     h ^= str.charCodeAt(i);
     h = Math.imul(h, 16777619);
   }
+  // MurmurHash3 32-bit finalizer for full bit avalanche
+  h ^= h >>> 16;
+  h = Math.imul(h, 0x85ebca6b);
+  h ^= h >>> 13;
+  h = Math.imul(h, 0xc2b2ae35);
+  h ^= h >>> 16;
   return h >>> 0;
 }
 ```
 
-## The 5 procedural motif families
+## Specimen gallery
 
-Below is a live build-time specimen grid generated from 18 different seed
-strings across all five motif families (`v0` through `v4`):
+Expanding from a handful of rigid templates to parameterized motif families—each
+with internal sub-modes (e.g., coaxial vs. binary barycenter orbits, Gaussian vs.
+bimodal Fourier envelopes, annular vs. phyllotaxis spiral meshes)—keeps
+thumbnails visually distinct across long lists of posts.
+
+Here's an assortment of build-time glyphs generated from different post seeds:
 
 export const seeds = [
   'post:rebuilding-this-site',
@@ -64,18 +90,9 @@ export const seeds = [
   'post:consistent-hashing',
   'post:merkle-trees',
   'post:b-plus-trees',
+  'post:vector-clocks',
+  'post:roaring-bitmaps',
 ];
-
-export function familyLabel(seed) {
-  let h = 2166136261;
-  for (let i = 0; i < seed.length; i++) {
-    h ^= seed.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
-  const v = (h >>> 0) % 5;
-  const names = ['v0 · orbits', 'v1 · ridges', 'v2 · mesh', 'v3 · iso-stack', 'v4 · polar'];
-  return names[v];
-}
 
 <div class="glyph-grid-showcase">
   {seeds.map((s) => (
@@ -91,8 +108,8 @@ export function familyLabel(seed) {
 
 ## Banner variants (`640×140`)
 
-The same component also renders wide header banners (`size="banner"`) by scaling
-the coordinate system across a `640×140` viewBox. Here are some examples:
+The same engine also synthesizes wide header banners (`size="banner"`) by
+adapting node counts, wave steps, and aspect ratios across a `640×140` viewBox:
 
 <div style="display: flex; flex-direction: column; gap: 0.75rem; margin: 1.25rem 0;">
   <ProceduralGlyph seed="post:wal-compaction" size="banner" />
@@ -102,6 +119,5 @@ the coordinate system across a `640×140` viewBox. Here are some examples:
   <ProceduralGlyph seed="post:clock-drift" size="banner" />
 </div>
 
-And I know, these aren't perfect, and there's definitely some repetition that
-needs addressing. This is however the first iteration of this glyph generator
-system, so one day I'll follow this up with more features.
+To inspect the extracted PRNG stream, pin specific motif families or palettes,
+and export raw SVGs, open the [**Procedural SVG Glyph Workbench (`/lab/glyphs`)**](/lab/glyphs).

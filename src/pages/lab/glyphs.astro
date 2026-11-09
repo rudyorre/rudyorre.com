@@ -1,0 +1,151 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GlyphWorkbench from '../../components/GlyphWorkbench.astro';
+import { GLYPH_FAMILIES, renderProceduralGlyph } from '../../lib/glyph-engine';
+
+const initialSeed = 'post:procedural-glyphs';
+---
+
+<BaseLayout
+  title="Procedural SVG Glyph Lab"
+  description="Interactive workbench for testing deterministic FNV-1a + SplitMix32 SVG glyphs across 10 geometric motif families."
+  wide={true}
+>
+  <header class="post-header" style="margin-bottom: 1.5rem;">
+    <div class="lab-breadcrumbs">
+      <a href="/lab" class="post-back-link" style="margin-bottom: 0;">← lab</a>
+      <span class="mono muted" style="font-size: 0.78rem;">·</span>
+      <a href="/writing/procedural-glyphs" class="post-back-link" style="margin-bottom: 0;">
+        read companion essay →
+      </a>
+    </div>
+    <h1 style="margin-top: 0.65rem;">Procedural SVG Glyph Workbench</h1>
+    <p class="muted" style="margin-bottom: 0; max-width: 68ch;">
+      Real-time inspector for the site's deterministic SVG generator. Type any seed string to
+      inspect how 32-bit FNV-1a + Murmur3 avalanche hashing and a SplitMix32 PRNG stream synthesize
+      <code>64×64</code> badges and <code>640×140</code> banners across all 10 geometric motif families.
+    </p>
+  </header>
+
+  <GlyphWorkbench mode="full" initialSeed={initialSeed} />
+
+  <section class="lab-section" aria-labelledby="all-families-heading">
+    <div class="section-heading" style="margin-top: 2.75rem;">
+      <span id="all-families-heading">All 10 Motif Families for Active Seed</span>
+      <span class="mono muted" style="font-size: 0.72rem; text-transform: none;">
+        click any card to pin family above
+      </span>
+    </div>
+    <p class="muted" style="font-size: 0.9rem; margin-bottom: 1rem;">
+      Below is how the current seed's SplitMix32 stream renders when forced into each of the 10
+      geometric motif families:
+    </p>
+
+    <div class="lab-family-matrix" id="lab-family-matrix">
+      {
+        GLYPH_FAMILIES.map((f) => {
+          const r = renderProceduralGlyph({
+            seed: initialSeed,
+            size: 'md',
+            familyOverride: f.id,
+          });
+          return (
+            <button
+              type="button"
+              class="lab-family-card"
+              data-family-card={f.id}
+              title={`Pin ${f.label} in workbench`}
+            >
+              <div class="glyph-frame glyph-md" data-family-card-svg={f.id} set:html={r.svg} />
+              <div class="lab-family-card-body">
+                <div class="lab-family-card-top">
+                  <span class="lab-family-card-title">{f.label}</span>
+                  <span class="lab-family-card-sub" data-family-card-sub={f.id}>
+                    {r.diagnostics.subMode}
+                  </span>
+                </div>
+                <p class="lab-family-card-desc">{f.description}</p>
+              </div>
+            </button>
+          );
+        })
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { GLYPH_FAMILIES, renderProceduralGlyph } from '../../lib/glyph-engine';
+
+  const matrix = document.getElementById('lab-family-matrix');
+
+  function updateMatrix(
+    seed: string,
+    activeFamilyId: number,
+    accentOverride: number | null = null,
+    gridOverride: number | null = null
+  ) {
+    if (!matrix) return;
+    GLYPH_FAMILIES.forEach((f) => {
+      const r = renderProceduralGlyph({
+        seed,
+        size: 'md',
+        familyOverride: f.id,
+        accentOverride,
+        gridOverride,
+      });
+      const svgEl = matrix.querySelector<HTMLElement>(`[data-family-card-svg="${f.id}"]`);
+      const subEl = matrix.querySelector<HTMLElement>(`[data-family-card-sub="${f.id}"]`);
+      const cardEl = matrix.querySelector<HTMLElement>(`[data-family-card="${f.id}"]`);
+      if (svgEl) svgEl.innerHTML = r.svg;
+      if (subEl) subEl.textContent = r.diagnostics.subMode;
+      if (cardEl) {
+        cardEl.classList.toggle('is-natural-family', f.id === activeFamilyId);
+      }
+    });
+  }
+
+  window.addEventListener('gw:seed-change', ((e: CustomEvent) => {
+    const { seed, diagnostics, accentOverride, gridOverride } = e.detail || {};
+    if (typeof seed === 'string' && diagnostics) {
+      updateMatrix(seed, diagnostics.familyId, accentOverride ?? null, gridOverride ?? null);
+    }
+  }) as EventListener);
+
+  // Sync on load in case GlyphWorkbench initialized before or after this script attached
+  const params = new URLSearchParams(window.location.search);
+  const urlSeed = params.get('seed') ?? params.get('post') ?? params.get('s');
+  const seedInput = document.querySelector<HTMLInputElement>('#gw-full [data-gw-seed]');
+  const famSelect = document.querySelector<HTMLSelectElement>('#gw-full [data-gw-family]');
+  const accSelect = document.querySelector<HTMLSelectElement>('#gw-full [data-gw-accent]');
+  const gridSelect = document.querySelector<HTMLSelectElement>('#gw-full [data-gw-grid]');
+  if (seedInput) {
+    const seed = urlSeed || seedInput.value || 'post:procedural-glyphs';
+    const famVal = famSelect && famSelect.value !== 'auto' ? parseInt(famSelect.value, 10) : null;
+    const accVal = accSelect && accSelect.value !== 'auto' ? parseInt(accSelect.value, 10) : null;
+    const gridVal = gridSelect && gridSelect.value !== 'auto' ? parseInt(gridSelect.value, 10) : null;
+    const sq = renderProceduralGlyph({
+      seed,
+      size: 'md',
+      familyOverride: famVal,
+      accentOverride: accVal,
+      gridOverride: gridVal,
+    });
+    updateMatrix(seed, sq.diagnostics.familyId, accVal, gridVal);
+  }
+
+  if (matrix) {
+    matrix.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-family-card]');
+      if (!btn) return;
+      const famId = parseInt(btn.dataset.familyCard || '0', 10);
+      window.dispatchEvent(
+        new CustomEvent('gw:set-state', { detail: { family: famId } })
+      );
+      const wb = document.getElementById('gw-full');
+      if (wb && wb.scrollIntoView) {
+        wb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    });
+  }
+</script>
