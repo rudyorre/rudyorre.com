@@ -8,17 +8,28 @@ draft: false
 
 import ProceduralGlyph from '../../components/ProceduralGlyph.astro';
 
-Technical blogs have an awkward thumbnail problem: most backend posts don't have a natural hero photo, and slapping stock art onto a post about distributed consensus or SQL query planning feels wrong. On the other hand, a list of twenty titles and dates with no visual anchor quickly turns into a wall of text.
+Technical blogs have an awkward thumbnail problem: most posts don't have a
+natural hero photo, and slapping stock art onto a post about a CLI tool or SQL
+query planning feels wrong. On the other hand, a list of twenty titles and dates
+with no visual anchor quickly turns into a wall of text.
 
-To Thread the needle, every post and project on this site gets a deterministic `64×64` geometric badge (and a `640×140` header banner) compiled into static inline `<svg>` markup during `astro build`.
+To hopefully fix this, every post and project on this site gets a deterministic
+`64x64` geometric badge (and a `640x140` header banner) compiled into static
+inline `<svg>` markup during build time.
 
 ## Build-time vs. runtime
 
 None of these glyphs are computed in the browser:
 
-1. **Zero client JavaScript:** [`ProceduralGlyph.astro`](https://github.com/rudyorre/rudyorre.com) runs exclusively inside Astro's build pipeline (Node.js) when generating static HTML.
-2. **No image files or network requests:** Instead of emitting `.png` files into `dist/`, the component outputs raw `<svg>` nodes (~500 bytes gzipped) directly inside the HTML document.
-3. **Theme-reactive via CSS variables:** Stroke and fill attributes reference CSS custom properties (`var(--glyph-bg)`, `var(--glyph-ink)`, `var(--glyph-accent)`), so switching between light and dark mode re-themes every graphic instantly without regenerating anything.
+1. **Zero client JavaScript:** `ProceduralGlyph.astro` runs exclusively inside
+   Astro's build pipeline (Node.js) when generating static HTML.
+2. **No image files or network requests:** Instead of emitting `.png` files
+   into `dist/`, the component outputs raw `<svg>` nodes (~500 bytes gzipped)
+   directly inside the HTML document.
+3. **Theme-reactive via CSS variables:** Stroke and fill attributes reference
+   CSS custom properties (`var(--glyph-bg)`, `var(--glyph-ink)`,
+   `var(--glyph-accent)`), so switching between light and dark mode re-themes
+   every graphic instantly without regenerating anything.
 
 ## How a seed becomes a glyph
 
@@ -61,8 +72,6 @@ export const seeds = [
   'post:consistent-hashing',
   'post:merkle-trees',
   'post:b-plus-trees',
-  'post:vector-clocks',
-  'post:thread-pools',
 ];
 
 export function familyLabel(seed) {
@@ -90,12 +99,16 @@ export function familyLabel(seed) {
 
 ## Banner variants (`640×140`)
 
-The same component also renders wide header banners (`size="banner"`) by scaling the coordinate system across a `640×140` viewBox—one example from each of the 5 families:
+The same component also renders wide header banners (`size="banner"`) by scaling
+the coordinate system across a `640×140` viewBox. Here are some examples:
 
 <div style="display: flex; flex-direction: column; gap: 0.75rem; margin: 1.25rem 0;">
   <ProceduralGlyph seed="post:wal-compaction" size="banner" />
   <ProceduralGlyph seed="post:bloom-filters" size="banner" />
-  <ProceduralGlyph seed="post:raft-leases" size="banner" />
+  <ProceduralGlyph seed="post:merkle-trees" size="banner" />
   <ProceduralGlyph seed="post:rebuilding-this-site" size="banner" />
-  <ProceduralGlyph seed="post:consensus-notes" size="banner" />
+  <ProceduralGlyph seed="post:clock-drift" size="banner" />
 </div>
+
+This is the first iteration of this glyph generator system, so one day I'll
+follow this up with more features.
