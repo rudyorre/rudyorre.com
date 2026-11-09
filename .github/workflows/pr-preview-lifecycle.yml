@@ -1,0 +1,214 @@
+name: PR Preview Lifecycle (Vercel)
+
+on:
+  # 1. Clean up preview deployments when a PR is merged or closed
+  pull_request:
+    types: [closed]
+
+  # 2. Expire preview deployments after 14 days of PR inactivity
+  schedule:
+    - cron: "0 7 * * *" # Daily at 07:00 UTC
+  workflow_dispatch:
+
+  # 3. Revive an expired preview by commenting `/preview` on an open PR
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  cleanup-closed-pr:
+    name: Delete preview on PR close
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_TEAM_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
+      REPO_NAME: ${{ github.event.repository.name }}
+    steps:
+      - name: Delete Vercel deployments for closed PR branch
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "### Vercel Lifecycle Skipped" >> "$GITHUB_STEP_SUMMARY"
+            echo "Add \`VERCEL_TOKEN\` to repository Actions secrets to enable automatic PR preview deletion." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          TEAM_QUERY=""
+          if [ -n "$VERCEL_TEAM_ID" ]; then
+            TEAM_QUERY="&teamId=${VERCEL_TEAM_ID}"
+          fi
+          PROJECT_QUERY=""
+          if [ -n "$VERCEL_PROJECT_ID" ]; then
+            PROJECT_QUERY="&projectId=${VERCEL_PROJECT_ID}"
+          fi
+
+          ENCODED_BRANCH=$(node -e 'console.log(encodeURIComponent(process.env.BRANCH_NAME))')
+          API_URL="https://api.vercel.com/v6/deployments?meta-githubCommitRef=${ENCODED_BRANCH}&limit=20${PROJECT_QUERY}${TEAM_QUERY}"
+
+          RESPONSE=$(curl -fsSL -H "Authorization: Bearer ${VERCEL_TOKEN}" "$API_URL")
+          DEPLOYMENT_IDS=$(echo "$RESPONSE" | node -e '
+            const fs = require("fs");
+            const data = JSON.parse(fs.readFileSync(0, "utf8"));
+            const ids = (data.deployments || [])
+              .filter(d => d.target !== "production")
+              .map(d => d.uid);
+            console.log(ids.join("\n"));
+          ')
+
+          if [ -z "$DEPLOYMENT_IDS" ]; then
+            echo "No preview deployments found for branch ${BRANCH_NAME}."
+            exit 0
+          fi
+
+          DELETED_COUNT=0
+          for ID in $DEPLOYMENT_IDS; do
+            DEL_URL="https://api.vercel.com/v13/deployments/${ID}?_=1${TEAM_QUERY}"
+            if curl -fsSL -X DELETE -H "Authorization: Bearer ${VERCEL_TOKEN}" "$DEL_URL" >/dev/null; then
+              echo "Deleted Vercel preview deployment: ${ID}"
+              DELETED_COUNT=$((DELETED_COUNT + 1))
+            fi
+          done
+
+          if [ "$DELETED_COUNT" -gt 0 ]; then
+            gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body "🧹 Cleaned up **${DELETED_COUNT}** Vercel preview deployment(s) for \`${BRANCH_NAME}\` now that this PR is closed."
+          fi
+
+  expire-inactive-previews:
+    name: Expire previews inactive for >14 days
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_TEAM_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Check open PRs for 14-day inactivity and delete stale previews
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "VERCEL_TOKEN secret not set; skipping 14-day preview expiration check."
+            exit 0
+          fi
+
+          TEAM_QUERY=""
+          if [ -n "$VERCEL_TEAM_ID" ]; then
+            TEAM_QUERY="&teamId=${VERCEL_TEAM_ID}"
+          fi
+          PROJECT_QUERY=""
+          if [ -n "$VERCEL_PROJECT_ID" ]; then
+            PROJECT_QUERY="&projectId=${VERCEL_PROJECT_ID}"
+          fi
+
+          PRS_JSON=$(gh pr list --repo "$GITHUB_REPOSITORY" --state open --json number,headRefName,updatedAt --limit 100)
+
+          STALE_PRS=$(echo "$PRS_JSON" | node -e '
+            const fs = require("fs");
+            const prs = JSON.parse(fs.readFileSync(0, "utf8"));
+            const cutoff = Date.now() - 14 * 24 * 60 * 60 * 1000;
+            for (const pr of prs) {
+              if (new Date(pr.updatedAt).getTime() < cutoff) {
+                console.log(`${pr.number}\t${pr.headRefName}`);
+              }
+            }
+          ')
+
+          if [ -z "$STALE_PRS" ]; then
+            echo "No open PRs inactive for >14 days."
+            exit 0
+          fi
+
+          echo "$STALE_PRS" | while IFS=$'\t' read -r PR_NUM BRANCH_NAME; do
+            [ -z "$PR_NUM" ] && continue
+            ENCODED_BRANCH=$(BRANCH_NAME="$BRANCH_NAME" node -e 'console.log(encodeURIComponent(process.env.BRANCH_NAME))')
+            API_URL="https://api.vercel.com/v6/deployments?meta-githubCommitRef=${ENCODED_BRANCH}&limit=20${PROJECT_QUERY}${TEAM_QUERY}"
+
+            RESPONSE=$(curl -fsSL -H "Authorization: Bearer ${VERCEL_TOKEN}" "$API_URL")
+            DEPLOYMENT_IDS=$(echo "$RESPONSE" | node -e '
+              const fs = require("fs");
+              const data = JSON.parse(fs.readFileSync(0, "utf8"));
+              const cutoff = Date.now() - 14 * 24 * 60 * 60 * 1000;
+              const ids = (data.deployments || [])
+                .filter(d => d.target !== "production" && d.createdAt < cutoff)
+                .map(d => d.uid);
+              console.log(ids.join("\n"));
+            ')
+
+            DELETED_COUNT=0
+            for ID in $DEPLOYMENT_IDS; do
+              [ -z "$ID" ] && continue
+              DEL_URL="https://api.vercel.com/v13/deployments/${ID}?_=1${TEAM_QUERY}"
+              if curl -fsSL -X DELETE -H "Authorization: Bearer ${VERCEL_TOKEN}" "$DEL_URL" >/dev/null; then
+                DELETED_COUNT=$((DELETED_COUNT + 1))
+              fi
+            done
+
+            if [ "$DELETED_COUNT" -gt 0 ]; then
+              gh pr comment "$PR_NUM" --repo "$GITHUB_REPOSITORY" --body "⏳ Preview deployment for \`${BRANCH_NAME}\` expired after 14 days of inactivity and was removed. Push a new commit or comment \`/preview\` to spin up a fresh instance."
+            fi
+          done
+
+  revive-preview:
+    name: Revive preview on /preview comment
+    if: >-
+      github.event_name == 'issue_comment' &&
+      github.event.issue.pull_request != null &&
+      github.event.issue.state == 'open' &&
+      (
+        github.event.comment.author_association == 'OWNER' ||
+        github.event.comment.author_association == 'MEMBER' ||
+        github.event.comment.author_association == 'COLLABORATOR'
+      ) &&
+      startsWith(trim(github.event.comment.body), '/preview')
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PR_NUMBER: ${{ github.event.issue.number }}
+    steps:
+      - name: Fetch PR metadata
+        id: pr
+        run: |
+          PR_DATA=$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json headRefName,headRefOid)
+          BRANCH=$(echo "$PR_DATA" | node -e 'const d=JSON.parse(require("fs").readFileSync(0,"utf8")); console.log(d.headRefName)')
+          SHA=$(echo "$PR_DATA" | node -e 'const d=JSON.parse(require("fs").readFileSync(0,"utf8")); console.log(d.headRefOid)')
+          echo "branch=${BRANCH}" >> "$GITHUB_OUTPUT"
+          echo "sha=${SHA}" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.pr.outputs.sha }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+          cache: npm
+
+      - name: Install, Build & Test
+        run: |
+          npm ci
+          npm run build
+          npm test
+
+      - name: Deploy revived preview to Vercel
+        if: env.VERCEL_TOKEN != '' && env.VERCEL_ORG_ID != '' && env.VERCEL_PROJECT_ID != ''
+        env:
+          BRANCH_NAME: ${{ steps.pr.outputs.branch }}
+          COMMIT_SHA: ${{ steps.pr.outputs.sha }}
+        run: |
+          npx --yes vercel pull --yes --environment=preview --token="$VERCEL_TOKEN"
+          npx --yes vercel build --token="$VERCEL_TOKEN"
+          PREVIEW_URL=$(npx --yes vercel deploy --prebuilt --token="$VERCEL_TOKEN" -m githubCommitRef="$BRANCH_NAME" -m githubCommitSha="$COMMIT_SHA")
+          SHORT_SHA="${COMMIT_SHA:0:7}"
+          gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body "🚀 **Preview revived** for commit \`${SHORT_SHA}\`: ${PREVIEW_URL}"
