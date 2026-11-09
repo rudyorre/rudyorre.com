@@ -35,6 +35,20 @@ export const GET: APIRoute = async () => {
       snippet: 'Selected open-source and academic projects.',
       body: 'projects open source code github',
     },
+    {
+      title: 'Lab — Interactive Visualizers & Tools',
+      url: '/lab',
+      kind: 'page',
+      snippet: 'Interactive systems experiments, visualizers, and technical tools.',
+      body: 'lab tools interactive demo visualizer sandbox experiments',
+    },
+    {
+      title: 'Procedural SVG Glyph Workbench',
+      url: '/lab/glyphs',
+      kind: 'page',
+      snippet: 'Interactive FNV-1a + SplitMix32 SVG glyph synthesizer across 10 motif families.',
+      body: 'lab glyphs svg generator visualizer procedural fnv1a splitmix32 seed hash lissajous hilbert',
+    },
     ...posts.map((post) => ({
       title: post.data.title,
       url: `/writing/${post.id}`,
