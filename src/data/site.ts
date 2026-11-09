@@ -5,6 +5,16 @@ export interface Project {
   tags: string[];
   source?: string;
   visit?: string;
+  icon?:
+    | 'brewin'
+    | 'tensorfaux'
+    | 'dashviz'
+    | 'chatbot'
+    | 'vit'
+    | 'postagger'
+    | 'ngram'
+    | 'linreg'
+    | 'cppptr';
   image?: string;
   featured: boolean;
 }
@@ -63,6 +73,7 @@ export const projects: Project[] = [
     year: '2023',
     tags: ['Python', 'Compilers'],
     source: 'https://github.com/rudyorre/brewin',
+    icon: 'brewin',
     featured: true,
   },
   {
@@ -72,6 +83,7 @@ export const projects: Project[] = [
     tags: ['Python', 'NumPy'],
     source: 'https://github.com/rudyorre/TensorFaux',
     visit: 'https://rudyorre.github.io/TensorFaux',
+    icon: 'tensorfaux',
     featured: true,
   },
   {
@@ -80,6 +92,7 @@ export const projects: Project[] = [
     year: '2023',
     tags: ['Postgres', 'Express', 'Next.js'],
     source: 'https://github.com/rudyorre/dashviz',
+    icon: 'dashviz',
     featured: true,
   },
   {
@@ -88,6 +101,7 @@ export const projects: Project[] = [
     year: '2023',
     tags: ['Python', 'Flask', 'SPARQL', 'Docker'],
     source: 'https://github.com/rudyorre/chatbot.ai',
+    icon: 'chatbot',
     featured: false,
   },
   {
@@ -96,6 +110,7 @@ export const projects: Project[] = [
     year: '2022',
     tags: ['PyTorch'],
     source: 'https://github.com/rudyorre/vit',
+    icon: 'vit',
     featured: false,
   },
   {
@@ -104,6 +119,7 @@ export const projects: Project[] = [
     year: '2022',
     tags: ['Python', 'HMM'],
     source: 'https://github.com/rudyorre/pos-tagger',
+    icon: 'postagger',
     featured: false,
   },
   {
@@ -112,6 +128,7 @@ export const projects: Project[] = [
     year: '2022',
     tags: ['Python', 'NLP'],
     source: 'https://github.com/rudyorre/ngram',
+    icon: 'ngram',
     featured: false,
   },
   {
@@ -120,6 +137,7 @@ export const projects: Project[] = [
     year: '2021',
     tags: ['C++'],
     source: 'https://github.com/rudyorre/machine-learning-projects/tree/master/Multivariate-Linear-Regression',
+    icon: 'linreg',
     featured: false,
   },
   {
@@ -128,6 +146,7 @@ export const projects: Project[] = [
     year: '2021',
     tags: ['C++'],
     source: 'https://github.com/rudyorre/smart-shared-ptr',
+    icon: 'cppptr',
     featured: false,
   },
 ];

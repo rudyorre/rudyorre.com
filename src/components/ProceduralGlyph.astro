@@ -2,13 +2,23 @@
 interface Props {
   seed: string;
   size?: 'sm' | 'md' | 'banner';
+  icon?:
+    | 'brewin'
+    | 'tensorfaux'
+    | 'dashviz'
+    | 'chatbot'
+    | 'vit'
+    | 'postagger'
+    | 'ngram'
+    | 'linreg'
+    | 'cppptr';
   image?: string;
   alt?: string;
 }
 
-const { seed, size = 'sm', image, alt = '' } = Astro.props;
+const { seed, size = 'sm', icon, image, alt = '' } = Astro.props;
 
-// Deterministic FNV-1a 32-bit hash
+// Deterministic FNV-1a 32-bit hash for fallback procedural generator
 function hash(str: string): number {
   let h = 2166136261;
   for (let i = 0; i < str.length; i++) {
@@ -23,15 +33,8 @@ const h1 = hash(seed + ':1');
 const h2 = hash(seed + ':2');
 const h3 = hash(seed + ':3');
 
-// 5 tasteful restrained technical motifs:
-// 0: Concentric phase rings + crosshair
-// 1: Isometric wave / signal interference lines
-// 2: Dot-matrix bitfield (active nodes + sparse links)
-// 3: Architectural nested subdivisions
-// 4: Radial vector field ticks
 const variant = h0 % 5;
 
-// Subtle accent hue from a curated technical palette (slate, teal, amber, rust, indigo)
 const accents = [
   'var(--glyph-accent-1)',
   'var(--glyph-accent-2)',
@@ -49,7 +52,248 @@ const h = size === 'banner' ? 140 : 64;
   {
     image ? (
       <img src={image} alt={alt} loading="lazy" decoding="async" />
+    ) : icon ? (
+      <svg
+        viewBox="0 0 64 64"
+        xmlns="http://www.w3.org/2000/svg"
+        class="glyph-svg"
+      >
+        <rect width="64" height="64" fill="var(--glyph-bg)" />
+        <g stroke="var(--glyph-grid)" stroke-width="1">
+          <line x1="0" y1="32" x2="64" y2="32" />
+          <line x1="32" y1="0" x2="32" y2="64" />
+        </g>
+
+        {icon === 'brewin' && (
+          /* Brewin: Cyan-accented steaming cup motif from v3 brewin-logo.png */
+          <g style="--glyph-accent: #0ea5e9;">
+            <path
+              d="M 22 33 L 42 33 L 39.5 49 L 24.5 49 Z"
+              fill="var(--glyph-accent)"
+              fill-opacity="0.18"
+              stroke="var(--glyph-accent)"
+              stroke-width="1.6"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M 25 27 C 22.5 23.5, 27.5 20.5, 25 16.5"
+              fill="none"
+              stroke="var(--glyph-ink)"
+              stroke-width="1.6"
+              stroke-linecap="round"
+            />
+            <path
+              d="M 32 27 C 29.5 23.5, 34.5 20.5, 32 16.5"
+              fill="none"
+              stroke="var(--glyph-accent)"
+              stroke-width="1.6"
+              stroke-linecap="round"
+            />
+            <path
+              d="M 39 27 C 36.5 23.5, 41.5 20.5, 39 16.5"
+              fill="none"
+              stroke="var(--glyph-ink)"
+              stroke-width="1.6"
+              stroke-linecap="round"
+            />
+          </g>
+        )}
+
+        {icon === 'tensorfaux' && (
+          /* TensorFaux: Warm amber low-poly triangular mesh from v3 tensorfaux.png */
+          <g style="--glyph-accent: #f59e0b;" stroke-linejoin="round">
+            <polygon
+              points="32,13 49,25 43,47 21,47 15,25"
+              fill="var(--glyph-accent)"
+              fill-opacity="0.16"
+              stroke="var(--glyph-accent)"
+              stroke-width="1.5"
+            />
+            <line x1="32" y1="13" x2="29" y2="33" stroke="var(--glyph-accent)" stroke-width="1.2" />
+            <line x1="49" y1="25" x2="29" y2="33" stroke="var(--glyph-accent)" stroke-width="1.2" />
+            <line x1="43" y1="47" x2="29" y2="33" stroke="var(--glyph-accent)" stroke-width="1.2" />
+            <line x1="21" y1="47" x2="29" y2="33" stroke="var(--glyph-ink)" stroke-width="1.1" opacity="0.7" />
+            <line x1="15" y1="25" x2="29" y2="33" stroke="var(--glyph-ink)" stroke-width="1.1" opacity="0.7" />
+            <circle cx="29" cy="33" r="2.2" fill="var(--glyph-accent)" />
+          </g>
+        )}
+
+        {icon === 'dashviz' && (
+          /* Dashviz: Emerald telemetry bars + trend line from v3 dashviz.png */
+          <g style="--glyph-accent: #10b981;">
+            <rect x="16" y="36" width="6" height="12" rx="1" fill="var(--glyph-ink)" opacity="0.35" />
+            <rect x="25" y="29" width="6" height="19" rx="1" fill="var(--glyph-ink)" opacity="0.55" />
+            <rect x="34" y="33" width="6" height="15" rx="1" fill="var(--glyph-ink)" opacity="0.45" />
+            <rect x="43" y="21" width="6" height="27" rx="1" fill="var(--glyph-accent)" opacity="0.85" />
+            <polyline
+              points="19,31 28,23 37,26 46,16"
+              fill="none"
+              stroke="var(--glyph-accent)"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <circle cx="46" cy="16" r="2.2" fill="var(--glyph-accent)" />
+          </g>
+        )}
+
+        {icon === 'chatbot' && (
+          /* Chatbot.ai (JPL FireSat): Query prompt -> database cylinder/nodes */
+          <g style="--glyph-accent: #3b82f6;">
+            <rect
+              x="14"
+              y="18"
+              width="36"
+              height="28"
+              rx="4"
+              fill="var(--glyph-bg)"
+              stroke="var(--glyph-ink)"
+              stroke-width="1.4"
+              opacity="0.85"
+            />
+            <polyline
+              points="21,28 26,32 21,36"
+              fill="none"
+              stroke="var(--glyph-accent)"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <line
+              x1="30"
+              y1="36"
+              x2="41"
+              y2="36"
+              stroke="var(--glyph-accent)"
+              stroke-width="1.8"
+              stroke-linecap="round"
+            />
+          </g>
+        )}
+
+        {icon === 'vit' && (
+          /* Vision Transformer: 3x3 image patch grid with highlighted attention patch */
+          <g style="--glyph-accent: #8b5cf6;">
+            {[0, 1, 2].map((r) =>
+              [0, 1, 2].map((c) => {
+                const isCenter = r === 1 && c === 1;
+                const isCorner = r === 0 && c === 2;
+                return (
+                  <rect
+                    x={16 + c * 11.5}
+                    y={16 + r * 11.5}
+                    width="9"
+                    height="9"
+                    rx="1.5"
+                    fill={isCenter || isCorner ? 'var(--glyph-accent)' : 'none'}
+                    fill-opacity={isCenter ? '0.85' : isCorner ? '0.28' : '0'}
+                    stroke={isCenter || isCorner ? 'var(--glyph-accent)' : 'var(--glyph-ink)'}
+                    stroke-width="1.3"
+                    opacity={isCenter || isCorner ? '1' : '0.55'}
+                  />
+                );
+              })
+            )}
+          </g>
+        )}
+
+        {icon === 'postagger' && (
+          /* POS Tagger: Viterbi lattice / tag stem diagram from v3 pos-tagger.jpg */
+          <g style="--glyph-accent: #ec4899;">
+            {[18, 32, 46].map((x, idx) => (
+              <g>
+                <rect
+                  x={x - 5.5}
+                  y="18"
+                  width="11"
+                  height="8"
+                  rx="2"
+                  fill={idx === 1 ? 'var(--glyph-accent)' : 'none'}
+                  fill-opacity={idx === 1 ? '0.2' : '0'}
+                  stroke={idx === 1 ? 'var(--glyph-accent)' : 'var(--glyph-ink)'}
+                  stroke-width="1.4"
+                />
+                <line
+                  x1={x}
+                  y1="26"
+                  x2={x}
+                  y2="41"
+                  stroke={idx === 1 ? 'var(--glyph-accent)' : 'var(--glyph-ink)'}
+                  stroke-width="1.4"
+                />
+                <circle
+                  cx={x}
+                  cy="44"
+                  r="2.2"
+                  fill={idx === 1 ? 'var(--glyph-accent)' : 'var(--glyph-ink)'}
+                />
+              </g>
+            ))}
+          </g>
+        )}
+
+        {icon === 'ngram' && (
+          /* N-Gram: Markov chain state transition nodes (w_{n-1} -> w_n) */
+          <g style="--glyph-accent: #14b8a6;">
+            <circle cx="19" cy="36" r="5" fill="none" stroke="var(--glyph-ink)" stroke-width="1.4" />
+            <circle cx="32" cy="22" r="5" fill="none" stroke="var(--glyph-ink)" stroke-width="1.4" />
+            <circle
+              cx="45"
+              cy="36"
+              r="5.5"
+              fill="var(--glyph-accent)"
+              fill-opacity="0.22"
+              stroke="var(--glyph-accent)"
+              stroke-width="1.6"
+            />
+            <line x1="23" y1="32" x2="28" y2="26" stroke="var(--glyph-ink)" stroke-width="1.3" />
+            <line x1="36" y1="26" x2="41" y2="32" stroke="var(--glyph-accent)" stroke-width="1.5" />
+            <line x1="24" y1="36" x2="39" y2="36" stroke="var(--glyph-accent)" stroke-width="1.3" stroke-dasharray="2 2" />
+          </g>
+        )}
+
+        {icon === 'linreg' && (
+          /* Multivariable Linear Regression: Scatter points + fitted hyperplane line */
+          <g style="--glyph-accent: #f97316;">
+            <line
+              x1="15"
+              y1="47"
+              x2="49"
+              y2="17"
+              stroke="var(--glyph-accent)"
+              stroke-width="1.7"
+              stroke-linecap="round"
+            />
+            <circle cx="19" cy="40" r="2" fill="var(--glyph-ink)" opacity="0.75" />
+            <circle cx="25" cy="43" r="2" fill="var(--glyph-ink)" opacity="0.75" />
+            <circle cx="29" cy="31" r="2" fill="var(--glyph-ink)" opacity="0.75" />
+            <circle cx="36" cy="33" r="2" fill="var(--glyph-ink)" opacity="0.75" />
+            <circle cx="40" cy="21" r="2" fill="var(--glyph-ink)" opacity="0.75" />
+            <circle cx="45" cy="25" r="2" fill="var(--glyph-accent)" />
+          </g>
+        )}
+
+        {icon === 'cppptr' && (
+          /* C++ shared_ptr & BST: Root node branching to two child nodes / ref count */
+          <g style="--glyph-accent: #6366f1;">
+            <line x1="32" y1="23" x2="20" y2="41" stroke="var(--glyph-ink)" stroke-width="1.4" />
+            <line x1="32" y1="23" x2="44" y2="41" stroke="var(--glyph-accent)" stroke-width="1.5" />
+            <circle
+              cx="32"
+              cy="20"
+              r="5"
+              fill="var(--glyph-accent)"
+              fill-opacity="0.22"
+              stroke="var(--glyph-accent)"
+              stroke-width="1.6"
+            />
+            <circle cx="20" cy="43" r="4.5" fill="var(--glyph-bg)" stroke="var(--glyph-ink)" stroke-width="1.4" />
+            <circle cx="44" cy="43" r="4.5" fill="var(--glyph-bg)" stroke="var(--glyph-accent)" stroke-width="1.5" />
+          </g>
+        )}
+      </svg>
     ) : (
+      /* Fallback: Deterministic procedural generator from seed */
       <svg
         viewBox={`0 0 ${w} ${h}`}
         xmlns="http://www.w3.org/2000/svg"
@@ -58,7 +302,6 @@ const h = size === 'banner' ? 140 : 64;
       >
         <rect width={w} height={h} fill="var(--glyph-bg)" />
 
-        {/* Subtle baseline coordinate grid */}
         <g stroke="var(--glyph-grid)" stroke-width="1">
           {size === 'banner' ? (
             <>
@@ -76,9 +319,8 @@ const h = size === 'banner' ? 140 : 64;
         </g>
 
         {variant === 0 && (
-          /* Motif 0: Phase rings & offset node */
           <g fill="none">
-            { [0, 1, 2].map((i) => {
+            {[0, 1, 2].map((i) => {
               const cx = size === 'banner' ? w * (0.28 + ((h1 & 0xff) / 255) * 0.44) : 24 + ((h1 >> (i * 3)) & 15);
               const cy = size === 'banner' ? h * 0.5 : 24 + ((h2 >> (i * 3)) & 15);
               const r = (size === 'banner' ? 22 : 9) + i * (size === 'banner' ? 18 : 8);
@@ -104,7 +346,6 @@ const h = size === 'banner' ? 140 : 64;
         )}
 
         {variant === 1 && (
-          /* Motif 1: Harmonic stepped signal traces */
           <g fill="none">
             {[0, 1, 2, 3, 4].map((row) => {
               const yBase = (h / 6) * (row + 1);
@@ -126,7 +367,6 @@ const h = size === 'banner' ? 140 : 64;
         )}
 
         {variant === 2 && (
-          /* Motif 2: Bitfield lattice */
           <g>
             {Array.from({ length: size === 'banner' ? 11 : 5 }).map((_, gx) =>
               Array.from({ length: 5 }).map((__, gy) => {
@@ -146,7 +386,6 @@ const h = size === 'banner' ? 140 : 64;
         )}
 
         {variant === 3 && (
-          /* Motif 3: Recursive partition blocks */
           <g fill="none" stroke="var(--glyph-ink)" stroke-width="1">
             {(() => {
               const pad = size === 'banner' ? 18 : 10;
@@ -174,7 +413,6 @@ const h = size === 'banner' ? 140 : 64;
         )}
 
         {variant === 4 && (
-          /* Motif 4: Vector field orientation ticks */
           <g stroke-linecap="round">
             {Array.from({ length: size === 'banner' ? 9 : 4 }).map((_, gx) =>
               Array.from({ length: 4 }).map((__, gy) => {
