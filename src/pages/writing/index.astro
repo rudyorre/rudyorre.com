@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProceduralGlyph from '../../components/ProceduralGlyph.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('writing'))
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const formatDate = (date: Date) => date.toISOString().slice(0, 10);
+---
+
+<BaseLayout
+  title="Writing"
+  description="Essays, notes, and technical write-ups by Rudy Orre."
+>
+  <h1>Writing</h1>
+  <p class="muted">
+    Notes on backend systems, infrastructure, and software engineering. Subscribe via{' '}
+    <a href="/rss.xml">RSS</a>.
+  </p>
+
+  <ul class="media-list" style="margin-top: 1.75rem;">
+    {
+      posts.map((post) => (
+        <li class="media-item">
+          <a href={`/writing/${post.id}`} class="media-thumb-link" tabindex="-1" aria-hidden="true">
+            <ProceduralGlyph seed={`post:${post.id}`} image={post.data.image} size="md" />
+          </a>
+          <div class="media-body">
+            <div class="stack-item-header">
+              <span class="stack-item-title">
+                <a href={`/writing/${post.id}`}>{post.data.title}</a>
+              </span>
+              <time class="post-date" datetime={formatDate(post.data.date)}>
+                {formatDate(post.data.date)}
+              </time>
+            </div>
+            <p class="stack-item-desc">{post.data.description}</p>
+            {post.data.tags.length > 0 && (
+              <div class="tag-row">
+                {post.data.tags.map((tag) => (
+                  <span class="tag">{tag}</span>
+                ))}
+              </div>
+            )}
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+</BaseLayout>

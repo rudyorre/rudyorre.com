@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProceduralGlyph from '../../components/ProceduralGlyph.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('writing');
+  return posts
+    .filter((post) => !post.data.draft)
+    .map((post) => ({
+      params: { slug: post.id },
+      props: { post },
+    }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const formatDate = (date: Date) => date.toISOString().slice(0, 10);
+---
+
+<BaseLayout
+  title={post.data.title}
+  description={post.data.description}
+  canonical={post.data.canonical}
+>
+  <article class="prose">
+    <header class="post-header">
+      <div class="post-banner-wrap">
+        <ProceduralGlyph seed={`post:${post.id}`} image={post.data.image} size="banner" />
+      </div>
+      <h1>{post.data.title}</h1>
+      <div class="post-meta">
+        <time datetime={formatDate(post.data.date)}>
+          {formatDate(post.data.date)}
+        </time>
+        {
+          post.data.tags.length > 0 && (
+            <span> · {post.data.tags.join(', ')}</span>
+          )
+        }
+      </div>
+    </header>
+    <Content />
+  </article>
+</BaseLayout>

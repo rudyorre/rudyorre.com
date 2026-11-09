@@ -1,0 +1,20 @@
+---
+import { links } from '../data/site';
+const target = links.resume;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Redirecting to Resume · Rudy Orre</title>
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+    <link rel="canonical" href={target} />
+    <script is:inline define:vars={{ target }}>
+      window.location.replace(target);
+    </script>
+  </head>
+  <body style="font-family: monospace; padding: 2rem;">
+    <p>Redirecting to <a href={target}>resume</a>…</p>
+  </body>
+</html>

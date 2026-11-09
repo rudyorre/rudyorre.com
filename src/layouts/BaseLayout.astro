@@ -1,0 +1,520 @@
+---
+import '../styles/global.css';
+import { links } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+}
+
+const {
+  title = 'Rudy Orre',
+  description = 'Software engineer at Google working on the SecOps Detections Platform.',
+  canonical,
+} = Astro.props;
+
+const pageTitle = title === 'Rudy Orre' ? title : `${title} · Rudy Orre`;
+const pathname = Astro.url.pathname;
+const isActive = (prefix: string) =>
+  prefix === '/' ? pathname === '/' : pathname.startsWith(prefix);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    {canonical && <link rel="canonical" href={canonical} />}
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="Rudy Orre · RSS"
+      href="/rss.xml"
+    />
+    <script is:inline>
+      (function () {
+        try {
+          var font = localStorage.getItem('ro-font');
+          if (font === 'mono' || font === 'serif' || font === 'sans') {
+            document.documentElement.setAttribute('data-font', font);
+          }
+          var theme = localStorage.getItem('ro-theme');
+          if (theme === 'light' || theme === 'dark') {
+            document.documentElement.setAttribute('data-theme', theme);
+          }
+        } catch (_) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container site-header-inner">
+        <a href="/" class="site-title">rudyorre<span>.com</span></a>
+        <nav class="site-nav" aria-label="Primary">
+          <ul class="nav-links">
+            <li>
+              <a
+                href="/writing"
+                aria-current={isActive('/writing') ? 'page' : undefined}
+              >
+                writing
+              </a>
+            </li>
+            <li>
+              <a
+                href="/projects"
+                aria-current={isActive('/projects') ? 'page' : undefined}
+              >
+                projects
+              </a>
+            </li>
+          </ul>
+          <div class="toolbar">
+            <button
+              type="button"
+              id="search-trigger"
+              class="control-btn"
+              aria-label="Search and commands (Command K or slash)"
+              title="Search & commands (⌘K or /)"
+            >
+              <span>search</span>
+              <kbd>⌘K</kbd>
+            </button>
+            <button
+              type="button"
+              id="theme-toggle"
+              class="control-btn"
+              aria-label="Toggle color theme"
+              title="Toggle light/dark theme"
+            >
+              <span id="theme-label">theme</span>
+            </button>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="container">
+        <slot />
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container site-footer-inner">
+        <span>© {new Date().getFullYear()} Rudy Orre</span>
+        <div class="footer-right">
+          <div class="font-switcher" role="group" aria-label="Font family">
+            <button type="button" data-set-font="sans" class="font-chip">sans</button>
+            <span>/</span>
+            <button type="button" data-set-font="mono" class="font-chip">mono</button>
+            <span>/</span>
+            <button type="button" data-set-font="serif" class="font-chip">serif</button>
+          </div>
+          <span class="footer-sep" aria-hidden="true">·</span>
+          <span>
+            <a href={links.github} target="_blank" rel="noopener">github</a>
+            {' · '}
+            <a href={links.linkedin} target="_blank" rel="noopener">linkedin</a>
+            {' · '}
+            <a href="/rss.xml">rss</a>
+          </span>
+        </div>
+      </div>
+    </footer>
+
+    <dialog id="search-dialog" class="search-dialog" aria-label="Search and command palette">
+      <div class="search-input-wrap">
+        <span class="mono muted" aria-hidden="true">&gt;</span>
+        <input
+          id="search-input"
+          class="search-input"
+          type="search"
+          placeholder="Search posts, projects, or type a command (font, theme)…"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button type="button" id="search-close" class="search-close-btn">
+          esc
+        </button>
+      </div>
+      <ul id="search-results" class="search-results" role="listbox"></ul>
+      <div class="search-footer">
+        <span>↑↓ navigate · ↵ run / open</span>
+        <span>type "font" or "theme" for commands</span>
+      </div>
+    </dialog>
+
+    <script is:inline>
+      (function () {
+        var root = document.documentElement;
+        var fonts = ['sans', 'mono', 'serif'];
+
+        function currentFont() {
+          var f = root.getAttribute('data-font');
+          return fonts.indexOf(f) !== -1 ? f : 'sans';
+        }
+
+        function setFont(next) {
+          if (fonts.indexOf(next) === -1) return;
+          root.setAttribute('data-font', next);
+          try {
+            localStorage.setItem('ro-font', next);
+          } catch (_) {}
+          updateFontChips();
+        }
+
+        function updateFontChips() {
+          var active = currentFont();
+          var chips = document.querySelectorAll('[data-set-font]');
+          for (var i = 0; i < chips.length; i++) {
+            var chip = chips[i];
+            var isMatch = chip.getAttribute('data-set-font') === active;
+            chip.setAttribute('aria-pressed', isMatch ? 'true' : 'false');
+          }
+        }
+        updateFontChips();
+
+        document.addEventListener('click', function (e) {
+          var target = e.target && e.target.closest ? e.target.closest('[data-set-font]') : null;
+          if (target) {
+            setFont(target.getAttribute('data-set-font'));
+          }
+        });
+
+        // --- Theme state ---
+        var themeBtn = document.getElementById('theme-toggle');
+        var themeLabel = document.getElementById('theme-label');
+
+        function effectiveTheme() {
+          var explicit = root.getAttribute('data-theme');
+          if (explicit === 'light' || explicit === 'dark') return explicit;
+          return window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light';
+        }
+
+        function setTheme(mode) {
+          if (mode === 'system') {
+            root.removeAttribute('data-theme');
+            try {
+              localStorage.removeItem('ro-theme');
+            } catch (_) {}
+          } else if (mode === 'light' || mode === 'dark') {
+            root.setAttribute('data-theme', mode);
+            try {
+              localStorage.setItem('ro-theme', mode);
+            } catch (_) {}
+          }
+          updateThemeLabel();
+        }
+
+        function updateThemeLabel() {
+          if (themeLabel) themeLabel.textContent = effectiveTheme();
+        }
+        updateThemeLabel();
+
+        if (themeBtn) {
+          themeBtn.addEventListener('click', function () {
+            setTheme(effectiveTheme() === 'dark' ? 'light' : 'dark');
+          });
+        }
+
+        // --- Built-in palette commands ---
+        function getCommands() {
+          var curFont = currentFont();
+          var curTheme = effectiveTheme();
+          return [
+            {
+              title: 'Font: Sans-serif (System UI)',
+              snippet: (curFont === 'sans' ? 'Active · ' : '') + 'Switch body typography to clean system sans-serif',
+              kind: 'command',
+              body: 'font typography sans serif typeface style',
+              run: function () { setFont('sans'); },
+            },
+            {
+              title: 'Font: Monospace',
+              snippet: (curFont === 'mono' ? 'Active · ' : '') + 'Switch body typography to technical monospace',
+              kind: 'command',
+              body: 'font typography mono monospace code terminal typeface style',
+              run: function () { setFont('mono'); },
+            },
+            {
+              title: 'Font: Serif',
+              snippet: (curFont === 'serif' ? 'Active · ' : '') + 'Switch body typography to editorial serif',
+              kind: 'command',
+              body: 'font typography serif book editorial typeface style',
+              run: function () { setFont('serif'); },
+            },
+            {
+              title: 'Theme: Toggle Light / Dark',
+              snippet: 'Currently ' + curTheme + ' — switch color mode',
+              kind: 'command',
+              body: 'theme dark light mode color appearance toggle',
+              run: function () { setTheme(effectiveTheme() === 'dark' ? 'light' : 'dark'); },
+            },
+            {
+              title: 'Theme: Dark Mode',
+              snippet: 'Switch appearance to dark palette',
+              kind: 'command',
+              body: 'theme dark mode night color appearance',
+              run: function () { setTheme('dark'); },
+            },
+            {
+              title: 'Theme: Light Mode',
+              snippet: 'Switch appearance to light palette',
+              kind: 'command',
+              body: 'theme light mode day color appearance',
+              run: function () { setTheme('light'); },
+            },
+            {
+              title: 'Theme: Use System Preference',
+              snippet: 'Follow OS prefers-color-scheme setting',
+              kind: 'command',
+              body: 'theme system auto os preference reset',
+              run: function () { setTheme('system'); },
+            },
+          ];
+        }
+
+        // --- Search & Command Modal ---
+        var dialog = document.getElementById('search-dialog');
+        var trigger = document.getElementById('search-trigger');
+        var closeBtn = document.getElementById('search-close');
+        var input = document.getElementById('search-input');
+        var list = document.getElementById('search-results');
+        var indexCache = null;
+        var activeIdx = 0;
+        var currentMatches = [];
+
+        function loadIndex() {
+          if (indexCache) return Promise.resolve(indexCache);
+          return fetch('/search-index.json')
+            .then(function (r) {
+              return r.json();
+            })
+            .then(function (data) {
+              indexCache = data;
+              return data;
+            })
+            .catch(function () {
+              return [];
+            });
+        }
+
+        function escapeHtml(s) {
+          return String(s)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+        }
+
+        function executeItem(item) {
+          if (!item) return;
+          closeSearch();
+          if (typeof item.run === 'function') {
+            item.run();
+            return;
+          }
+          if (item.url) {
+            if (item.url.indexOf('http') === 0) {
+              window.open(item.url, '_blank', 'noopener');
+            } else {
+              window.location.href = item.url;
+            }
+          }
+        }
+
+        function renderResults(items) {
+          currentMatches = items;
+          if (!list) return;
+          if (!items.length) {
+            list.innerHTML = '<li class="search-empty">No matching content or commands.</li>';
+            return;
+          }
+          if (activeIdx >= items.length) activeIdx = 0;
+          list.innerHTML = items
+            .map(function (item, idx) {
+              var isCmd = item.kind === 'command';
+              var href = isCmd ? '#' : escapeHtml(item.url);
+              var ext = !isCmd && item.url && item.url.indexOf('http') === 0
+                ? ' target="_blank" rel="noopener"'
+                : '';
+              return (
+                '<li class="search-result-item" role="option" aria-selected="' +
+                (idx === activeIdx ? 'true' : 'false') +
+                '" data-idx="' +
+                idx +
+                '">' +
+                '<a href="' +
+                href +
+                '"' +
+                ext +
+                ' data-item-idx="' +
+                idx +
+                '">' +
+                '<span class="search-result-main">' +
+                '<span class="search-result-title">' +
+                escapeHtml(item.title) +
+                '</span>' +
+                '<span class="search-result-snippet">' +
+                escapeHtml(item.snippet) +
+                '</span>' +
+                '</span>' +
+                '<span class="search-result-kind' +
+                (isCmd ? ' is-command' : '') +
+                '">' +
+                escapeHtml(item.kind) +
+                '</span>' +
+                '</a>' +
+                '</li>'
+              );
+            })
+            .join('');
+        }
+
+        if (list) {
+          list.addEventListener('click', function (e) {
+            var link = e.target && e.target.closest ? e.target.closest('[data-item-idx]') : null;
+            if (!link) return;
+            var idx = parseInt(link.getAttribute('data-item-idx'), 10);
+            var item = currentMatches[idx];
+            if (item && typeof item.run === 'function') {
+              e.preventDefault();
+              executeItem(item);
+            } else {
+              closeSearch();
+            }
+          });
+        }
+
+        function runQuery(q) {
+          loadIndex().then(function (docs) {
+            var commands = getCommands();
+            var raw = q.trim();
+            var cmdOnly = raw.charAt(0) === '>';
+            var cleanQ = cmdOnly ? raw.slice(1).trim() : raw;
+            var terms = cleanQ.toLowerCase().split(/\s+/).filter(Boolean);
+
+            var pool = cmdOnly ? commands : docs.concat(commands);
+
+            if (!terms.length) {
+              activeIdx = 0;
+              if (cmdOnly) {
+                renderResults(commands);
+              } else {
+                // Default view: top content items + quick font/theme commands
+                renderResults(docs.slice(0, 6).concat(commands.slice(0, 4)));
+              }
+              return;
+            }
+
+            var scored = [];
+            for (var i = 0; i < pool.length; i++) {
+              var d = pool[i];
+              var hayTitle = d.title.toLowerCase();
+              var haySnippet = d.snippet.toLowerCase();
+              var hayBody = (d.body || '').toLowerCase();
+              var score = 0;
+              var matchedAll = true;
+              for (var t = 0; t < terms.length; t++) {
+                var term = terms[t];
+                var inTitle = hayTitle.indexOf(term) !== -1;
+                var inSnippet = haySnippet.indexOf(term) !== -1;
+                var inBody = hayBody.indexOf(term) !== -1;
+                if (!inTitle && !inSnippet && !inBody) {
+                  matchedAll = false;
+                  break;
+                }
+                if (inTitle) score += 10;
+                if (inSnippet) score += 4;
+                if (inBody) score += 2;
+              }
+              if (matchedAll) scored.push({ doc: d, score: score });
+            }
+            scored.sort(function (a, b) {
+              return b.score - a.score;
+            });
+            activeIdx = 0;
+            renderResults(
+              scored.slice(0, 10).map(function (s) {
+                return s.doc;
+              })
+            );
+          });
+        }
+
+        function openSearch() {
+          if (!dialog) return;
+          if (!dialog.open) dialog.showModal();
+          if (input) {
+            input.value = '';
+            input.focus();
+          }
+          runQuery('');
+        }
+
+        function closeSearch() {
+          if (dialog && dialog.open) dialog.close();
+        }
+
+        if (trigger) trigger.addEventListener('click', openSearch);
+        if (closeBtn) closeBtn.addEventListener('click', closeSearch);
+        if (dialog) {
+          dialog.addEventListener('click', function (e) {
+            if (e.target === dialog) closeSearch();
+          });
+        }
+        if (input) {
+          input.addEventListener('input', function () {
+            runQuery(input.value);
+          });
+        }
+
+        window.addEventListener('keydown', function (e) {
+          var tag = (e.target && e.target.tagName) || '';
+          var isInput =
+            tag === 'INPUT' || tag === 'TEXTAREA' || (e.target && e.target.isContentEditable);
+
+          if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+            e.preventDefault();
+            if (dialog && dialog.open) closeSearch();
+            else openSearch();
+            return;
+          }
+
+          if (!isInput && e.key === '/' && (!dialog || !dialog.open)) {
+            e.preventDefault();
+            openSearch();
+            return;
+          }
+
+          if (dialog && dialog.open && currentMatches.length) {
+            if (e.key === 'ArrowDown') {
+              e.preventDefault();
+              activeIdx = (activeIdx + 1) % currentMatches.length;
+              renderResults(currentMatches);
+            } else if (e.key === 'ArrowUp') {
+              e.preventDefault();
+              activeIdx = (activeIdx - 1 + currentMatches.length) % currentMatches.length;
+              renderResults(currentMatches);
+            } else if (e.key === 'Enter') {
+              var chosen = currentMatches[activeIdx];
+              if (chosen) {
+                e.preventDefault();
+                executeItem(chosen);
+              }
+            }
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

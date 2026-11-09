@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# rudyorre.com
 
-## Getting Started
+Personal site and writing archive for Rudy Orre, built with [Astro](https://astro.build), plain CSS, and Markdown.
 
-First, run the development server:
+## Commands
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install       # install dependencies
+npm run dev       # local dev server at http://localhost:4321
+npm run build     # static production build into ./dist
+npm run preview   # preview ./dist locally
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Architecture & Constraints
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Zero required client JS.** Pages are static HTML + CSS. The only inline scripts in [`src/layouts/BaseLayout.astro`](./src/layouts/BaseLayout.astro) are the synchronous `<head>` theme/font restorer and the `⌘K` search/command modal + toggles.
+2. **Single stylesheet.** All styling lives in [`src/styles/global.css`](./src/styles/global.css) using CSS custom properties. No CSS frameworks or UI component libraries.
+3. **Performance budget.** `/` HTML + CSS stays well under 50 KB gzipped (~7 KB gzipped today).
+4. **Permanent redirects.** `/resume`, `/meet`, and `/zoom` redirect to the URLs in [`src/data/site.ts`](./src/data/site.ts).
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Key Files
 
-## Learn More
+| Path | Purpose |
+| --- | --- |
+| [`src/content/writing/`](./src/content/writing/) | Blog posts in `.md` or `.mdx` (schema in [`src/content.config.ts`](./src/content.config.ts)) |
+| [`src/data/site.ts`](./src/data/site.ts) | Projects, experience (`jobs`), and external/redirect `links` |
+| [`src/components/ProceduralGlyph.astro`](./src/components/ProceduralGlyph.astro) | 3-tier square thumbnail/banner component (`image` → `icon` → procedural SVG fallback) |
+| [`src/layouts/BaseLayout.astro`](./src/layouts/BaseLayout.astro) | Header, footer font switcher, `<dialog>` search/command palette |
+| [`src/pages/search-index.json.ts`](./src/pages/search-index.json.ts) | Build-time JSON search index |
+| [`src/styles/global.css`](./src/styles/global.css) | Theme tokens, typography, layout, and component styles |
 
-To learn more about Next.js, take a look at the following resources:
+## Docs
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- [`docs/content.md`](./docs/content.md) — Adding blog posts, projects, experience, redirect links, and `⌘K` commands
+- [`docs/design.md`](./docs/design.md) — Visual principles, 3-tier square icon/glyph system, and typography

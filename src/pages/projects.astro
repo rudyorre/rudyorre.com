@@ -1,0 +1,71 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProceduralGlyph from '../components/ProceduralGlyph.astro';
+import { projects } from '../data/site';
+---
+
+<BaseLayout
+  title="Projects"
+  description="Open-source and personal software projects by Rudy Orre."
+>
+  <h1>Projects</h1>
+  <p class="muted">
+    A selection of open-source libraries, systems projects, and coursework. Each glyph is deterministically generated from the project name unless a custom image is set.
+  </p>
+
+  <ul class="media-list" style="margin-top: 1.75rem;">
+    {
+      projects.map((project) => {
+        const href = project.source || project.visit;
+        return (
+          <li class="media-item">
+            <a
+              href={href || '/projects'}
+              target={href ? '_blank' : undefined}
+              rel={href ? 'noopener' : undefined}
+              class="media-thumb-link"
+              tabindex="-1"
+              aria-hidden="true"
+            >
+              <ProceduralGlyph seed={`proj:${project.title}`} icon={project.icon} image={project.image} size="md" />
+            </a>
+            <div class="media-body">
+              <div class="stack-item-header">
+                <span class="stack-item-title">
+                  {project.source ? (
+                    <a href={project.source} target="_blank" rel="noopener">
+                      {project.title} ↗
+                    </a>
+                  ) : (
+                    project.title
+                  )}
+                  {project.visit && (
+                    <>
+                      {' '}
+                      <a
+                        href={project.visit}
+                        target="_blank"
+                        rel="noopener"
+                        class="mono muted"
+                        style="font-size: 0.78rem; font-weight: 400;"
+                      >
+                        [live]
+                      </a>
+                    </>
+                  )}
+                </span>
+                <span class="stack-item-meta">{project.year}</span>
+              </div>
+              <p class="stack-item-desc">{project.description}</p>
+              <div class="tag-row">
+                {project.tags.map((tag) => (
+                  <span class="tag">{tag}</span>
+                ))}
+              </div>
+            </div>
+          </li>
+        );
+      })
+    }
+  </ul>
+</BaseLayout>
