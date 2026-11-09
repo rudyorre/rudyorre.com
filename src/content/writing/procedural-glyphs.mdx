@@ -17,26 +17,17 @@ To hopefully fix this, every post and project on this site gets a deterministic
 `64x64` geometric badge (and a `640x140` header banner) compiled into static
 inline `<svg>` markup during build time.
 
-## Build-time vs. runtime
-
-None of these glyphs are computed in the browser:
-
-1. **Zero client JavaScript:** `ProceduralGlyph.astro` runs exclusively inside
-   Astro's build pipeline (Node.js) when generating static HTML.
-2. **No image files or network requests:** Instead of emitting `.png` files
-   into `dist/`, the component outputs raw `<svg>` nodes (~500 bytes gzipped)
-   directly inside the HTML document.
-3. **Theme-reactive via CSS variables:** Stroke and fill attributes reference
-   CSS custom properties (`var(--glyph-bg)`, `var(--glyph-ink)`,
-   `var(--glyph-accent)`), so switching between light and dark mode re-themes
-   every graphic instantly without regenerating anything.
-
 ## How a seed becomes a glyph
 
-Given a seed string like `"post:rebuilding-this-site"`, the build step runs two tiny functions:
+Given a seed string like `"post:rebuilding-this-site"`, the build step runs two
+tiny functions:
 
-1. **32-bit FNV-1a hash (`hash(seed)`):** Picks one of **5 geometric motif families** (`variant = h0 % 5`) and one of **5 muted technical accent colors** (`(h0 >>> 3) % 5`).
-2. **SplitMix32 PRNG stream (`makeRng(seed)`):** Produces a repeatable stream of floats in `[0, 1)` from that 32-bit state to drive orbital angles, wave frequencies, node coordinates, and layer rotations.
+1. **32-bit FNV-1a hash (`hash(seed)`):** Picks one of **5 geometric motif
+   families** (`variant = h0 % 5`) and one of **5 muted technical accent
+   colors** (`(h0 >>> 3) % 5`).
+2. **SplitMix32 PRNG stream (`makeRng(seed)`):** Produces a repeatable stream of
+   floats in `[0, 1)` from that 32-bit state to drive orbital angles, wave
+   frequencies, node coordinates, and layer rotations.
 
 ```ts
 function hash(str: string): number {
@@ -51,7 +42,8 @@ function hash(str: string): number {
 
 ## The 5 procedural motif families
 
-Below is a live build-time specimen grid generated from 20 different seed strings across all five motif families (`v0` through `v4`):
+Below is a live build-time specimen grid generated from 18 different seed
+strings across all five motif families (`v0` through `v4`):
 
 export const seeds = [
   'post:rebuilding-this-site',
@@ -110,5 +102,6 @@ the coordinate system across a `640×140` viewBox. Here are some examples:
   <ProceduralGlyph seed="post:clock-drift" size="banner" />
 </div>
 
-This is the first iteration of this glyph generator system, so one day I'll
-follow this up with more features.
+And I know, these aren't perfect, and there's definitely some repetition that
+needs addressing. This is however the first iteration of this glyph generator
+system, so one day I'll follow this up with more features.
