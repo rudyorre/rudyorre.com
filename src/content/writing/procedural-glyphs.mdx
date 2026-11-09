@@ -1,0 +1,101 @@
+---
+title: "Deterministic SVG glyphs at build time"
+date: 2026-11-08
+description: "How this site generates zero-runtime geometric thumbnails from post slugs using FNV-1a and SplitMix32."
+tags: ["design", "svg", "systems"]
+draft: false
+---
+
+import ProceduralGlyph from '../../components/ProceduralGlyph.astro';
+
+Technical blogs have an awkward thumbnail problem: most backend posts don't have a natural hero photo, and slapping stock art onto a post about distributed consensus or SQL query planning feels wrong. On the other hand, a list of twenty titles and dates with no visual anchor quickly turns into a wall of text.
+
+To Thread the needle, every post and project on this site gets a deterministic `64×64` geometric badge (and a `640×140` header banner) compiled into static inline `<svg>` markup during `astro build`.
+
+## Build-time vs. runtime
+
+None of these glyphs are computed in the browser:
+
+1. **Zero client JavaScript:** [`ProceduralGlyph.astro`](https://github.com/rudyorre/rudyorre.com) runs exclusively inside Astro's build pipeline (Node.js) when generating static HTML.
+2. **No image files or network requests:** Instead of emitting `.png` files into `dist/`, the component outputs raw `<svg>` nodes (~500 bytes gzipped) directly inside the HTML document.
+3. **Theme-reactive via CSS variables:** Stroke and fill attributes reference CSS custom properties (`var(--glyph-bg)`, `var(--glyph-ink)`, `var(--glyph-accent)`), so switching between light and dark mode re-themes every graphic instantly without regenerating anything.
+
+## How a seed becomes a glyph
+
+Given a seed string like `"post:rebuilding-this-site"`, the build step runs two tiny functions:
+
+1. **32-bit FNV-1a hash (`hash(seed)`):** Picks one of **5 geometric motif families** (`variant = h0 % 5`) and one of **5 muted technical accent colors** (`(h0 >>> 3) % 5`).
+2. **SplitMix32 PRNG stream (`makeRng(seed)`):** Produces a repeatable stream of floats in `[0, 1)` from that 32-bit state to drive orbital angles, wave frequencies, node coordinates, and layer rotations.
+
+```ts
+function hash(str: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+```
+
+## The 5 procedural motif families
+
+Below is a live build-time specimen grid generated from 20 different seed strings across all five motif families (`v0` through `v4`):
+
+export const seeds = [
+  'post:rebuilding-this-site',
+  'post:procedural-glyphs',
+  'post:consensus-notes',
+  'post:wal-compaction',
+  'post:zero-copy-io',
+  'post:raft-leases',
+  'post:bloom-filters',
+  'post:lsm-trees',
+  'post:grpc-backpressure',
+  'post:query-planner',
+  'post:clock-drift',
+  'post:ebpf-tracing',
+  'post:tail-latency',
+  'post:simd-parsing',
+  'post:ring-buffers',
+  'post:consistent-hashing',
+  'post:merkle-trees',
+  'post:b-plus-trees',
+  'post:vector-clocks',
+  'post:thread-pools',
+];
+
+export function familyLabel(seed) {
+  let h = 2166136261;
+  for (let i = 0; i < seed.length; i++) {
+    h ^= seed.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  const v = (h >>> 0) % 5;
+  const names = ['v0 · orbits', 'v1 · ridges', 'v2 · mesh', 'v3 · iso-stack', 'v4 · polar'];
+  return names[v];
+}
+
+<div class="glyph-grid-showcase">
+  {seeds.map((s) => (
+    <div class="glyph-specimen">
+      <ProceduralGlyph seed={s} size="md" />
+      <div class="glyph-specimen-meta">
+        <span class="glyph-specimen-seed" title={s}>{s.replace('post:', '')}</span>
+        <span class="glyph-specimen-family">{familyLabel(s)}</span>
+      </div>
+    </div>
+  ))}
+</div>
+
+## Banner variants (`640×140`)
+
+The same component also renders wide header banners (`size="banner"`) by scaling the coordinate system across a `640×140` viewBox—one example from each of the 5 families:
+
+<div style="display: flex; flex-direction: column; gap: 0.75rem; margin: 1.25rem 0;">
+  <ProceduralGlyph seed="post:wal-compaction" size="banner" />
+  <ProceduralGlyph seed="post:bloom-filters" size="banner" />
+  <ProceduralGlyph seed="post:raft-leases" size="banner" />
+  <ProceduralGlyph seed="post:rebuilding-this-site" size="banner" />
+  <ProceduralGlyph seed="post:consensus-notes" size="banner" />
+</div>

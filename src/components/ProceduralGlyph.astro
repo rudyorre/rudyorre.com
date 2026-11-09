@@ -18,7 +18,7 @@ interface Props {
 
 const { seed, size = 'sm', icon, image, alt = '' } = Astro.props;
 
-// Deterministic FNV-1a 32-bit hash for fallback procedural generator
+// Deterministic FNV-1a 32-bit hash + SplitMix32 stream for rich procedural geometry
 function hash(str: string): number {
   let h = 2166136261;
   for (let i = 0; i < str.length; i++) {
@@ -28,11 +28,18 @@ function hash(str: string): number {
   return h >>> 0;
 }
 
-const h0 = hash(seed);
-const h1 = hash(seed + ':1');
-const h2 = hash(seed + ':2');
-const h3 = hash(seed + ':3');
+function makeRng(seedStr: string) {
+  let state = hash(seedStr) || 1;
+  return () => {
+    state = (state + 0x9e3779b9) >>> 0;
+    let z = state;
+    z = Math.imul(z ^ (z >>> 16), 0x85ebca6b) >>> 0;
+    z = Math.imul(z ^ (z >>> 13), 0xc2b2ae35) >>> 0;
+    return ((z ^ (z >>> 16)) >>> 0) / 4294967296;
+  };
+}
 
+const h0 = hash(seed);
 const variant = h0 % 5;
 
 const accents = [
@@ -42,10 +49,119 @@ const accents = [
   'var(--glyph-accent-4)',
   'var(--glyph-accent-5)',
 ];
-const accent = accents[(h0 >>> 4) % accents.length];
+const accent = accents[(h0 >>> 3) % accents.length];
+const accentSecondary = accents[((h0 >>> 3) + 2) % accents.length];
 
 const w = size === 'banner' ? 640 : 64;
 const h = size === 'banner' ? 140 : 64;
+const cx = w / 2;
+const cy = h / 2;
+const scale = size === 'banner' ? 1.85 : 1;
+
+// Precompute geometry per variant so markup stays clean
+const rng = makeRng(seed);
+
+// Variant 0: Orbital phase system (nested rotated ellipses + Lissajous arc + satellite nodes)
+const orbits = Array.from({ length: 3 }).map((_, i) => {
+  const rx = (18 - i * 3.5) * scale;
+  const ry = (7.5 + rng() * 5) * scale;
+  const rot = Math.round(rng() * 150 - 75);
+  const theta = rng() * Math.PI * 2;
+  const rad = (rot * Math.PI) / 180;
+  const px = rx * Math.cos(theta);
+  const py = ry * Math.sin(theta);
+  const sx = cx + px * Math.cos(rad) - py * Math.sin(rad);
+  const sy = cy + px * Math.sin(rad) + py * Math.cos(rad);
+  return { rx, ry, rot, sx, sy, dashed: i === 1 };
+});
+
+// Variant 1: Stacked topographic / Fourier ridge horizon
+const ridgeCount = size === 'banner' ? 7 : 6;
+const ridges = Array.from({ length: ridgeCount }).map((_, idx) => {
+  const yBase = (h * 0.2) + (idx / (ridgeCount - 1)) * (h * 0.62);
+  const freq1 = 1.5 + rng() * 2.0;
+  const freq2 = 3.0 + rng() * 2.5;
+  const phase1 = rng() * Math.PI * 2;
+  const phase2 = rng() * Math.PI * 2;
+  const peakX = 0.22 + rng() * 0.56;
+  const steps = size === 'banner' ? 40 : 20;
+  const pts: string[] = [];
+  for (let s = 0; s <= steps; s++) {
+    const t = s / steps;
+    const x = t * w;
+    const env = Math.exp(-Math.pow((t - peakX) / 0.24, 2));
+    const dy =
+      (Math.sin(t * Math.PI * freq1 + phase1) * 6.5 +
+        Math.cos(t * Math.PI * freq2 + phase2) * 3.2) *
+      env *
+      scale;
+    pts.push(`${s === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${(yBase - dy).toFixed(1)}`);
+  }
+  const d = pts.join(' ');
+  const areaD = `${d} L ${w} ${h} L 0 ${h} Z`;
+  const isAccent = idx === Math.floor(ridgeCount / 2);
+  return { d, areaD, isAccent, opacity: (0.35 + (idx / ridgeCount) * 0.6).toFixed(2) };
+});
+
+// Variant 2: Constellation / Delaunay-style mesh graph
+const nodeCount = size === 'banner' ? 14 : 8;
+const meshNodes = Array.from({ length: nodeCount }).map((_, i) => {
+  const angle = (i / nodeCount) * Math.PI * 2 + (rng() - 0.5) * 0.55;
+  const radius = (0.18 + rng() * 0.62) * (size === 'banner' ? h * 0.44 : 23);
+  const spreadX = size === 'banner' ? 3.2 : 1;
+  return {
+    x: cx + Math.cos(angle) * radius * spreadX,
+    y: cy + Math.sin(angle) * radius,
+    hub: i < 2,
+  };
+});
+const meshEdges: { x1: number; y1: number; x2: number; y2: number; primary: boolean }[] = [];
+for (let i = 0; i < meshNodes.length; i++) {
+  for (let j = i + 1; j < meshNodes.length; j++) {
+    const dx = (meshNodes[i].x - meshNodes[j].x) / (size === 'banner' ? 2.2 : 1);
+    const dy = meshNodes[i].y - meshNodes[j].y;
+    const dist = Math.hypot(dx, dy);
+    if (dist < (size === 'banner' ? 42 : 24)) {
+      meshEdges.push({
+        x1: meshNodes[i].x,
+        y1: meshNodes[i].y,
+        x2: meshNodes[j].x,
+        y2: meshNodes[j].y,
+        primary: meshNodes[i].hub || meshNodes[j].hub,
+      });
+    }
+  }
+}
+
+// Variant 3: Isometric stacked planes + signal bus (triggered by post:rebuilding-this-site)
+const isoLayers = [-1, 0, 1].map((offset, idx) => {
+  const yCenter = cy + offset * (size === 'banner' ? 14 : 8.5);
+  const rx = (size === 'banner' ? 54 : 19) - idx * 1.5;
+  const ry = (size === 'banner' ? 18 : 8.5) - idx * 0.5;
+  const points = [
+    `${cx},${yCenter - ry}`,
+    `${cx + rx},${yCenter}`,
+    `${cx},${yCenter + ry}`,
+    `${cx - rx},${yCenter}`,
+  ].join(' ');
+  return { points, yCenter, rx, ry, isMiddle: offset === 0, isTop: offset === -1 };
+});
+const isoRot = Math.round((rng() - 0.5) * 16);
+
+// Variant 4: Radial polar sonar / harmonic burst
+const spokeCount = size === 'banner' ? 28 : 16;
+const spokes = Array.from({ length: spokeCount }).map((_, i) => {
+  const a = (i / spokeCount) * Math.PI * 2;
+  const rInner = (5 + (i % 2) * 3) * scale;
+  const rOuter = (11 + rng() * 13) * scale;
+  return {
+    x1: cx + Math.cos(a) * rInner,
+    y1: cy + Math.sin(a) * rInner,
+    x2: cx + Math.cos(a) * rOuter,
+    y2: cy + Math.sin(a) * rOuter,
+    highlight: i % 5 === h0 % 5,
+  };
+});
 ---
 
 <div class={`glyph-frame glyph-${size}`} aria-hidden={alt ? undefined : 'true'}>
@@ -65,7 +181,6 @@ const h = size === 'banner' ? 140 : 64;
         </g>
 
         {icon === 'brewin' && (
-          /* Brewin: Cyan-accented steaming cup motif from v3 brewin-logo.png */
           <g style="--glyph-accent: #0ea5e9;">
             <path
               d="M 22 33 L 42 33 L 39.5 49 L 24.5 49 Z"
@@ -100,7 +215,6 @@ const h = size === 'banner' ? 140 : 64;
         )}
 
         {icon === 'tensorfaux' && (
-          /* TensorFaux: Warm amber low-poly triangular mesh from v3 tensorfaux.png */
           <g style="--glyph-accent: #f59e0b;" stroke-linejoin="round">
             <polygon
               points="32,13 49,25 43,47 21,47 15,25"
@@ -119,7 +233,6 @@ const h = size === 'banner' ? 140 : 64;
         )}
 
         {icon === 'dashviz' && (
-          /* Dashviz: Emerald telemetry bars + trend line from v3 dashviz.png */
           <g style="--glyph-accent: #10b981;">
             <rect x="16" y="36" width="6" height="12" rx="1" fill="var(--glyph-ink)" opacity="0.35" />
             <rect x="25" y="29" width="6" height="19" rx="1" fill="var(--glyph-ink)" opacity="0.55" />
@@ -138,7 +251,6 @@ const h = size === 'banner' ? 140 : 64;
         )}
 
         {icon === 'chatbot' && (
-          /* Chatbot.ai (JPL FireSat): Query prompt -> database cylinder/nodes */
           <g style="--glyph-accent: #3b82f6;">
             <rect
               x="14"
@@ -172,7 +284,6 @@ const h = size === 'banner' ? 140 : 64;
         )}
 
         {icon === 'vit' && (
-          /* Vision Transformer: 3x3 image patch grid with highlighted attention patch */
           <g style="--glyph-accent: #8b5cf6;">
             {[0, 1, 2].map((r) =>
               [0, 1, 2].map((c) => {
@@ -198,7 +309,6 @@ const h = size === 'banner' ? 140 : 64;
         )}
 
         {icon === 'postagger' && (
-          /* POS Tagger: Viterbi lattice / tag stem diagram from v3 pos-tagger.jpg */
           <g style="--glyph-accent: #ec4899;">
             {[18, 32, 46].map((x, idx) => (
               <g>
@@ -233,7 +343,6 @@ const h = size === 'banner' ? 140 : 64;
         )}
 
         {icon === 'ngram' && (
-          /* N-Gram: Markov chain state transition nodes (w_{n-1} -> w_n) */
           <g style="--glyph-accent: #14b8a6;">
             <circle cx="19" cy="36" r="5" fill="none" stroke="var(--glyph-ink)" stroke-width="1.4" />
             <circle cx="32" cy="22" r="5" fill="none" stroke="var(--glyph-ink)" stroke-width="1.4" />
@@ -253,7 +362,6 @@ const h = size === 'banner' ? 140 : 64;
         )}
 
         {icon === 'linreg' && (
-          /* Multivariable Linear Regression: Scatter points + fitted hyperplane line */
           <g style="--glyph-accent: #f97316;">
             <line
               x1="15"
@@ -274,7 +382,6 @@ const h = size === 'banner' ? 140 : 64;
         )}
 
         {icon === 'cppptr' && (
-          /* C++ shared_ptr & BST: Root node branching to two child nodes / ref count */
           <g style="--glyph-accent: #6366f1;">
             <line x1="32" y1="23" x2="20" y2="41" stroke="var(--glyph-ink)" stroke-width="1.4" />
             <line x1="32" y1="23" x2="44" y2="41" stroke="var(--glyph-accent)" stroke-width="1.5" />
@@ -298,144 +405,193 @@ const h = size === 'banner' ? 140 : 64;
         viewBox={`0 0 ${w} ${h}`}
         xmlns="http://www.w3.org/2000/svg"
         class="glyph-svg"
-        style={`--glyph-accent: ${accent};`}
+        style={`--glyph-accent: ${accent}; --glyph-accent-alt: ${accentSecondary};`}
       >
         <rect width={w} height={h} fill="var(--glyph-bg)" />
 
+        {/* Subtle technical registration grid + corner ticks */}
         <g stroke="var(--glyph-grid)" stroke-width="1">
-          {size === 'banner' ? (
+          <line x1="0" y1={cy} x2={w} y2={cy} />
+          <line x1={cx} y1="0" x2={cx} y2={h} />
+          {size === 'banner' && (
             <>
-              <line x1="0" y1={h / 2} x2={w} y2={h / 2} />
               <line x1={w * 0.25} y1="0" x2={w * 0.25} y2={h} />
-              <line x1={w * 0.5} y1="0" x2={w * 0.5} y2={h} />
               <line x1={w * 0.75} y1="0" x2={w * 0.75} y2={h} />
             </>
-          ) : (
-            <>
-              <line x1="0" y1="32" x2="64" y2="32" />
-              <line x1="32" y1="0" x2="32" y2="64" />
-            </>
           )}
+          <circle cx={cx} cy={cy} r={22 * scale} fill="none" stroke-dasharray="2 3" />
         </g>
 
         {variant === 0 && (
+          /* Motif 0: Orbital phase system (tilted ellipses + satellite nodes) */
           <g fill="none">
-            {[0, 1, 2].map((i) => {
-              const cx = size === 'banner' ? w * (0.28 + ((h1 & 0xff) / 255) * 0.44) : 24 + ((h1 >> (i * 3)) & 15);
-              const cy = size === 'banner' ? h * 0.5 : 24 + ((h2 >> (i * 3)) & 15);
-              const r = (size === 'banner' ? 22 : 9) + i * (size === 'banner' ? 18 : 8);
-              return (
-                <circle
+            {orbits.map((o, idx) => (
+              <g>
+                <ellipse
                   cx={cx}
                   cy={cy}
-                  r={r}
-                  stroke={i === 0 ? 'var(--glyph-accent)' : 'var(--glyph-ink)'}
-                  stroke-width={i === 0 ? '1.5' : '1'}
-                  stroke-dasharray={i === 2 ? '3 3' : undefined}
-                  opacity={1 - i * 0.22}
+                  rx={o.rx}
+                  ry={o.ry}
+                  transform={`rotate(${o.rot} ${cx} ${cy})`}
+                  stroke={idx === 0 ? 'var(--glyph-accent)' : 'var(--glyph-ink)'}
+                  stroke-width={idx === 0 ? '1.4' : '1.05'}
+                  stroke-dasharray={o.dashed ? '3 2.5' : undefined}
+                  opacity={idx === 0 ? '0.95' : '0.55'}
                 />
-              );
-            })}
-            <circle
-              cx={size === 'banner' ? w * (0.28 + ((h1 & 0xff) / 255) * 0.44) : 24 + (h1 & 15)}
-              cy={size === 'banner' ? h * 0.5 : 24 + (h2 & 15)}
-              r="2.5"
-              fill="var(--glyph-accent)"
-            />
+                <circle
+                  cx={o.sx}
+                  cy={o.sy}
+                  r={idx === 0 ? '2.4' : '1.7'}
+                  fill={idx === 0 ? 'var(--glyph-accent)' : 'var(--glyph-ink)'}
+                />
+              </g>
+            ))}
+            <circle cx={cx} cy={cy} r={3 * scale} fill="var(--glyph-accent)" fill-opacity="0.22" stroke="var(--glyph-accent)" stroke-width="1.3" />
           </g>
         )}
 
         {variant === 1 && (
-          <g fill="none">
-            {[0, 1, 2, 3, 4].map((row) => {
-              const yBase = (h / 6) * (row + 1);
-              const amp = (size === 'banner' ? 14 : 6) * (((h1 >> row) & 1) ? 1 : -1);
-              const mid1 = w * (0.25 + (((h2 >> (row * 2)) & 3) * 0.08));
-              const mid2 = w * (0.62 + (((h3 >> (row * 2)) & 3) * 0.07));
-              const d = `M 0 ${yBase} C ${mid1} ${yBase - amp}, ${mid2} ${yBase + amp}, ${w} ${yBase}`;
-              const isPrimary = row === (h0 % 5);
-              return (
+          /* Motif 1: Stacked Fourier / Joy Division horizon ridges */
+          <g>
+            {ridges.map((r) => (
+              <g>
+                <path d={r.areaD} fill="var(--glyph-bg)" opacity="0.85" />
                 <path
-                  d={d}
-                  stroke={isPrimary ? 'var(--glyph-accent)' : 'var(--glyph-ink)'}
-                  stroke-width={isPrimary ? '1.5' : '1'}
-                  opacity={isPrimary ? '0.95' : '0.45'}
+                  d={r.d}
+                  fill="none"
+                  stroke={r.isAccent ? 'var(--glyph-accent)' : 'var(--glyph-ink)'}
+                  stroke-width={r.isAccent ? '1.6' : '1.05'}
+                  opacity={r.isAccent ? '1' : r.opacity}
                 />
-              );
-            })}
+              </g>
+            ))}
           </g>
         )}
 
         {variant === 2 && (
+          /* Motif 2: Constellation / Delaunay network mesh */
           <g>
-            {Array.from({ length: size === 'banner' ? 11 : 5 }).map((_, gx) =>
-              Array.from({ length: 5 }).map((__, gy) => {
-                const bit = ((h1 ^ (gx * 2654435761) ^ (gy * 1597334677)) >>> 0) % 7;
-                const x = (w / (size === 'banner' ? 12 : 6)) * (gx + 1);
-                const y = (h / 6) * (gy + 1);
-                if (bit === 0) {
-                  return <circle cx={x} cy={y} r="2.4" fill="var(--glyph-accent)" />;
-                }
-                if (bit < 3) {
-                  return <circle cx={x} cy={y} r="1.6" fill="var(--glyph-ink)" opacity="0.65" />;
-                }
-                return <circle cx={x} cy={y} r="0.9" fill="var(--glyph-ink)" opacity="0.22" />;
-              })
-            )}
+            {meshEdges.map((e) => (
+              <line
+                x1={e.x1}
+                y1={e.y1}
+                x2={e.x2}
+                y2={e.y2}
+                stroke={e.primary ? 'var(--glyph-accent)' : 'var(--glyph-ink)'}
+                stroke-width={e.primary ? '1.25' : '0.95'}
+                opacity={e.primary ? '0.75' : '0.38'}
+              />
+            ))}
+            {meshNodes.map((n) => (
+              <circle
+                cx={n.x}
+                cy={n.y}
+                r={n.hub ? '2.7' : '1.8'}
+                fill={n.hub ? 'var(--glyph-accent)' : 'var(--glyph-bg)'}
+                stroke={n.hub ? 'var(--glyph-accent)' : 'var(--glyph-ink)'}
+                stroke-width="1.3"
+              />
+            ))}
           </g>
         )}
 
         {variant === 3 && (
-          <g fill="none" stroke="var(--glyph-ink)" stroke-width="1">
-            {(() => {
-              const pad = size === 'banner' ? 18 : 10;
-              const splitX = pad + ((w - pad * 2) * (0.35 + ((h1 & 0x3f) / 63) * 0.3));
-              const splitY = pad + ((h - pad * 2) * (0.35 + ((h2 & 0x3f) / 63) * 0.3));
-              return (
-                <>
-                  <rect x={pad} y={pad} width={w - pad * 2} height={h - pad * 2} opacity="0.65" />
-                  <line x1={splitX} y1={pad} x2={splitX} y2={h - pad} opacity="0.65" />
-                  <line x1={splitX} y1={splitY} x2={w - pad} y2={splitY} opacity="0.65" />
-                  <rect
-                    x={pad + 3}
-                    y={pad + 3}
-                    width={Math.max(4, splitX - pad - 6)}
-                    height={Math.max(4, splitY - pad - 6)}
-                    fill="var(--glyph-accent)"
-                    stroke="none"
-                    opacity="0.22"
+          /* Motif 3: Isometric stacked system planes + vertical bus */
+          <g transform={`rotate(${isoRot} ${cx} ${cy})`} stroke-linejoin="round">
+            {/* Vertical alignment pillars connecting bottom & top planes */}
+            <line
+              x1={cx - isoLayers[0].rx}
+              y1={isoLayers[0].yCenter}
+              x2={cx - isoLayers[2].rx}
+              y2={isoLayers[2].yCenter}
+              stroke="var(--glyph-ink)"
+              stroke-width="1"
+              stroke-dasharray="2 2"
+              opacity="0.45"
+            />
+            <line
+              x1={cx + isoLayers[0].rx}
+              y1={isoLayers[0].yCenter}
+              x2={cx + isoLayers[2].rx}
+              y2={isoLayers[2].yCenter}
+              stroke="var(--glyph-ink)"
+              stroke-width="1"
+              stroke-dasharray="2 2"
+              opacity="0.45"
+            />
+
+            {/* Bottom, Middle (accent), and Top isometric planes */}
+            {isoLayers
+              .slice()
+              .reverse()
+              .map((layer) => (
+                <g>
+                  <polygon
+                    points={layer.points}
+                    fill={layer.isMiddle ? 'var(--glyph-accent)' : 'var(--glyph-bg)'}
+                    fill-opacity={layer.isMiddle ? '0.2' : '0.82'}
+                    stroke={layer.isMiddle ? 'var(--glyph-accent)' : 'var(--glyph-ink)'}
+                    stroke-width={layer.isMiddle ? '1.5' : '1.15'}
                   />
-                  <circle cx={splitX} cy={splitY} r="2.2" fill="var(--glyph-accent)" stroke="none" />
-                </>
-              );
-            })()}
+                  {layer.isTop && (
+                    /* Inner subdivision crosslines on top plane */
+                    <g stroke="var(--glyph-ink)" stroke-width="0.9" opacity="0.55">
+                      <line
+                        x1={cx - layer.rx * 0.5}
+                        y1={layer.yCenter - layer.ry * 0.5}
+                        x2={cx + layer.rx * 0.5}
+                        y2={layer.yCenter + layer.ry * 0.5}
+                      />
+                      <line
+                        x1={cx + layer.rx * 0.5}
+                        y1={layer.yCenter - layer.ry * 0.5}
+                        x2={cx - layer.rx * 0.5}
+                        y2={layer.yCenter + layer.ry * 0.5}
+                      />
+                    </g>
+                  )}
+                </g>
+              ))}
+
+            {/* Central spine & active core nodes */}
+            <line
+              x1={cx}
+              y1={isoLayers[0].yCenter - 4}
+              x2={cx}
+              y2={isoLayers[2].yCenter + 4}
+              stroke="var(--glyph-accent)"
+              stroke-width="1.5"
+            />
+            <circle cx={cx} cy={isoLayers[0].yCenter} r="2.3" fill="var(--glyph-accent)" />
+            <circle cx={cx} cy={isoLayers[1].yCenter} r="2.6" fill="var(--glyph-bg)" stroke="var(--glyph-accent)" stroke-width="1.5" />
           </g>
         )}
 
         {variant === 4 && (
+          /* Motif 4: Polar harmonic burst / sonar dial */
           <g stroke-linecap="round">
-            {Array.from({ length: size === 'banner' ? 9 : 4 }).map((_, gx) =>
-              Array.from({ length: 4 }).map((__, gy) => {
-                const cx = (w / (size === 'banner' ? 10 : 5)) * (gx + 1);
-                const cy = (h / 5) * (gy + 1);
-                const angle = (((h1 >> ((gx + gy) % 16)) + gx * 23 + gy * 47) % 180) * (Math.PI / 180);
-                const len = size === 'banner' ? 7 : 5;
-                const dx = Math.cos(angle) * len;
-                const dy = Math.sin(angle) * len;
-                const highlight = (gx + gy * 3) % 7 === h0 % 7;
-                return (
-                  <line
-                    x1={cx - dx}
-                    y1={cy - dy}
-                    x2={cx + dx}
-                    y2={cy + dy}
-                    stroke={highlight ? 'var(--glyph-accent)' : 'var(--glyph-ink)'}
-                    stroke-width={highlight ? '1.6' : '1.1'}
-                    opacity={highlight ? '0.95' : '0.5'}
-                  />
-                );
-              })
-            )}
+            <circle
+              cx={cx}
+              cy={cy}
+              r={14 * scale}
+              fill="var(--glyph-accent)"
+              fill-opacity="0.1"
+              stroke="var(--glyph-accent)"
+              stroke-width="1"
+              stroke-dasharray="2 3"
+            />
+            {spokes.map((s) => (
+              <line
+                x1={s.x1}
+                y1={s.y1}
+                x2={s.x2}
+                y2={s.y2}
+                stroke={s.highlight ? 'var(--glyph-accent)' : 'var(--glyph-ink)'}
+                stroke-width={s.highlight ? '1.6' : '1.15'}
+                opacity={s.highlight ? '0.95' : '0.6'}
+              />
+            ))}
+            <circle cx={cx} cy={cy} r={3.5 * scale} fill="var(--glyph-bg)" stroke="var(--glyph-accent)" stroke-width="1.5" />
           </g>
         )}
       </svg>
