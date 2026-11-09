@@ -31,37 +31,6 @@ const formatDate = (date: Date) =>
   </section>
 
   <div class="section-heading">
-    <span>Writing</span>
-    <a href="/writing">all posts →</a>
-  </div>
-  {
-    posts.length > 0 ? (
-      <ul class="media-list">
-        {posts.map((post) => (
-          <li class="media-item">
-            <a href={`/writing/${post.id}`} class="media-thumb-link" tabindex="-1" aria-hidden="true">
-              <ProceduralGlyph seed={`post:${post.id}`} image={post.data.image} size="sm" />
-            </a>
-            <div class="media-body">
-              <div class="stack-item-header">
-                <span class="stack-item-title">
-                  <a href={`/writing/${post.id}`}>{post.data.title}</a>
-                </span>
-                <time class="post-date" datetime={formatDate(post.data.date)}>
-                  {formatDate(post.data.date)}
-                </time>
-              </div>
-              <p class="stack-item-desc">{post.data.description}</p>
-            </div>
-          </li>
-        ))}
-      </ul>
-    ) : (
-      <p class="muted">No posts yet.</p>
-    )
-  }
-
-  <div class="section-heading">
     <span>Selected Projects</span>
     <a href="/projects">all projects →</a>
   </div>
@@ -101,6 +70,37 @@ const formatDate = (date: Date) =>
       })
     }
   </ul>
+
+  <div class="section-heading">
+    <span>Writing</span>
+    <a href="/writing">all posts →</a>
+  </div>
+  {
+    posts.length > 0 ? (
+      <ul class="media-list">
+        {posts.map((post) => (
+          <li class="media-item">
+            <a href={`/writing/${post.id}`} class="media-thumb-link" tabindex="-1" aria-hidden="true">
+              <ProceduralGlyph seed={`post:${post.id}`} image={post.data.image} size="sm" />
+            </a>
+            <div class="media-body">
+              <div class="stack-item-header">
+                <span class="stack-item-title">
+                  <a href={`/writing/${post.id}`}>{post.data.title}</a>
+                </span>
+                <time class="post-date" datetime={formatDate(post.data.date)}>
+                  {formatDate(post.data.date)}
+                </time>
+              </div>
+              <p class="stack-item-desc">{post.data.description}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="muted">No posts yet.</p>
+    )
+  }
 
   <div class="section-heading">
     <span>Experience</span>

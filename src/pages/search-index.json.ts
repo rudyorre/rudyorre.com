@@ -22,18 +22,18 @@ export const GET: APIRoute = async () => {
       body: 'Rudy Orre software engineer Google SecOps Detections Platform Google X Chorus backend systems',
     },
     {
-      title: 'Writing',
-      url: '/writing',
-      kind: 'page',
-      snippet: 'All essays, notes, and technical write-ups.',
-      body: 'blog writing essays notes posts rss',
-    },
-    {
       title: 'Projects',
       url: '/projects',
       kind: 'page',
       snippet: 'Selected open-source and academic projects.',
       body: 'projects open source code github',
+    },
+    {
+      title: 'Writing',
+      url: '/writing',
+      kind: 'page',
+      snippet: 'All essays, notes, and technical write-ups.',
+      body: 'blog writing essays notes posts rss',
     },
     {
       title: 'Lab — Interactive Visualizers & Tools',
