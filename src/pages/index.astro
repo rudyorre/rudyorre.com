@@ -19,7 +19,7 @@ const formatDate = (date: Date) =>
   <section class="intro">
     <h1 class="intro-title">Rudy Orre</h1>
     <p>
-      I'm a software engineer at <strong>Google</strong> working on the
+      I'm a software engineer at <strong>Google</strong> working on the{' '}
       <strong>SecOps Detections Platform</strong>—building distributed systems
       for security event detection at scale.
     </p>
@@ -37,13 +37,14 @@ const formatDate = (date: Date) =>
   <ul class="media-list">
     {
       featuredProjects.map((project) => {
-        const href = project.source || project.visit;
+        const href = project.visit || project.source;
+        const isExternal = href ? href.startsWith('http') : false;
         return (
           <li class="media-item">
             <a
               href={href || '/projects'}
-              target={href ? '_blank' : undefined}
-              rel={href ? 'noopener' : undefined}
+              target={isExternal ? '_blank' : undefined}
+              rel={isExternal ? 'noopener' : undefined}
               class="media-thumb-link"
               tabindex="-1"
               aria-hidden="true"
@@ -53,12 +54,26 @@ const formatDate = (date: Date) =>
             <div class="media-body">
               <div class="stack-item-header">
                 <span class="stack-item-title">
-                  {href ? (
-                    <a href={href} target="_blank" rel="noopener">
+                  {project.source ? (
+                    <a href={project.source} target="_blank" rel="noopener">
                       {project.title} ↗
                     </a>
                   ) : (
                     project.title
+                  )}
+                  {project.visit && (
+                    <>
+                      {' '}
+                      <a
+                        href={project.visit}
+                        target={project.visit.startsWith('http') ? '_blank' : undefined}
+                        rel={project.visit.startsWith('http') ? 'noopener' : undefined}
+                        class="mono muted"
+                        style="font-size: 0.78rem; font-weight: 400;"
+                      >
+                        [live]
+                      </a>
+                    </>
                   )}
                 </span>
                 <span class="stack-item-meta">{project.tags.join(' · ')}</span>

@@ -2,26 +2,68 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProceduralGlyph from '../../components/ProceduralGlyph.astro';
 import { getCollection, render } from 'astro:content';
+import { links } from '../../data/site';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
-  return posts
+  const posts = (await getCollection('blog'))
     .filter((post) => !post.data.draft)
-    .map((post) => ({
-      params: { slug: post.id },
-      props: { post },
-    }));
+    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+  return posts.map((post, idx) => ({
+    params: { slug: post.id },
+    props: {
+      post,
+      newerPost: idx > 0 ? posts[idx - 1] : null,
+      olderPost: idx < posts.length - 1 ? posts[idx + 1] : null,
+    },
+  }));
 }
 
-const { post } = Astro.props;
+const { post, newerPost, olderPost } = Astro.props;
 const { Content } = await render(post);
 const formatDate = (date: Date) => date.toISOString().slice(0, 10);
+
+const sourcePath = post.filePath ?? `src/content/blog/${post.id}.md`;
+const editUrl = `${links.repo}/edit/master/${sourcePath}`;
+
+const rawWords = (post.body ?? '')
+  .replace(/```[\s\S]*?```/g, ' ')
+  .replace(/<[^>]+>/g, ' ')
+  .trim()
+  .split(/\s+/)
+  .filter(Boolean).length;
+const readingMinutes = Math.max(1, Math.round(rawWords / 220));
+
+const postUrl = new URL(`/blog/${post.id}/`, Astro.site ?? 'https://rudyorre.com').toString();
+const ogImage = post.data.image ?? `/og/blog/${post.id}.png`;
+const ogImageAbs = new URL(ogImage, Astro.site ?? 'https://rudyorre.com').toString();
+
+const blogPostingJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.date.toISOString(),
+  url: postUrl,
+  image: ogImageAbs,
+  keywords: post.data.tags,
+  author: {
+    '@type': 'Person',
+    name: 'Rudy Orre',
+    url: 'https://rudyorre.com/',
+  },
+};
 ---
 
 <BaseLayout
   title={post.data.title}
   description={post.data.description}
   canonical={post.data.canonical}
+  ogType="article"
+  ogImage={ogImage}
+  publishedTime={post.data.date.toISOString()}
+  tags={post.data.tags}
+  jsonLd={blogPostingJsonLd}
 >
   <article class="prose">
     <header class="post-header">
@@ -34,6 +76,7 @@ const formatDate = (date: Date) => date.toISOString().slice(0, 10);
         <time datetime={formatDate(post.data.date)}>
           {formatDate(post.data.date)}
         </time>
+        <span> · {readingMinutes} min read</span>
         {
           post.data.tags.length > 0 && (
             <span> · {post.data.tags.join(', ')}</span>
@@ -42,5 +85,61 @@ const formatDate = (date: Date) => date.toISOString().slice(0, 10);
       </div>
     </header>
     <Content />
+
+    <div class="post-source-bar">
+      <a href={editUrl} target="_blank" rel="noopener">edit this post on github ↗</a>
+    </div>
+
+    {
+      (olderPost || newerPost) && (
+        <nav class="post-nav" aria-label="Post navigation">
+          <div class="post-nav-cell">
+            {olderPost && (
+              <a href={`/blog/${olderPost.id}`} class="post-nav-link">
+                <span class="post-nav-label">← older</span>
+                <span class="post-nav-title">{olderPost.data.title}</span>
+              </a>
+            )}
+          </div>
+          <div class="post-nav-cell post-nav-cell-right">
+            {newerPost && (
+              <a href={`/blog/${newerPost.id}`} class="post-nav-link">
+                <span class="post-nav-label">newer →</span>
+                <span class="post-nav-title">{newerPost.data.title}</span>
+              </a>
+            )}
+          </div>
+        </nav>
+      )
+    }
   </article>
 </BaseLayout>
+
+<script is:inline>
+  (function () {
+    var blocks = document.querySelectorAll('.prose pre');
+    for (var i = 0; i < blocks.length; i++) {
+      (function (pre) {
+        if (pre.querySelector('.code-copy-btn')) return;
+        pre.style.position = 'relative';
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'code-copy-btn';
+        btn.textContent = 'copy';
+        btn.setAttribute('aria-label', 'Copy code to clipboard');
+        btn.addEventListener('click', function () {
+          var code = pre.querySelector('code');
+          var text = code ? code.innerText : pre.innerText;
+          if (!navigator.clipboard) return;
+          navigator.clipboard.writeText(text).then(function () {
+            btn.textContent = 'copied';
+            setTimeout(function () {
+              btn.textContent = 'copy';
+            }, 1400);
+          });
+        });
+        pre.appendChild(btn);
+      })(blocks[i]);
+    }
+  })();
+</script>

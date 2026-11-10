@@ -7,6 +7,11 @@ interface Props {
   description?: string;
   canonical?: string;
   wide?: boolean;
+  ogType?: 'website' | 'article';
+  ogImage?: string;
+  publishedTime?: string;
+  tags?: string[];
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 const {
@@ -14,14 +19,60 @@ const {
   description = 'Software engineer at Google working on the SecOps Detections Platform.',
   canonical,
   wide = false,
+  ogType = 'website',
+  ogImage,
+  publishedTime,
+  tags = [],
+  jsonLd,
 } = Astro.props;
 
+const siteOrigin = Astro.site ?? new URL('https://rudyorre.com');
 const pageTitle = title === 'Rudy Orre' ? title : `${title} · Rudy Orre`;
 const pathname = Astro.url.pathname;
-const canonicalUrl =
-  canonical ?? new URL(pathname, Astro.site ?? 'https://rudyorre.com').toString();
+const canonicalUrl = canonical ?? new URL(pathname, siteOrigin).toString();
 const isActive = (prefix: string) =>
   prefix === '/' ? pathname === '/' : pathname.startsWith(prefix);
+
+const cleanPath = pathname.replace(/^\/+|\/+$/g, '');
+const knownOgPaths = new Set(['blog', 'projects', 'lab', 'lab/glyphs', 'versions']);
+const defaultOgPath =
+  !cleanPath
+    ? '/og/default.png'
+    : knownOgPaths.has(cleanPath) || cleanPath.startsWith('blog/')
+      ? `/og/${cleanPath}.png`
+      : '/og/default.png';
+const ogImageUrl = new URL(ogImage ?? defaultOgPath, siteOrigin).toString();
+
+const defaultJsonLd =
+  pathname === '/'
+    ? {
+        '@context': 'https://schema.org',
+        '@graph': [
+          {
+            '@type': 'WebSite',
+            '@id': 'https://rudyorre.com/#website',
+            url: 'https://rudyorre.com/',
+            name: 'Rudy Orre',
+            description,
+            inLanguage: 'en-US',
+          },
+          {
+            '@type': 'Person',
+            '@id': 'https://rudyorre.com/#person',
+            name: 'Rudy Orre',
+            url: 'https://rudyorre.com/',
+            jobTitle: 'Software Engineer',
+            worksFor: {
+              '@type': 'Organization',
+              name: 'Google',
+            },
+            sameAs: [links.github, links.linkedin, links.twitter],
+          },
+        ],
+      }
+    : undefined;
+
+const structuredData = jsonLd ?? defaultJsonLd;
 ---
 
 <!doctype html>
@@ -31,11 +82,26 @@ const isActive = (prefix: string) =>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
+    <meta property="og:site_name" content="Rudy Orre" />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+    {ogType === 'article' && publishedTime && (
+      <meta property="article:published_time" content={publishedTime} />
+    )}
+    {ogType === 'article' && <meta property="article:author" content="Rudy Orre" />}
+    {ogType === 'article' &&
+      tags.map((tag) => <meta property="article:tag" content={tag} />)}
     <link rel="canonical" href={canonicalUrl} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
     <link
       rel="icon"
       type="image/svg+xml"
@@ -47,6 +113,12 @@ const isActive = (prefix: string) =>
       title="Rudy Orre · RSS"
       href="/rss.xml"
     />
+    {structuredData && (
+      <script
+        type="application/ld+json"
+        set:html={JSON.stringify(structuredData)}
+      />
+    )}
     <script is:inline>
       (function () {
         try {
@@ -172,6 +244,10 @@ const isActive = (prefix: string) =>
             <a href="/rss.xml">rss</a>
             {' · '}
             <a href="/versions">time machine</a>
+            {' · '}
+            <a href={links.repo} target="_blank" rel="noopener" title="View site source on GitHub">
+              source
+            </a>
           </span>
         </div>
       </div>

@@ -35,6 +35,9 @@
   --glyph-accent-3: #b45309;
   --glyph-accent-4: #9f1239;
   --glyph-accent-5: #4338ca;
+  --glyph-accent-6: #047857;
+  --glyph-accent-7: #a16207;
+  --glyph-accent-8: #0e7490;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -59,6 +62,9 @@
     --glyph-accent-3: #fbbf24;
     --glyph-accent-4: #fb7185;
     --glyph-accent-5: #818cf8;
+    --glyph-accent-6: #34d399;
+    --glyph-accent-7: #f59e0b;
+    --glyph-accent-8: #22d3ee;
   }
 }
 
@@ -83,6 +89,9 @@
   --glyph-accent-3: #fbbf24;
   --glyph-accent-4: #fb7185;
   --glyph-accent-5: #818cf8;
+  --glyph-accent-6: #34d399;
+  --glyph-accent-7: #f59e0b;
+  --glyph-accent-8: #22d3ee;
 }
 
 :root[data-font="mono"] {
@@ -578,7 +587,7 @@ a.version-badge:hover {
 
 /* Article / Post Prose */
 .prose {
-  max-width: 65ch;
+  width: 100%;
 }
 
 .post-header {
@@ -665,6 +674,92 @@ a.version-badge:hover {
   padding-left: 1rem;
   border-left: 2px solid var(--border-strong);
   color: var(--fg-muted);
+}
+
+.code-copy-btn {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--fg-faint);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.12rem 0.42rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+}
+
+.prose pre:hover .code-copy-btn,
+.code-copy-btn:focus-visible {
+  opacity: 1;
+}
+
+.code-copy-btn:hover {
+  color: var(--fg);
+  border-color: var(--border-strong);
+}
+
+.post-source-bar {
+  margin-top: 2.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+}
+
+.post-source-bar a {
+  color: var(--fg-faint);
+  text-decoration: none;
+}
+
+.post-source-bar a:hover {
+  color: var(--fg);
+  text-decoration: underline;
+}
+
+.post-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.post-nav-cell {
+  min-width: 0;
+}
+
+.post-nav-cell-right {
+  text-align: right;
+}
+
+.post-nav-link {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  text-decoration: none;
+  max-width: 100%;
+}
+
+.post-nav-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--fg-faint);
+}
+
+.post-nav-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--fg);
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: 3px;
+}
+
+.post-nav-link:hover .post-nav-title {
+  text-decoration-color: var(--fg);
 }
 
 /* Media list + Procedural SVG Glyphs */
