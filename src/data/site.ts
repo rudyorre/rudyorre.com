@@ -227,7 +227,7 @@ export const versions: SiteVersion[] = [
   {
     id: 'v0-alpha',
     label: 'v0-alpha',
-    title: 'First Commit ("2nd commit")',
+    title: 'First Commit',
     era: 'Feb 10, 2020',
     status: 'archived',
     path: '/v0-alpha/',
