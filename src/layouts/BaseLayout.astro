@@ -78,10 +78,10 @@ const isActive = (prefix: string) =>
             </li>
             <li>
               <a
-                href="/writing"
-                aria-current={isActive('/writing') ? 'page' : undefined}
+                href="/blog"
+                aria-current={isActive('/blog') ? 'page' : undefined}
               >
-                writing
+                blog
               </a>
             </li>
             <li>
@@ -186,7 +186,10 @@ const isActive = (prefix: string) =>
           type="search"
           placeholder="Search posts, projects, or commands…"
           autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
           spellcheck="false"
+          enterkeyhint="go"
         />
         <button type="button" id="search-close" class="search-close-btn">
           esc
@@ -388,22 +391,39 @@ const isActive = (prefix: string) =>
         var input = document.getElementById('search-input');
         var list = document.getElementById('search-results');
         var indexCache = null;
+        var indexPromise = null;
         var activeIdx = 0;
         var currentMatches = [];
 
+        function syncViewport() {
+          if (!dialog || !dialog.open || !window.visualViewport) return;
+          var vv = window.visualViewport;
+          dialog.style.setProperty('--vvh', vv.height + 'px');
+          dialog.style.setProperty('--vvo', vv.offsetTop + 'px');
+        }
+
+        if (window.visualViewport) {
+          window.visualViewport.addEventListener('resize', syncViewport);
+          window.visualViewport.addEventListener('scroll', syncViewport);
+        }
+
         function loadIndex() {
           if (indexCache) return Promise.resolve(indexCache);
-          return fetch('/search-index.json')
+          if (indexPromise) return indexPromise;
+          indexPromise = fetch('/search-index.json')
             .then(function (r) {
+              if (!r.ok) throw new Error('HTTP ' + r.status);
               return r.json();
             })
             .then(function (data) {
-              indexCache = data;
-              return data;
+              indexCache = Array.isArray(data) ? data : [];
+              return indexCache;
             })
             .catch(function () {
+              indexPromise = null;
               return [];
             });
+          return indexPromise;
         }
 
         function escapeHtml(s) {
@@ -430,11 +450,12 @@ const isActive = (prefix: string) =>
           }
         }
 
-        function renderResults(items) {
+        function renderResults(items, scrollActiveIntoView) {
           currentMatches = items;
           if (!list) return;
           if (!items.length) {
             list.innerHTML = '<li class="search-empty">No matching content or commands.</li>';
+            list.scrollTop = 0;
             return;
           }
           if (activeIdx >= items.length) activeIdx = 0;
@@ -476,9 +497,13 @@ const isActive = (prefix: string) =>
               );
             })
             .join('');
-          var activeEl = list.querySelector('[aria-selected="true"]');
-          if (activeEl && activeEl.scrollIntoView) {
-            activeEl.scrollIntoView({ block: 'nearest' });
+          if (scrollActiveIntoView) {
+            var activeEl = list.querySelector('[aria-selected="true"]');
+            if (activeEl && activeEl.scrollIntoView) {
+              activeEl.scrollIntoView({ block: 'nearest' });
+            }
+          } else {
+            list.scrollTop = 0;
           }
         }
 
@@ -497,8 +522,9 @@ const isActive = (prefix: string) =>
           });
         }
 
-        function runQuery(q) {
+        function runQuery() {
           loadIndex().then(function (docs) {
+            var q = input ? input.value : '';
             var commands = getCommands();
             var raw = q.trim();
             var cmdOnly = raw.charAt(0) === '>';
@@ -510,10 +536,10 @@ const isActive = (prefix: string) =>
             if (!terms.length) {
               activeIdx = 0;
               if (cmdOnly) {
-                renderResults(commands);
+                renderResults(commands, false);
               } else {
                 // Default view: top content items + quick font/theme commands
-                renderResults(docs.slice(0, 6).concat(commands.slice(0, 4)));
+                renderResults(docs.slice(0, 6).concat(commands.slice(0, 4)), false);
               }
               return;
             }
@@ -548,7 +574,8 @@ const isActive = (prefix: string) =>
             renderResults(
               scored.slice(0, 10).map(function (s) {
                 return s.doc;
-              })
+              }),
+              false
             );
           });
         }
@@ -556,11 +583,12 @@ const isActive = (prefix: string) =>
         function openSearch() {
           if (!dialog) return;
           if (!dialog.open) dialog.showModal();
+          syncViewport();
           if (input) {
             input.value = '';
             input.focus();
           }
-          runQuery('');
+          runQuery();
         }
 
         function closeSearch() {
@@ -575,9 +603,8 @@ const isActive = (prefix: string) =>
           });
         }
         if (input) {
-          input.addEventListener('input', function () {
-            runQuery(input.value);
-          });
+          input.addEventListener('input', runQuery);
+          input.addEventListener('search', runQuery);
         }
 
         window.addEventListener('keydown', function (e) {
@@ -602,11 +629,11 @@ const isActive = (prefix: string) =>
             if (e.key === 'ArrowDown') {
               e.preventDefault();
               activeIdx = (activeIdx + 1) % currentMatches.length;
-              renderResults(currentMatches);
+              renderResults(currentMatches, true);
             } else if (e.key === 'ArrowUp') {
               e.preventDefault();
               activeIdx = (activeIdx - 1 + currentMatches.length) % currentMatches.length;
-              renderResults(currentMatches);
+              renderResults(currentMatches, true);
             } else if (e.key === 'Enter') {
               var chosen = currentMatches[activeIdx];
               if (chosen) {

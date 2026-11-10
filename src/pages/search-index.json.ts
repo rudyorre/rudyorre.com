@@ -5,13 +5,13 @@ import { projects, jobs } from '../data/site';
 export interface SearchDocument {
   title: string;
   url: string;
-  kind: 'writing' | 'project' | 'experience' | 'page';
+  kind: 'blog' | 'project' | 'experience' | 'page';
   snippet: string;
   body: string;
 }
 
 export const GET: APIRoute = async () => {
-  const posts = (await getCollection('writing')).filter((p) => !p.data.draft);
+  const posts = (await getCollection('blog')).filter((p) => !p.data.draft);
 
   const docs: SearchDocument[] = [
     {
@@ -29,8 +29,8 @@ export const GET: APIRoute = async () => {
       body: 'projects open source code github',
     },
     {
-      title: 'Writing',
-      url: '/writing',
+      title: 'Blog',
+      url: '/blog',
       kind: 'page',
       snippet: 'All essays, notes, and technical write-ups.',
       body: 'blog writing essays notes posts rss',
@@ -93,8 +93,8 @@ export const GET: APIRoute = async () => {
     },
     ...posts.map((post) => ({
       title: post.data.title,
-      url: `/writing/${post.id}`,
-      kind: 'writing' as const,
+      url: `/blog/${post.id}`,
+      kind: 'blog' as const,
       snippet: post.data.description,
       body: `${post.data.tags.join(' ')} ${post.body ?? ''}`.replace(/\s+/g, ' ').slice(0, 4000),
     })),

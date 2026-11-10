@@ -173,7 +173,7 @@ export const versions: SiteVersion[] = [
     commit: '01a80d8',
     stack: ['Astro 5', 'Vanilla CSS', 'MDX', 'Procedural SVG'],
     summary:
-      'Minimalist static writing and systems lab with deterministic FNV-1a/SplitMix32 SVG glyphs, user-switchable typography, and zero required client JS.',
+      'Minimalist static blog and systems lab with deterministic FNV-1a/SplitMix32 SVG glyphs, user-switchable typography, and zero required client JS.',
   },
   {
     id: 'v3',

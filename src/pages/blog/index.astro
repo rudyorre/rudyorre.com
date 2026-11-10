@@ -3,7 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProceduralGlyph from '../../components/ProceduralGlyph.astro';
 import { getCollection } from 'astro:content';
 
-const posts = (await getCollection('writing'))
+const posts = (await getCollection('blog'))
   .filter((post) => !post.data.draft)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
@@ -11,10 +11,10 @@ const formatDate = (date: Date) => date.toISOString().slice(0, 10);
 ---
 
 <BaseLayout
-  title="Writing"
+  title="Blog"
   description="Essays, notes, and technical write-ups by Rudy Orre."
 >
-  <h1>Writing</h1>
+  <h1>Blog</h1>
   <p class="muted">
     Notes on distributed systems, infrastructure, and software engineering. Subscribe via{' '}
     <a href="/rss.xml">RSS</a>.
@@ -24,13 +24,13 @@ const formatDate = (date: Date) => date.toISOString().slice(0, 10);
     {
       posts.map((post) => (
         <li class="media-item">
-          <a href={`/writing/${post.id}`} class="media-thumb-link" tabindex="-1" aria-hidden="true">
+          <a href={`/blog/${post.id}`} class="media-thumb-link" tabindex="-1" aria-hidden="true">
             <ProceduralGlyph seed={`post:${post.id}`} image={post.data.image} size="md" />
           </a>
           <div class="media-body">
             <div class="stack-item-header">
               <span class="stack-item-title">
-                <a href={`/writing/${post.id}`}>{post.data.title}</a>
+                <a href={`/blog/${post.id}`}>{post.data.title}</a>
               </span>
               <time class="post-date" datetime={formatDate(post.data.date)}>
                 {formatDate(post.data.date)}

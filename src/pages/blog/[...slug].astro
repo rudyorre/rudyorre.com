@@ -4,7 +4,7 @@ import ProceduralGlyph from '../../components/ProceduralGlyph.astro';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('writing');
+  const posts = await getCollection('blog');
   return posts
     .filter((post) => !post.data.draft)
     .map((post) => ({
@@ -25,7 +25,7 @@ const formatDate = (date: Date) => date.toISOString().slice(0, 10);
 >
   <article class="prose">
     <header class="post-header">
-      <a href="/writing" class="post-back-link">← all posts</a>
+      <a href="/blog" class="post-back-link">← all posts</a>
       <div class="post-banner-wrap">
         <ProceduralGlyph seed={`post:${post.id}`} image={post.data.image} size="banner" />
       </div>
