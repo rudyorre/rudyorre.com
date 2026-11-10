@@ -151,6 +151,7 @@ export const projects: Project[] = [
 export interface SiteVersion {
   id: string;
   label: string;
+  title: string;
   era: string;
   status: 'current' | 'archived' | 'planned';
   path?: string;
@@ -164,6 +165,7 @@ export const versions: SiteVersion[] = [
   {
     id: 'v4',
     label: 'v4.0',
+    title: 'Minimalist Astro & Glyph Engine',
     era: '2026 — Present',
     status: 'current',
     path: '/',
@@ -176,6 +178,7 @@ export const versions: SiteVersion[] = [
   {
     id: 'v3',
     label: 'v3.0',
+    title: 'Next.js 14 App Router',
     era: '2024 — 2025',
     status: 'archived',
     path: '/v3/',
@@ -188,6 +191,7 @@ export const versions: SiteVersion[] = [
   {
     id: 'v2',
     label: 'v2.0',
+    title: 'Next.js & Styled Components',
     era: '2022 — 2023',
     status: 'archived',
     path: '/v2/',
@@ -199,7 +203,8 @@ export const versions: SiteVersion[] = [
   {
     id: 'v1',
     label: 'v1.0',
-    era: 'Oct 2020 — May 2021',
+    title: 'Hugo Academic Portfolio',
+    era: '2020 — 2021',
     status: 'archived',
     path: '/v1/',
     commit: 'ea1b25d',
@@ -210,6 +215,7 @@ export const versions: SiteVersion[] = [
   {
     id: 'v0',
     label: 'v0.0',
+    title: 'HTML5 UP Spectral Portfolio',
     era: 'Feb — Sep 2020',
     status: 'archived',
     path: '/v0/',
@@ -221,13 +227,14 @@ export const versions: SiteVersion[] = [
   {
     id: 'v0-alpha',
     label: 'v0-alpha',
+    title: 'First Commit ("2nd commit")',
     era: 'Feb 10, 2020',
     status: 'archived',
     path: '/v0-alpha/',
     commit: '3648bc8',
     stack: ['HTML5 UP Spectral', 'HTML5', 'CSS3'],
     summary:
-      'The literal first commit in the repository ("2nd commit"): a raw HTML5 UP Spectral template where only the <title> and banner heading said "Rudy Orre" while the rest of the page remained pure Lorem Ipsum.',
+      'The literal first commit in the repository: a raw HTML5 UP Spectral template where only the <title> and banner heading said "Rudy Orre" while the rest of the page remained pure Lorem Ipsum.',
   },
 ];
 

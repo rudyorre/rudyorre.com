@@ -87,7 +87,7 @@ const isActive = (prefix: string) =>
             <li>
               <a
                 href="/lab"
-                aria-current={isActive('/lab') ? 'page' : undefined}
+                aria-current={isActive('/lab') || isActive('/versions') ? 'page' : undefined}
               >
                 lab
               </a>
@@ -195,7 +195,7 @@ const isActive = (prefix: string) =>
       <ul id="search-results" class="search-results" role="listbox"></ul>
       <div class="search-footer">
         <span class="search-footer-nav">↑↓ navigate · ↵ run / open</span>
-        <span>type "font", "theme", or "v3" for commands</span>
+        <span>type "font", "theme", or "v0"–"v3" for commands</span>
       </div>
     </dialog>
 
@@ -337,17 +337,45 @@ const isActive = (prefix: string) =>
               run: function () { setTheme('system'); },
             },
             {
-              title: 'Time Machine: Launch v3 (2025)',
+              title: 'Time Machine: Launch v3.0 (2024–2025)',
               snippet: 'Open the archived Next.js 14 + Tailwind v3 site at /v3/',
               kind: 'command',
-              body: 'time machine v3 2025 archive history old version nextjs',
+              body: 'time machine v3 2024 2025 archive history old version nextjs tailwind',
               run: function () { window.location.href = '/v3/'; },
             },
             {
-              title: 'Time Machine: All Site Versions',
-              snippet: 'Browse the full version history and architecture timeline (v1–v4)',
+              title: 'Time Machine: Launch v2.0 (2022–2023)',
+              snippet: 'Open the archived Next.js + Styled Components v2 site at /v2/',
               kind: 'command',
-              body: 'time machine versions archive history v1 v2 v3 v4',
+              body: 'time machine v2 2022 2023 archive history old version nextjs styled components',
+              run: function () { window.location.href = '/v2/'; },
+            },
+            {
+              title: 'Time Machine: Launch v1.0 (2020–2021)',
+              snippet: 'Open the archived Hugo Academic v1 site at /v1/',
+              kind: 'command',
+              body: 'time machine v1 2020 2021 archive history old version hugo academic',
+              run: function () { window.location.href = '/v1/'; },
+            },
+            {
+              title: 'Time Machine: Launch v0.0 (Sep 2020)',
+              snippet: 'Open the archived HTML5 UP Spectral El Camino portfolio at /v0/',
+              kind: 'command',
+              body: 'time machine v0 2020 archive history old version html5up spectral',
+              run: function () { window.location.href = '/v0/'; },
+            },
+            {
+              title: 'Time Machine: Launch v0-alpha (Feb 10, 2020 First Commit)',
+              snippet: 'Open the literal first commit ("2nd commit") with Lorem Ipsum at /v0-alpha/',
+              kind: 'command',
+              body: 'time machine v0-alpha 2020 first commit 3648bc8 lorem ipsum',
+              run: function () { window.location.href = '/v0-alpha/'; },
+            },
+            {
+              title: 'Time Machine: All Site Versions',
+              snippet: 'Browse the full version history and architecture timeline (v0-alpha–v4)',
+              kind: 'command',
+              body: 'time machine versions archive history v0-alpha v0 v1 v2 v3 v4',
               run: function () { window.location.href = '/versions'; },
             },
           ];

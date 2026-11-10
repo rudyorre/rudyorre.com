@@ -45,43 +45,47 @@ import { versions, links } from '../data/site';
                 <span class="stack-item-title">
                   {isLive && ver.path ? (
                     <a href={ver.path}>
-                      {ver.label}
-                      {ver.status === 'archived' ? ' — Launch snapshot →' : ' (Current)'}
+                      <strong>{ver.label}</strong>
+                      <span class="version-subtitle"> · {ver.title}</span>
+                      {ver.status === 'archived' ? ' →' : ''}
                     </a>
                   ) : (
-                    <span class="muted">{ver.label}</span>
+                    <span class="muted">
+                      <strong>{ver.label}</strong> · {ver.title}
+                    </span>
                   )}
                   {' '}
-                  <span
-                    class={`version-badge version-badge-${ver.status}`}
-                  >
-                    {ver.status === 'current'
-                      ? 'current'
-                      : ver.status === 'archived'
-                        ? `mounted at ${ver.path}`
-                        : 'snapshot pending'}
-                  </span>
-                </span>
-                <span class="stack-item-meta">
-                  {ver.era}
-                  {ver.commit && (
-                    <>
-                      {' · '}
-                      <a
-                        href={`${links.github}/rudyorre.com/tree/${ver.tag || ver.commit}`}
-                        target="_blank"
-                        rel="noopener"
-                        class="mono muted"
-                        title={`View source at ${ver.tag || ver.commit}`}
-                      >
-                        {ver.tag ? `${ver.tag} (${ver.commit})` : ver.commit} ↗
-                      </a>
-                    </>
+                  {isLive && ver.path ? (
+                    <a
+                      href={ver.path}
+                      class={`version-badge version-badge-${ver.status}`}
+                      title={
+                        ver.status === 'current'
+                          ? 'Currently viewing this version'
+                          : `Open archived snapshot at ${ver.path}`
+                      }
+                    >
+                      {ver.status === 'current' ? 'current' : ver.path}
+                    </a>
+                  ) : (
+                    <span class="version-badge version-badge-planned">planned</span>
                   )}
                 </span>
+                <span class="stack-item-meta">{ver.era}</span>
               </div>
               <p class="stack-item-desc">{ver.summary}</p>
               <div class="tag-row">
+                {ver.commit && (
+                  <a
+                    href={`${links.github}/rudyorre.com/tree/${ver.tag || ver.commit}`}
+                    target="_blank"
+                    rel="noopener"
+                    class="tag tag-link"
+                    title={`View source tree at ${ver.tag || ver.commit}`}
+                  >
+                    {ver.tag ? `${ver.tag} (${ver.commit})` : `commit ${ver.commit}`} ↗
+                  </a>
+                )}
                 {ver.stack.map((tech) => (
                   <span class="tag">{tech}</span>
                 ))}
@@ -99,21 +103,25 @@ import { versions, links } from '../data/site';
   <div class="prose" style="font-size: 0.92rem;">
     <p class="muted">
       Old frontend frameworks and dependency trees eventually bit-rot in CI. Rather than running
-      multiple Node versions and legacy bundlers on every push:
+      multiple Node versions, Hugo binaries, and legacy bundlers on every push:
     </p>
     <ol class="muted">
       <li>
-        <strong>Pin source by Git tag:</strong> Each major iteration is tagged at its final commit
-        (e.g. <code>v3</code> at <code>976eb30</code>).
+        <strong>Pin each era by Git commit:</strong> Every major architectural era (from the literal
+        first commit <code>3648bc8</code> in Feb 2020 through <code>v3</code> at{' '}
+        <code>976eb30</code>) is identified in the repository history.
       </li>
       <li>
-        <strong>Freeze static output once:</strong> The historical version is built once with its
-        base path scoped to <code>/vN</code> and committed into an orphan <code>archive</code> branch.
+        <strong>Freeze static output once:</strong> Each historical iteration has its asset and link
+        paths scoped to <code>/v*</code>, injects a floating return banner and{' '}
+        <code>noindex</code> meta tag, and is committed once onto an orphan <code>archive</code>{' '}
+        branch.
       </li>
       <li>
         <strong>Zero-cost CI overlay:</strong> After Astro builds <code>./dist</code>,{' '}
-        <code>git archive origin/archive | tar -x -C ./dist</code> overlays the frozen snapshots in
-        under a second with zero legacy dependencies.
+        <code>scripts/mount-archive.mjs</code> streams the frozen snapshots from{' '}
+        <code>archive</code> into <code>./dist</code> in under a second with zero legacy
+        dependencies.
       </li>
     </ol>
   </div>
