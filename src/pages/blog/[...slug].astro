@@ -25,7 +25,6 @@ const formatDate = (date: Date) => date.toISOString().slice(0, 10);
 
 const sourcePath = post.filePath ?? `src/content/blog/${post.id}.md`;
 const editUrl = `${links.repo}/edit/master/${sourcePath}`;
-const blobUrl = `${links.repo}/blob/master/${sourcePath}`;
 
 const rawWords = (post.body ?? '')
   .replace(/```[\s\S]*?```/g, ' ')
@@ -68,18 +67,7 @@ const blogPostingJsonLd = {
 >
   <article class="prose">
     <header class="post-header">
-      <div class="post-top-row">
-        <a href="/blog" class="post-back-link">← all posts</a>
-        <a
-          href={editUrl}
-          target="_blank"
-          rel="noopener"
-          class="post-back-link"
-          title={`Edit ${sourcePath} on GitHub`}
-        >
-          edit .md ↗
-        </a>
-      </div>
+      <a href="/blog" class="post-back-link">← all posts</a>
       <div class="post-banner-wrap">
         <ProceduralGlyph seed={`post:${post.id}`} image={post.data.image} size="banner" />
       </div>
@@ -99,12 +87,7 @@ const blogPostingJsonLd = {
     <Content />
 
     <div class="post-source-bar">
-      <span class="mono muted">{sourcePath}</span>
-      <span>
-        <a href={blobUrl} target="_blank" rel="noopener">raw / history ↗</a>
-        {' · '}
-        <a href={editUrl} target="_blank" rel="noopener">edit on github ↗</a>
-      </span>
+      <a href={editUrl} target="_blank" rel="noopener">edit this post on github ↗</a>
     </div>
 
     {

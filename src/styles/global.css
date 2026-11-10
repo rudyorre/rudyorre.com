@@ -702,34 +702,14 @@ a.version-badge:hover {
   border-color: var(--border-strong);
 }
 
-.post-top-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  margin-bottom: 0.85rem;
-}
-
-.post-top-row .post-back-link {
-  margin-bottom: 0;
-}
-
 .post-source-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 0.5rem 1rem;
-  margin-top: 2.5rem;
-  padding-top: 1rem;
-  border-top: 1px dashed var(--border);
+  margin-top: 2.25rem;
   font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--fg-faint);
+  font-size: 0.76rem;
 }
 
 .post-source-bar a {
-  color: var(--fg-muted);
+  color: var(--fg-faint);
   text-decoration: none;
 }
 
@@ -742,7 +722,7 @@ a.version-badge:hover {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
-  margin-top: 1.25rem;
+  margin-top: 1rem;
   padding-top: 1.25rem;
   border-top: 1px solid var(--border);
 }
