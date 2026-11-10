@@ -182,7 +182,7 @@ export const versions: SiteVersion[] = [
     era: '2024 — 2025',
     status: 'archived',
     path: '/v3/',
-    tag: 'v3',
+    tag: 'v3.0.0',
     commit: '976eb30',
     stack: ['Next.js 14', 'Tailwind CSS', 'shadcn/ui', 'NextUI', 'Framer Motion'],
     summary:
@@ -195,6 +195,7 @@ export const versions: SiteVersion[] = [
     era: '2022 — 2023',
     status: 'archived',
     path: '/v2/',
+    tag: 'v2.0.0',
     commit: 'f440bec',
     stack: ['Next.js 13', 'React 18', 'Styled Components', 'TypeScript'],
     summary:
@@ -207,6 +208,7 @@ export const versions: SiteVersion[] = [
     era: '2020 — 2021',
     status: 'archived',
     path: '/v1/',
+    tag: 'v1.0.0',
     commit: 'ea1b25d',
     stack: ['Hugo Academic', 'Wowchemy 4.8', 'Bootstrap 4', 'jQuery'],
     summary:
@@ -219,6 +221,7 @@ export const versions: SiteVersion[] = [
     era: 'Feb — Sep 2020',
     status: 'archived',
     path: '/v0/',
+    tag: 'v0.0.0',
     commit: '3e2bc1b',
     stack: ['HTML5 UP Spectral', 'CSS3', 'jQuery', 'PDF.js'],
     summary:
@@ -231,6 +234,7 @@ export const versions: SiteVersion[] = [
     era: 'Feb 10, 2020',
     status: 'archived',
     path: '/v0-alpha/',
+    tag: 'v0.0.0-alpha',
     commit: '3648bc8',
     stack: ['HTML5 UP Spectral', 'HTML5', 'CSS3'],
     summary:
