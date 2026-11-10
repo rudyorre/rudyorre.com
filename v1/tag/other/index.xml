@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Other | Rudy Orre</title>
+    <link>/tag/other/</link>
+      <atom:link href="/tag/other/index.xml" rel="self" type="application/rss+xml" />
+    <description>Other</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Mon, 27 Apr 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
+      <title>Other</title>
+      <link>/tag/other/</link>
+    </image>
+    
+    <item>
+      <title>Binary Search Tree Map</title>
+      <link>/project/map-implementation-project/</link>
+      <pubDate>Mon, 27 Apr 2020 00:00:00 +0000</pubDate>
+      <guid>/project/map-implementation-project/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>C&#43;&#43; Smart Pointer</title>
+      <link>/project/smart-ptr-project/</link>
+      <pubDate>Mon, 27 Apr 2020 00:00:00 +0000</pubDate>
+      <guid>/project/smart-ptr-project/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Doubly Linked List Map</title>
+      <link>/project/map-implementation-project0/</link>
+      <pubDate>Sun, 26 Apr 2020 00:00:00 +0000</pubDate>
+      <guid>/project/map-implementation-project0/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Warrior Plan for Google CSSI</title>
+      <link>/project/warrior-plan-project/</link>
+      <pubDate>Mon, 01 Jul 2019 00:00:00 +0000</pubDate>
+      <guid>/project/warrior-plan-project/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

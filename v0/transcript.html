@@ -1,0 +1,139 @@
+<!DOCTYPE HTML>
+<!--
+	Spectral by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<meta name="robots" content="noindex, nofollow" />
+		<title>Resume</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="/v0/assets/css/main.css" />
+		<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.2.228/build/pdf.min.js"></script>
+		<noscript><link rel="stylesheet" href="/v0/assets/css/noscript.css" /></noscript>
+		<style>
+			.container{padding: 30px;}
+
+			canvas{
+				padding-left: 0;
+				padding-right: 0;
+				margin-left: auto;
+				margin-right: auto;
+				display: block;
+				width: 800px;
+			}
+		</style>
+	</head>
+	<body class="is-preload">
+
+		<!-- Page Wrapper -->
+			<div id="page-wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<h1><a href="/v0/index.html">Rudy Orre</a></h1>
+						<nav id="nav">
+							<ul>
+								<li class="special">
+									<a href="#menu" class="menuToggle"><span>Menu</span></a>
+									<div id="menu">
+										<ul>
+											<li><a href="/v0/index.html">Home</a></li>
+											<li><a href="/v0/resume.html">Resume</a></li>
+											<li><a href="/v0/education.html">Education</a></li>
+											<li><a href="/v0/experience.html">Work Experience</a></li>
+											<li><a href="/v0/projects.html">Projects</a></li>
+											<li><a href="/v0/awards.html">Awards</a></li>
+										</ul>
+									</div>
+								</li>
+							</ul>
+						</nav>
+					</header>
+
+				<!-- Main -->
+					<article id="main">
+						<header>
+							<h2>El Camino College Transcript</h2>
+							<p>Click <a href="https://drive.google.com/file/d/1pB9yFUClyIBcDz5NimcVy-O8kq69OI8m/view?usp=sharing" target="_blank">here</a> to download the transcript.</p>
+						</header>
+					</article>
+					
+					<br>
+
+					<div class="canvas">
+						<canvas id = "page_1" margin-left:auto; margin-right:auto></canvas>
+					</div>
+
+					<br>
+
+					<div class="canvas">
+						<canvas id = "page_2" margin-left:auto; margin-right:auto></canvas>
+					</div>
+					
+					<br>	
+
+				<!-- Footer -->
+					<footer id="footer">
+						<ul class="icons">
+							<li><a href="https://www.facebook.com/rudy.orre" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+							<li><a href="https://www.instagram.com/rudyorre/?hl=en" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+							<li><a href="https://github.com/rudyorre" class="icon brands fa-github"><span class="label">Dribbble</span></a></li>
+						</ul>
+					</footer>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="/v0/assets/js/jquery.min.js"></script>
+			<script src="/v0/assets/js/jquery.scrollex.min.js"></script>
+			<script src="/v0/assets/js/jquery.scrolly.min.js"></script>
+			<script src="/v0/assets/js/browser.min.js"></script>
+			<script src="/v0/assets/js/breakpoints.min.js"></script>
+			<script src="/v0/assets/js/util.js"></script>
+			<script src="/v0/assets/js/main.js"></script>
+			<script>
+				pdfjsLib.getDocument('/v0/assets/documents/transcript.pdf').then(doc => {
+					doc.getPage(1).then(page => {
+						var myCanvas = document.getElementById("page_1");
+						var context = myCanvas.getContext("2d");
+
+						var viewport = page.getViewport(2); //scale of viewport
+						myCanvas.width = viewport.width;
+						myCanvas.height = viewport.height;
+
+						page.render({
+							canvasContext: context,
+							viewport: viewport
+						});
+					});
+
+					doc.getPage(2).then(page => {
+						var myCanvas = document.getElementById("page_2");
+						var context = myCanvas.getContext("2d");
+
+						var viewport = page.getViewport(2); //scale of viewport
+						myCanvas.width = viewport.width;
+						myCanvas.height = viewport.height;
+
+						page.render({
+							canvasContext: context,
+							viewport: viewport
+						});
+					});
+				});
+			</script>
+
+	
+<div id="ryo-time-machine-banner" role="region" aria-label="Time Machine version banner" style="position:fixed;bottom:16px;right:16px;z-index:2147483647;display:flex;align-items:center;gap:10px;padding:8px 14px;border-radius:9999px;background:rgba(17,17,16,0.92);color:#ecebe6;border:1px solid rgba(255,255,255,0.16);box-shadow:0 10px 30px rgba(0,0,0,0.4);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:12px;line-height:1.4;letter-spacing:0;">
+  <span style="display:inline-block;width:7px;height:7px;border-radius:9999px;background:#f59e0b;box-shadow:0 0 8px #f59e0b;" aria-hidden="true"></span>
+  <span>Viewing <strong style="color:#fff;font-weight:600;">rudyorre.com v0</strong> (Sep 2020)</span>
+  <span style="opacity:0.35;" aria-hidden="true">·</span>
+  <a href="/versions" style="color:#9e9d97;text-decoration:none;border:none;">All versions</a>
+  <span style="opacity:0.35;" aria-hidden="true">·</span>
+  <a href="/" style="color:#ecebe6;font-weight:600;text-decoration:underline;text-underline-offset:3px;border:none;">Return to current site →</a>
+</div>
+</body>
+</html>
