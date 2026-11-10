@@ -25,6 +25,8 @@ npm run preview   # preview ./dist locally
 | [`src/data/site.ts`](./src/data/site.ts) | Projects, experience (`jobs`), and external `links` |
 | [`src/components/ProceduralGlyph.astro`](./src/components/ProceduralGlyph.astro) | 3-tier square thumbnail/banner component (`image` → `icon` → procedural SVG fallback) |
 | [`src/layouts/BaseLayout.astro`](./src/layouts/BaseLayout.astro) | Header, footer font switcher, `<dialog>` search/command palette |
+| [`src/pages/versions.astro`](./src/pages/versions.astro) | Time Machine version archive (`/versions`) linking to `/v0-alpha/`, `/v0/`, `/v1/`, `/v2/`, and `/v3/` |
+| [`scripts/mount-archive.mjs`](./scripts/mount-archive.mjs) | Overlays pre-built static snapshots from the orphan `archive` branch into `./dist` |
 | [`src/pages/search-index.json.ts`](./src/pages/search-index.json.ts) | Build-time JSON search index |
 | [`src/styles/global.css`](./src/styles/global.css) | Theme tokens, typography, layout, and component styles |
 

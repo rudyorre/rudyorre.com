@@ -147,3 +147,94 @@ export const projects: Project[] = [
     featured: false,
   },
 ];
+
+export interface SiteVersion {
+  id: string;
+  label: string;
+  title: string;
+  era: string;
+  status: 'current' | 'archived' | 'planned';
+  path?: string;
+  tag?: string;
+  commit?: string;
+  stack: string[];
+  summary: string;
+}
+
+export const versions: SiteVersion[] = [
+  {
+    id: 'v4',
+    label: 'v4.0',
+    title: 'Minimalist Astro & Glyph Engine',
+    era: '2026 — Present',
+    status: 'current',
+    path: '/',
+    tag: 'v4.0.0',
+    commit: '01a80d8',
+    stack: ['Astro 5', 'Vanilla CSS', 'MDX', 'Procedural SVG'],
+    summary:
+      'Minimalist static writing and systems lab with deterministic FNV-1a/SplitMix32 SVG glyphs, user-switchable typography, and zero required client JS.',
+  },
+  {
+    id: 'v3',
+    label: 'v3.0',
+    title: 'Next.js 14 App Router',
+    era: '2024 — 2025',
+    status: 'archived',
+    path: '/v3/',
+    tag: 'v3',
+    commit: '976eb30',
+    stack: ['Next.js 14', 'Tailwind CSS', 'shadcn/ui', 'NextUI', 'Framer Motion'],
+    summary:
+      'App Router portfolio featuring six switchable color themes (light, dark, paper, carbon, bento, miami), cursor-tracking radial gradients, and bento hobby cards.',
+  },
+  {
+    id: 'v2',
+    label: 'v2.0',
+    title: 'Next.js & Styled Components',
+    era: '2022 — 2023',
+    status: 'archived',
+    path: '/v2/',
+    commit: 'f440bec',
+    stack: ['Next.js 13', 'React 18', 'Styled Components', 'TypeScript'],
+    summary:
+      'Dark-navy and teal single-page React portfolio with an animated geometric SVG hero, horizontal timeline carousel, UCLA ML/CS project grid, and a hidden /secret route.',
+  },
+  {
+    id: 'v1',
+    label: 'v1.0',
+    title: 'Hugo Academic Portfolio',
+    era: '2020 — 2021',
+    status: 'archived',
+    path: '/v1/',
+    commit: 'ea1b25d',
+    stack: ['Hugo Academic', 'Wowchemy 4.8', 'Bootstrap 4', 'jQuery'],
+    summary:
+      'Two-column academic portfolio generated with Hugo Academic during my transfer year to UCLA, featuring ML project write-ups and a JavaScript sorting visualizer.',
+  },
+  {
+    id: 'v0',
+    label: 'v0.0',
+    title: 'HTML5 UP Spectral Portfolio',
+    era: 'Feb — Sep 2020',
+    status: 'archived',
+    path: '/v0/',
+    commit: '3e2bc1b',
+    stack: ['HTML5 UP Spectral', 'CSS3', 'jQuery', 'PDF.js'],
+    summary:
+      'First complete personal portfolio built at El Camino College—hand-edited HTML pages for coursework, Math Study Center tutoring, WarriorPlanner, C++ smart pointers, and embedded PDF.js transcripts.',
+  },
+  {
+    id: 'v0-alpha',
+    label: 'v0-alpha',
+    title: 'First Commit',
+    era: 'Feb 10, 2020',
+    status: 'archived',
+    path: '/v0-alpha/',
+    commit: '3648bc8',
+    stack: ['HTML5 UP Spectral', 'HTML5', 'CSS3'],
+    summary:
+      'The literal first commit in the repository: a raw HTML5 UP Spectral template where only the <title> and banner heading said "Rudy Orre" while the rest of the page remained pure Lorem Ipsum.',
+  },
+];
+
