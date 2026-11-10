@@ -1,10 +1,10 @@
 # Content Guide
 
-How to add or update writing, projects, experience, links, and search commands.
+How to add or update blog posts, projects, experience, links, and search commands.
 
 ## 1. Writing a new blog post
 
-Create a `.md` (or `.mdx` if you need an interactive component) file in [`src/content/writing/`](../src/content/writing/):
+Create a `.md` (or `.mdx` if you need an interactive component) file in [`src/content/blog/`](../src/content/blog/):
 
 ```markdown
 ---
@@ -21,8 +21,8 @@ draft: false
 Post body in standard Markdown.
 ```
 
-- **Slug:** derived from the filename (e.g. `src/content/writing/my-post.md` → `/writing/my-post`).
-- **Drafts:** set `draft: true` while writing; drafts are excluded from `/`, `/writing`, `/rss.xml`, and `/search-index.json`.
+- **Slug:** derived from the filename (e.g. `src/content/blog/my-post.md` → `/blog/my-post`).
+- **Drafts:** set `draft: true` while writing; drafts are excluded from `/`, `/blog`, `/rss.xml`, and `/search-index.json`.
 - **Thumbnails & banners:** automatically generated from `seed="post:<slug>"` unless `image` is provided in frontmatter.
 - **Syndication (Substack / Medium):** `/rss.xml` outputs full post content. Publish on `rudyorre.com` first, then use Medium's *Import a story* or Substack's RSS/URL import so `rudyorre.com` stays the canonical URL.
 

@@ -134,9 +134,9 @@ describe('dist: static build verification', () => {
     const requiredFiles = [
       'index.html',
       '404.html',
-      'writing/index.html',
-      'writing/procedural-glyphs/index.html',
-      'writing/rebuilding-this-site/index.html',
+      'blog/index.html',
+      'blog/procedural-glyphs/index.html',
+      'blog/rebuilding-this-site/index.html',
       'projects/index.html',
       'lab/index.html',
       'lab/glyphs/index.html',
@@ -170,12 +170,15 @@ describe('dist: static build verification', () => {
       );
     }
 
-    // Verify search-index.json includes /lab/glyphs, /versions, and archived snapshots
+    // Verify search-index.json includes /blog, post permalinks, /lab/glyphs, /versions, and archived snapshots
     const searchIndex = JSON.parse(
       fs.readFileSync(path.join(distDir, 'search-index.json'), 'utf8')
     );
     assert.ok(Array.isArray(searchIndex) && searchIndex.length > 0);
     for (const expectedUrl of [
+      '/blog',
+      '/blog/procedural-glyphs',
+      '/blog/rebuilding-this-site',
       '/lab/glyphs',
       '/versions',
       '/v0-alpha/',
@@ -189,6 +192,21 @@ describe('dist: static build verification', () => {
         `search-index.json should include ${expectedUrl}`
       );
     }
+
+    // Verify rss.xml uses /blog/ permalinks
+    const rssXml = fs.readFileSync(path.join(distDir, 'rss.xml'), 'utf8');
+    assert.ok(
+      rssXml.includes('/blog/procedural-glyphs/'),
+      'rss.xml should include /blog/procedural-glyphs/'
+    );
+    assert.ok(
+      rssXml.includes('/blog/rebuilding-this-site/'),
+      'rss.xml should include /blog/rebuilding-this-site/'
+    );
+    assert.ok(
+      !rssXml.includes('/writing/'),
+      'rss.xml should not contain legacy /writing/ links'
+    );
   });
 });
 

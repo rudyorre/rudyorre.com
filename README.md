@@ -1,6 +1,6 @@
 # rudyorre.com
 
-Personal site and writing archive for Rudy Orre, built with [Astro](https://astro.build), plain CSS, and Markdown.
+Personal site and blog for Rudy Orre, built with [Astro](https://astro.build), plain CSS, and Markdown.
 
 ## Commands
 
@@ -21,7 +21,7 @@ npm run preview   # preview ./dist locally
 
 | Path | Purpose |
 | --- | --- |
-| [`src/content/writing/`](./src/content/writing/) | Blog posts in `.md` or `.mdx` (schema in [`src/content.config.ts`](./src/content.config.ts)) |
+| [`src/content/blog/`](./src/content/blog/) | Blog posts in `.md` or `.mdx` (schema in [`src/content.config.ts`](./src/content.config.ts)) |
 | [`src/data/site.ts`](./src/data/site.ts) | Projects, experience (`jobs`), and external `links` |
 | [`src/components/ProceduralGlyph.astro`](./src/components/ProceduralGlyph.astro) | 3-tier square thumbnail/banner component (`image` → `icon` → procedural SVG fallback) |
 | [`src/layouts/BaseLayout.astro`](./src/layouts/BaseLayout.astro) | Header, footer font switcher, `<dialog>` search/command palette |

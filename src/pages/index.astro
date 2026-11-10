@@ -4,7 +4,7 @@ import ProceduralGlyph from '../components/ProceduralGlyph.astro';
 import { getCollection } from 'astro:content';
 import { projects, jobs, links } from '../data/site';
 
-const posts = (await getCollection('writing'))
+const posts = (await getCollection('blog'))
   .filter((post) => !post.data.draft)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
@@ -72,21 +72,21 @@ const formatDate = (date: Date) =>
   </ul>
 
   <div class="section-heading">
-    <span>Writing</span>
-    <a href="/writing">all posts →</a>
+    <span>Blog</span>
+    <a href="/blog">all posts →</a>
   </div>
   {
     posts.length > 0 ? (
       <ul class="media-list">
         {posts.map((post) => (
           <li class="media-item">
-            <a href={`/writing/${post.id}`} class="media-thumb-link" tabindex="-1" aria-hidden="true">
+            <a href={`/blog/${post.id}`} class="media-thumb-link" tabindex="-1" aria-hidden="true">
               <ProceduralGlyph seed={`post:${post.id}`} image={post.data.image} size="sm" />
             </a>
             <div class="media-body">
               <div class="stack-item-header">
                 <span class="stack-item-title">
-                  <a href={`/writing/${post.id}`}>{post.data.title}</a>
+                  <a href={`/blog/${post.id}`}>{post.data.title}</a>
                 </span>
                 <time class="post-date" datetime={formatDate(post.data.date)}>
                   {formatDate(post.data.date)}
