@@ -141,6 +141,11 @@ describe('dist: static build verification', () => {
       'lab/index.html',
       'lab/glyphs/index.html',
       'versions/index.html',
+      'v0-alpha/index.html',
+      'v0/index.html',
+      'v0/projects.html',
+      'v1/index.html',
+      'v2/index.html',
       'v3/index.html',
       'v3/projects/index.html',
       'search-index.json',
@@ -152,34 +157,38 @@ describe('dist: static build verification', () => {
       assert.ok(fs.existsSync(full), `Missing built file: dist/${rel}`);
     }
 
-    // Verify archived v3 snapshot includes noindex and Time Machine return banner
-    const v3Html = fs.readFileSync(path.join(distDir, 'v3/index.html'), 'utf8');
-    assert.ok(
-      v3Html.includes('name="robots" content="noindex'),
-      'v3/index.html should contain noindex meta tag'
-    );
-    assert.ok(
-      v3Html.includes('Return to current site'),
-      'v3/index.html should contain the Time Machine return banner'
-    );
+    // Verify all archived snapshots include noindex and Time Machine return banner
+    for (const verDir of ['v0-alpha', 'v0', 'v1', 'v2', 'v3']) {
+      const snapHtml = fs.readFileSync(path.join(distDir, `${verDir}/index.html`), 'utf8');
+      assert.ok(
+        snapHtml.includes('name="robots" content="noindex'),
+        `${verDir}/index.html should contain noindex meta tag`
+      );
+      assert.ok(
+        snapHtml.includes('Return to current site'),
+        `${verDir}/index.html should contain the Time Machine return banner`
+      );
+    }
 
-    // Verify search-index.json includes /lab/glyphs, /versions, and /v3/
+    // Verify search-index.json includes /lab/glyphs, /versions, and archived snapshots
     const searchIndex = JSON.parse(
       fs.readFileSync(path.join(distDir, 'search-index.json'), 'utf8')
     );
     assert.ok(Array.isArray(searchIndex) && searchIndex.length > 0);
-    assert.ok(
-      searchIndex.some((d) => d.url === '/lab/glyphs'),
-      'search-index.json should include /lab/glyphs'
-    );
-    assert.ok(
-      searchIndex.some((d) => d.url === '/versions'),
-      'search-index.json should include /versions'
-    );
-    assert.ok(
-      searchIndex.some((d) => d.url === '/v3/'),
-      'search-index.json should include /v3/'
-    );
+    for (const expectedUrl of [
+      '/lab/glyphs',
+      '/versions',
+      '/v0-alpha/',
+      '/v0/',
+      '/v1/',
+      '/v2/',
+      '/v3/',
+    ]) {
+      assert.ok(
+        searchIndex.some((d) => d.url === expectedUrl),
+        `search-index.json should include ${expectedUrl}`
+      );
+    }
   });
 });
 

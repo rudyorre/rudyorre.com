@@ -189,21 +189,45 @@ export const versions: SiteVersion[] = [
     id: 'v2',
     label: 'v2.0',
     era: '2022 — 2023',
-    status: 'planned',
+    status: 'archived',
+    path: '/v2/',
     commit: 'f440bec',
-    stack: ['Next.js 12', 'React 18', 'Styled Components'],
+    stack: ['Next.js 13', 'React 18', 'Styled Components', 'TypeScript'],
     summary:
-      'Single-page React portfolio with timeline milestones, project filtering, and GitHub Actions static export.',
+      'Dark-navy and teal single-page React portfolio with an animated geometric SVG hero, horizontal timeline carousel, UCLA ML/CS project grid, and a hidden /secret route.',
   },
   {
     id: 'v1',
     label: 'v1.0',
-    era: '2020 — 2021',
-    status: 'planned',
+    era: 'Oct 2020 — May 2021',
+    status: 'archived',
+    path: '/v1/',
     commit: 'ea1b25d',
-    stack: ['HTML5', 'CSS3', 'jQuery'],
+    stack: ['Hugo Academic', 'Wowchemy 4.8', 'Bootstrap 4', 'jQuery'],
     summary:
-      'First personal website built during community college—hand-edited HTML pages for coursework, C++ projects, and transcripts.',
+      'Two-column academic portfolio generated with Hugo Academic during my transfer year to UCLA, featuring ML project write-ups and a JavaScript sorting visualizer.',
+  },
+  {
+    id: 'v0',
+    label: 'v0.0',
+    era: 'Feb — Sep 2020',
+    status: 'archived',
+    path: '/v0/',
+    commit: '3e2bc1b',
+    stack: ['HTML5 UP Spectral', 'CSS3', 'jQuery', 'PDF.js'],
+    summary:
+      'First complete personal portfolio built at El Camino College—hand-edited HTML pages for coursework, Math Study Center tutoring, WarriorPlanner, C++ smart pointers, and embedded PDF.js transcripts.',
+  },
+  {
+    id: 'v0-alpha',
+    label: 'v0-alpha',
+    era: 'Feb 10, 2020',
+    status: 'archived',
+    path: '/v0-alpha/',
+    commit: '3648bc8',
+    stack: ['HTML5 UP Spectral', 'HTML5', 'CSS3'],
+    summary:
+      'The literal first commit in the repository ("2nd commit"): a raw HTML5 UP Spectral template where only the <title> and banner heading said "Rudy Orre" while the rest of the page remained pure Lorem Ipsum.',
   },
 ];
 
