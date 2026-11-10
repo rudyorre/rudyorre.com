@@ -29,6 +29,7 @@ export interface Job {
 
 export const links = {
   github: 'https://github.com/rudyorre',
+  repo: 'https://github.com/rudyorre/rudyorre.com',
   linkedin: 'https://linkedin.com/in/rudyorre',
   twitter: 'https://twitter.com/rudyorre',
   email: 'mailto:rudyorre@gmail.com',
@@ -65,6 +66,16 @@ export const jobs: Job[] = [
 
 export const projects: Project[] = [
   {
+    title: 'Procedural SVG Glyph Engine',
+    description:
+      'Zero-dependency deterministic SVG synthesizer using 32-bit FNV-1a + Murmur3 avalanche hashing and SplitMix32 across 10 geometric motif families.',
+    year: '2026',
+    tags: ['TypeScript', 'SVG', 'PRNG', 'Geometry'],
+    source: 'https://github.com/rudyorre/rudyorre.com/blob/master/src/lib/glyph-engine.ts',
+    visit: '/lab/glyphs',
+    featured: true,
+  },
+  {
     title: 'Brewin Language Interpreter',
     description: 'Statically typed, interpreted language in pure Python with lexical scoping, objects, and error handling.',
     year: '2023',
@@ -90,7 +101,7 @@ export const projects: Project[] = [
     tags: ['Postgres', 'Express', 'Next.js'],
     source: 'https://github.com/rudyorre/dashviz',
     icon: 'dashviz',
-    featured: true,
+    featured: false,
   },
   {
     title: 'Chatbot.ai (JPL FireSat)',

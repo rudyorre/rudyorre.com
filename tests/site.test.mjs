@@ -134,6 +134,7 @@ describe('dist: static build verification', () => {
     const requiredFiles = [
       'index.html',
       '404.html',
+      'robots.txt',
       'blog/index.html',
       'blog/procedural-glyphs/index.html',
       'blog/rebuilding-this-site/index.html',
@@ -141,6 +142,14 @@ describe('dist: static build verification', () => {
       'lab/index.html',
       'lab/glyphs/index.html',
       'versions/index.html',
+      'og/default.png',
+      'og/blog.png',
+      'og/projects.png',
+      'og/lab.png',
+      'og/lab/glyphs.png',
+      'og/versions.png',
+      'og/blog/procedural-glyphs.png',
+      'og/blog/rebuilding-this-site.png',
       'v0-alpha/index.html',
       'v0/index.html',
       'v0/projects.html',
@@ -156,6 +165,46 @@ describe('dist: static build verification', () => {
       const full = path.join(distDir, rel);
       assert.ok(fs.existsSync(full), `Missing built file: dist/${rel}`);
     }
+
+    // Verify homepage includes JSON-LD Person schema, og:image, and twitter:card
+    const homeHtml = fs.readFileSync(path.join(distDir, 'index.html'), 'utf8');
+    assert.ok(homeHtml.includes('application/ld+json'), 'index.html should contain JSON-LD');
+    assert.ok(homeHtml.includes('"@type":"Person"'), 'index.html should contain Person schema');
+    assert.ok(
+      homeHtml.includes('property="og:image" content="https://rudyorre.com/og/default.png"'),
+      'index.html should reference /og/default.png'
+    );
+    assert.ok(
+      homeHtml.includes('name="twitter:card" content="summary_large_image"'),
+      'index.html should include summary_large_image twitter card'
+    );
+    assert.ok(
+      homeHtml.includes('working on the <strong>SecOps Detections Platform</strong>'),
+      'index.html should have a space before <strong>SecOps Detections Platform</strong>'
+    );
+
+    // Verify blog post includes BlogPosting JSON-LD, article meta, reading time, edit link, and post navigation
+    const postHtml = fs.readFileSync(
+      path.join(distDir, 'blog/procedural-glyphs/index.html'),
+      'utf8'
+    );
+    assert.ok(postHtml.includes('"@type":"BlogPosting"'), 'Blog post should include BlogPosting JSON-LD');
+    assert.ok(
+      postHtml.includes('property="og:image" content="https://rudyorre.com/og/blog/procedural-glyphs.png"'),
+      'Blog post should reference its generated OG image'
+    );
+    assert.ok(postHtml.includes('min read'), 'Blog post should display reading time');
+    assert.ok(postHtml.includes('class="post-nav"'), 'Blog post should include prev/next navigation');
+    assert.ok(
+      postHtml.includes(
+        'https://github.com/rudyorre/rudyorre.com/edit/master/src/content/blog/procedural-glyphs.mdx'
+      ),
+      'Blog post should link directly to its Markdown source file on GitHub'
+    );
+    assert.ok(
+      homeHtml.includes('href="https://github.com/rudyorre/rudyorre.com"'),
+      'Footer should include a link to the site GitHub repository'
+    );
 
     // Verify all archived snapshots include noindex and Time Machine return banner
     for (const verDir of ['v0-alpha', 'v0', 'v1', 'v2', 'v3']) {

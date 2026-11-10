@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /v0-alpha/
+Disallow: /v0/
+Disallow: /v1/
+Disallow: /v2/
+Disallow: /v3/
+
+Sitemap: https://rudyorre.com/sitemap-index.xml
