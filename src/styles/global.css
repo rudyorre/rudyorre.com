@@ -587,7 +587,7 @@ a.version-badge:hover {
 
 /* Article / Post Prose */
 .prose {
-  max-width: 65ch;
+  width: 100%;
 }
 
 .post-header {
