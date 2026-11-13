@@ -166,6 +166,14 @@ describe('dist: static build verification', () => {
       assert.ok(fs.existsSync(full), `Missing built file: dist/${rel}`);
     }
 
+    // Verify all generated OG images are valid 1200×630 PNGs
+    for (const rel of requiredFiles.filter((f) => f.startsWith('og/') && f.endsWith('.png'))) {
+      const buf = fs.readFileSync(path.join(distDir, rel));
+      assert.equal(buf.subarray(0, 8).toString('hex'), '89504e470d0a1a0a', `${rel} should be a valid PNG`);
+      assert.equal(buf.readUInt32BE(16), 1200, `${rel} width should be 1200`);
+      assert.equal(buf.readUInt32BE(20), 630, `${rel} height should be 630`);
+    }
+
     // Verify homepage includes JSON-LD Person schema, og:image, and twitter:card
     const homeHtml = fs.readFileSync(path.join(distDir, 'index.html'), 'utf8');
     assert.ok(homeHtml.includes('application/ld+json'), 'index.html should contain JSON-LD');

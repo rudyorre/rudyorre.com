@@ -1,26 +1,16 @@
 import type { APIRoute, GetStaticPaths } from 'astro';
 import { getCollection } from 'astro:content';
 import sharp from 'sharp';
-import { renderProceduralGlyph } from '../../lib/glyph-engine';
 
-interface OgCardProps {
+type OgCardProps = {
   title: string;
-  description: string;
-  eyebrow: string;
-  seed: string;
-  tags?: string[];
-}
+  subtitle?: string;
+  meta?: string;
+  isHome?: boolean;
+};
 
-const DARK_ACCENT_HEX: string[] = [
-  '#60a5fa',
-  '#2dd4bf',
-  '#fbbf24',
-  '#fb7185',
-  '#818cf8',
-  '#34d399',
-  '#f59e0b',
-  '#22d3ee',
-];
+const FONT_SANS =
+  "-apple-system, BlinkMacSystemFont, Inter, Helvetica, 'Nimbus Sans', 'Liberation Sans', Arial, sans-serif";
 
 function escapeXml(str: string): string {
   return String(str)
@@ -31,131 +21,211 @@ function escapeXml(str: string): string {
     .replace(/'/g, '&apos;');
 }
 
-function wrapLines(text: string, maxChars: number, maxLines: number): string[] {
+function estimateEmWidth(text: string): number {
+  let width = 0;
+  for (const ch of text) {
+    if ('ilI1|.,:;\'!` '.includes(ch)) width += 0.3;
+    else if ('fjt()[]{}'.includes(ch)) width += 0.38;
+    else if ('r-–'.includes(ch)) width += 0.42;
+    else if ('mwMW@%—'.includes(ch)) width += 0.86;
+    else if (ch >= 'A' && ch <= 'Z') width += 0.68;
+    else width += 0.55;
+  }
+  return width;
+}
+
+function wrapByPixelWidth(
+  text: string,
+  fontSize: number,
+  maxWidthPx: number,
+  maxLines: number
+): string[] {
   const words = text.trim().split(/\s+/).filter(Boolean);
+  if (words.length === 0) return [];
+
+  const maxEm = maxWidthPx / fontSize;
+  const fullText = words.join(' ');
+  if (estimateEmWidth(fullText) <= maxEm) {
+    return [fullText];
+  }
+
+  // When text fits cleanly in 2 lines without truncation, pick the most balanced top-wider split
+  if (maxLines >= 2 && words.length >= 2) {
+    let bestSplit: [string, string] | null = null;
+    let bestScore = Infinity;
+
+    for (let k = 1; k < words.length; k++) {
+      const l1 = words.slice(0, k).join(' ');
+      const l2 = words.slice(k).join(' ');
+      const w1 = estimateEmWidth(l1);
+      const w2 = estimateEmWidth(l2);
+      if (w1 <= maxEm && w2 <= maxEm) {
+        const penalty = w1 >= w2 ? w1 - w2 : (w2 - w1) * 1.6 + 2;
+        if (penalty < bestScore) {
+          bestScore = penalty;
+          bestSplit = [l1, l2];
+        }
+      }
+    }
+
+    if (bestSplit) {
+      return bestSplit;
+    }
+  }
+
   const lines: string[] = [];
   let current = '';
 
-  for (const word of words) {
+  for (let i = 0; i < words.length; i++) {
+    const word = words[i];
     const candidate = current ? `${current} ${word}` : word;
-    if (candidate.length <= maxChars || !current) {
+    if (!current || estimateEmWidth(candidate) <= maxEm) {
       current = candidate;
     } else {
+      if (lines.length === maxLines - 1) {
+        let truncated = current;
+        while (truncated.includes(' ') && estimateEmWidth(`${truncated}…`) > maxEm) {
+          truncated = truncated.replace(/\s+\S+$/, '');
+        }
+        while (truncated.length > 1 && estimateEmWidth(`${truncated}…`) > maxEm) {
+          truncated = truncated.slice(0, -1).trimEnd();
+        }
+        lines.push(`${truncated.replace(/[.,;:—–-]+$/, '')}…`);
+        return lines;
+      }
       lines.push(current);
       current = word;
-      if (lines.length >= maxLines) break;
     }
   }
-  if (current && lines.length < maxLines) {
+
+  if (current) {
     lines.push(current);
-  }
-  const consumedWords = lines.join(' ').split(/\s+/).filter(Boolean).length;
-  if (consumedWords < words.length && lines.length > 0) {
-    const last = lines[lines.length - 1];
-    lines[lines.length - 1] =
-      last.length > maxChars - 1 ? `${last.slice(0, maxChars - 1).trimEnd()}…` : `${last}…`;
   }
   return lines;
 }
 
-function resolveGlyphSvgForSharp(rawSvg: string, primaryId: number, secondaryId: number): string {
-  const primaryHex = DARK_ACCENT_HEX[primaryId] ?? '#60a5fa';
-  const secondaryHex = DARK_ACCENT_HEX[secondaryId] ?? '#2dd4bf';
+function buildOrbitalMotif(fadeStartPct: number): string {
+  // Center sits off the right edge so rings sweep across the frame as cropped orbital arcs
+  const cx = 1300;
+  const cy = 295;
 
-  const inner = rawSvg
-    .replace(/^<svg[^>]*>/, '')
-    .replace(/<\/svg>$/, '')
-    .replace(/var\(--glyph-accent-alt\)/g, secondaryHex)
-    .replace(/var\(--glyph-accent\)/g, primaryHex)
-    .replace(/var\(--glyph-bg\)/g, '#161613')
-    .replace(/var\(--glyph-grid\)/g, '#22221e')
-    .replace(/var\(--glyph-ink\)/g, '#8a8982');
+  // Compute two subtle orbital node positions directly on r=325 and r=445
+  const degToRad = (deg: number) => (deg * Math.PI) / 180;
+  const n1Angle = degToRad(164);
+  const n1x = (cx + 325 * Math.cos(n1Angle)).toFixed(1);
+  const n1y = (cy + 325 * Math.sin(n1Angle)).toFixed(1);
 
-  return inner;
+  const n2Angle = degToRad(196);
+  const n2x = (cx + 445 * Math.cos(n2Angle)).toFixed(1);
+  const n2y = (cy + 445 * Math.sin(n2Angle)).toFixed(1);
+
+  return `<defs>
+    <linearGradient id="orbit-fade" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#000000" />
+      <stop offset="${fadeStartPct}%" stop-color="#000000" />
+      <stop offset="${Math.min(94, fadeStartPct + 30)}%" stop-color="#969696" />
+      <stop offset="100%" stop-color="#ffffff" />
+    </linearGradient>
+    <mask id="orbit-mask">
+      <rect width="1200" height="630" fill="url(#orbit-fade)" />
+    </mask>
+  </defs>
+  <g mask="url(#orbit-mask)" fill="none">
+    <!-- Concentric monochrome orbital hairlines cropped off the right edge -->
+    <circle cx="${cx}" cy="${cy}" r="215" stroke="#52514a" stroke-width="1.6" />
+    <circle cx="${cx}" cy="${cy}" r="325" stroke="#46453e" stroke-width="1.5" />
+    <circle cx="${cx}" cy="${cy}" r="445" stroke="#3c3b35" stroke-width="1.4" stroke-dasharray="5 7" />
+    <circle cx="${cx}" cy="${cy}" r="575" stroke="#33322d" stroke-width="1.35" />
+    <circle cx="${cx}" cy="${cy}" r="715" stroke="#292824" stroke-width="1.25" />
+
+    <!-- Secondary inclined orbital arc for subtle geometric depth -->
+    <ellipse cx="1270" cy="340" rx="490" ry="290" transform="rotate(-22 1270 340)" stroke="#383731" stroke-width="1.3" />
+
+    <!-- Minimal orbital nodes -->
+    <circle cx="${n1x}" cy="${n1y}" r="7.5" fill="#10100e" stroke="#57564e" stroke-width="1.4" />
+    <circle cx="${n1x}" cy="${n1y}" r="2.8" fill="#7d7c74" />
+    <circle cx="${n2x}" cy="${n2y}" r="3.2" fill="#63625b" />
+  </g>`;
 }
 
 function buildOgSvg(props: OgCardProps): string {
-  const glyph = renderProceduralGlyph({ seed: props.seed, size: 'md' });
-  const primaryHex = DARK_ACCENT_HEX[glyph.diagnostics.accentId] ?? '#60a5fa';
-  const glyphInner = resolveGlyphSvgForSharp(
-    glyph.svg,
-    glyph.diagnostics.accentId,
-    glyph.diagnostics.accentSecondaryId
-  );
+  const padX = 120;
 
-  const titleLines = wrapLines(props.title, 22, 3);
-  const descLines = wrapLines(props.description, 44, 3);
-  const titleFontSize = titleLines.length >= 3 ? 38 : 44;
-  const titleLineHeight = titleLines.length >= 3 ? 48 : 54;
-  const titleStartY = 200;
-  const descStartY = titleStartY + titleLines.length * titleLineHeight + 18;
+  if (props.isHome) {
+    const titleSize = 84;
+    const titleY = 342;
 
-  const tags = (props.tags && props.tags.length > 0
-    ? props.tags
-    : [glyph.diagnostics.family.shortLabel, glyph.diagnostics.subMode, glyph.diagnostics.hashHex]
-  ).slice(0, 4);
+    return `<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#10100e" />
+  ${buildOrbitalMotif(40)}
+  <text x="${padX}" y="${titleY}" font-family="${FONT_SANS}" font-size="${titleSize}" font-weight="700" letter-spacing="-2.5" fill="#ecebe6">${escapeXml(props.title)}</text>
+</svg>`;
+  }
 
-  let tagX = 72;
-  const tagPills = tags
-    .map((tag) => {
-      const label = tag.slice(0, 22);
-      const pillW = Math.max(68, label.length * 10.5 + 28);
-      const x = tagX;
-      tagX += pillW + 12;
-      return `
-        <g transform="translate(${x}, 516)">
-          <rect width="${pillW}" height="34" rx="5" fill="#1d1d1a" stroke="#2e2e29" stroke-width="1" />
-          <text x="${pillW / 2}" y="22" text-anchor="middle" font-family="DejaVu Sans Mono, monospace" font-size="14" fill="#9e9d97">${escapeXml(label)}</text>
-        </g>
-      `;
-    })
-    .join('');
+  const maxTextWidth = 960;
+  let titleSize = 62;
+  let titleLineHeight = 74;
+  let titleLines = wrapByPixelWidth(props.title, titleSize, maxTextWidth, 3);
+  if (titleLines.length === 2) {
+    titleSize = 56;
+    titleLineHeight = 68;
+    titleLines = wrapByPixelWidth(props.title, titleSize, maxTextWidth, 3);
+  }
+  if (titleLines.length >= 3) {
+    titleSize = 48;
+    titleLineHeight = 58;
+    titleLines = wrapByPixelWidth(props.title, titleSize, maxTextWidth, 3);
+  }
+
+  const subtitleSize = 28;
+  const subtitleLineHeight = 41;
+  const subtitleLines = props.subtitle
+    ? wrapByPixelWidth(props.subtitle, subtitleSize, maxTextWidth - 20, 2)
+    : [];
+
+  const metaCapHeight = props.meta ? 17 : 0;
+  const metaToTitleGap = props.meta ? 34 : 0;
+  const titleBlockHeight =
+    titleSize * 0.74 + Math.max(0, titleLines.length - 1) * titleLineHeight;
+  const titleToSubGap = subtitleLines.length > 0 ? 30 : 0;
+  const subBlockHeight =
+    subtitleLines.length > 0
+      ? subtitleSize * 0.72 + (subtitleLines.length - 1) * subtitleLineHeight
+      : 0;
+
+  const totalOpticalHeight =
+    metaCapHeight + metaToTitleGap + titleBlockHeight + titleToSubGap + subBlockHeight;
+
+  const blockTop = Math.round(304 - totalOpticalHeight / 2);
+  const metaBaselineY = blockTop + metaCapHeight;
+  const firstTitleBaselineY =
+    blockTop + metaCapHeight + metaToTitleGap + Math.round(titleSize * 0.74);
+  const lastTitleBaselineY =
+    firstTitleBaselineY + Math.max(0, titleLines.length - 1) * titleLineHeight;
+  const firstSubtitleBaselineY =
+    lastTitleBaselineY + titleToSubGap + Math.round(subtitleSize * 0.72);
 
   return `<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
-    <rect width="1200" height="630" fill="#10100e" />
-    <g stroke="#1b1b18" stroke-width="1">
-      <line x1="0" y1="72" x2="1200" y2="72" />
-      <line x1="0" y1="558" x2="1200" y2="558" />
-      <line x1="72" y1="0" x2="72" y2="630" />
-      <line x1="1128" y1="0" x2="1128" y2="630" />
-    </g>
-    <rect x="36" y="36" width="1128" height="558" rx="12" fill="#141412" stroke="#2c2c27" stroke-width="1.5" />
-    <line x1="36" y1="38" x2="1164" y2="38" stroke="${primaryHex}" stroke-width="3" opacity="0.85" />
-
-    <!-- Top header metadata -->
-    <text x="72" y="106" font-family="DejaVu Sans Mono, monospace" font-size="17" font-weight="700" fill="#ecebe6" letter-spacing="0.5">rudyorre<tspan fill="#6c6b66" font-weight="400">.com</tspan></text>
-    <text x="220" y="106" font-family="DejaVu Sans Mono, monospace" font-size="15" fill="#6c6b66">·  ${escapeXml(props.eyebrow)}</text>
-
-    <!-- Title -->
-    ${titleLines
-      .map(
-        (line, idx) =>
-          `<text x="72" y="${titleStartY + idx * titleLineHeight}" font-family="DejaVu Sans, sans-serif" font-size="${titleFontSize}" font-weight="700" fill="#ecebe6">${escapeXml(line)}</text>`
-      )
-      .join('')}
-
-    <!-- Description -->
-    ${descLines
-      .map(
-        (line, idx) =>
-          `<text x="72" y="${descStartY + idx * 34}" font-family="DejaVu Sans, sans-serif" font-size="22" fill="#9e9d97">${escapeXml(line)}</text>`
-      )
-      .join('')}
-
-    <!-- Bottom tags -->
-    ${tagPills}
-
-    <!-- Procedural SVG Glyph Frame (360x360) on right -->
-    <g transform="translate(764, 114)">
-      <rect x="-8" y="-8" width="376" height="376" rx="12" fill="#10100e" stroke="#262622" stroke-width="1" />
-      <rect width="360" height="360" rx="8" fill="#161613" stroke="#3b3b35" stroke-width="1.5" />
-      <svg width="360" height="360" viewBox="0 0 64 64">
-        ${glyphInner}
-      </svg>
-      <text x="0" y="394" font-family="DejaVu Sans Mono, monospace" font-size="13" fill="#6c6b66">${escapeXml(glyph.diagnostics.hashHex)} · ${escapeXml(glyph.diagnostics.family.shortLabel)}</text>
-      <text x="360" y="394" text-anchor="end" font-family="DejaVu Sans Mono, monospace" font-size="13" fill="${primaryHex}">${escapeXml(glyph.diagnostics.subMode)}</text>
-    </g>
-  </svg>`;
+  <rect width="1200" height="630" fill="#10100e" />
+  ${buildOrbitalMotif(54)}
+  ${
+    props.meta
+      ? `<text x="${padX}" y="${metaBaselineY}" font-family="${FONT_SANS}" font-size="23" font-weight="400" letter-spacing="-0.1" fill="#787771">${escapeXml(props.meta)}</text>`
+      : ''
+  }
+  ${titleLines
+    .map(
+      (line, idx) =>
+        `<text x="${padX}" y="${firstTitleBaselineY + idx * titleLineHeight}" font-family="${FONT_SANS}" font-size="${titleSize}" font-weight="700" letter-spacing="-1.6" fill="#ecebe6">${escapeXml(line)}</text>`
+    )
+    .join('\n  ')}
+  ${subtitleLines
+    .map(
+      (line, idx) =>
+        `<text x="${padX}" y="${firstSubtitleBaselineY + idx * subtitleLineHeight}" font-family="${FONT_SANS}" font-size="${subtitleSize}" font-weight="400" letter-spacing="-0.2" fill="#9e9d97">${escapeXml(line)}</text>`
+    )
+    .join('\n  ')}
+</svg>`;
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -166,65 +236,47 @@ export const getStaticPaths: GetStaticPaths = async () => {
       slug: 'default',
       props: {
         title: 'Rudy Orre',
-        description:
-          'Software engineer at Google working on the SecOps Detections Platform—building distributed systems for security event detection at scale.',
-        eyebrow: 'software engineer · google secops',
-        seed: 'post:rebuilding-this-site',
-        tags: ['distributed-systems', 'secops', 'backend', 'google'],
+        isHome: true,
       },
     },
     {
       slug: 'blog',
       props: {
         title: 'Blog',
-        description:
-          'Notes on distributed systems, infrastructure, and software engineering by Rudy Orre.',
-        eyebrow: '/blog',
-        seed: 'post:procedural-glyphs',
-        tags: ['systems', 'infrastructure', 'engineering'],
+        subtitle: 'Essays, notes, and technical write-ups.',
+        meta: 'Rudy Orre',
       },
     },
     {
       slug: 'projects',
       props: {
         title: 'Projects',
-        description: 'Selected open-source libraries, systems projects, and research by Rudy Orre.',
-        eyebrow: '/projects',
-        seed: 'proj:Brewin Language Interpreter',
-        tags: ['open-source', 'systems', 'compilers', 'ml'],
+        subtitle: 'Open-source libraries, tools, and software projects.',
+        meta: 'Rudy Orre',
       },
     },
     {
       slug: 'lab',
       props: {
         title: 'Lab',
-        description:
-          'Interactive visualizers, sandboxes, and browser-native companions to technical essays.',
-        eyebrow: '/lab',
-        seed: 'post:procedural-glyphs',
-        tags: ['lab', 'visualizers', 'svg', 'systems'],
+        subtitle: 'Interactive visualizers, sandboxes, and experiments.',
+        meta: 'Rudy Orre',
       },
     },
     {
       slug: 'lab/glyphs',
       props: {
         title: 'Procedural SVG Glyph Workbench',
-        description:
-          'Interactive FNV-1a + SplitMix32 SVG glyph synthesizer across 10 geometric motif families.',
-        eyebrow: '/lab/glyphs',
-        seed: 'post:procedural-glyphs',
-        tags: ['fnv-1a', 'splitmix32', 'svg', '10-families'],
+        subtitle: 'Deterministic SVG synthesizer across 10 geometric motif families.',
+        meta: 'Rudy Orre',
       },
     },
     {
       slug: 'versions',
       props: {
         title: 'Time Machine',
-        description:
-          'Six years of rudyorre.com across five architectural eras (v0-alpha through v4) mounted into the static deployment tree.',
-        eyebrow: '/versions · archive',
-        seed: 'version:v3',
-        tags: ['v0-alpha', 'v1', 'v2', 'v3', 'v4'],
+        subtitle: 'Archived iterations of rudyorre.com across five architectural eras.',
+        meta: 'Rudy Orre',
       },
     },
   ];
@@ -233,10 +285,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
     slug: `blog/${post.id}`,
     props: {
       title: post.data.title,
-      description: post.data.description,
-      eyebrow: `blog · ${post.data.date.toISOString().slice(0, 10)}`,
-      seed: `post:${post.id}`,
-      tags: post.data.tags,
+      subtitle: post.data.description,
+      meta: `Rudy Orre · ${post.data.date.toISOString().slice(0, 10)}`,
     },
   }));
 
