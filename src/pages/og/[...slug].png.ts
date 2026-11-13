@@ -60,7 +60,6 @@ function wrapByPixelWidth(
       const w1 = estimateEmWidth(l1);
       const w2 = estimateEmWidth(l2);
       if (w1 <= maxEm && w2 <= maxEm) {
-        // Slight penalty when line 2 is wider than line 1 so headlines have a natural editorial rag
         const penalty = w1 >= w2 ? w1 - w2 : (w2 - w1) * 1.6 + 2;
         if (penalty < bestScore) {
           bestScore = penalty;
@@ -85,6 +84,9 @@ function wrapByPixelWidth(
     } else {
       if (lines.length === maxLines - 1) {
         let truncated = current;
+        while (truncated.includes(' ') && estimateEmWidth(`${truncated}…`) > maxEm) {
+          truncated = truncated.replace(/\s+\S+$/, '');
+        }
         while (truncated.length > 1 && estimateEmWidth(`${truncated}…`) > maxEm) {
           truncated = truncated.slice(0, -1).trimEnd();
         }
@@ -102,27 +104,65 @@ function wrapByPixelWidth(
   return lines;
 }
 
+function buildOrbitalMotif(fadeStartPct: number): string {
+  // Center sits off the right edge so rings sweep across the frame as cropped orbital arcs
+  const cx = 1300;
+  const cy = 295;
+
+  // Compute two subtle orbital node positions directly on r=325 and r=445
+  const degToRad = (deg: number) => (deg * Math.PI) / 180;
+  const n1Angle = degToRad(164);
+  const n1x = (cx + 325 * Math.cos(n1Angle)).toFixed(1);
+  const n1y = (cy + 325 * Math.sin(n1Angle)).toFixed(1);
+
+  const n2Angle = degToRad(196);
+  const n2x = (cx + 445 * Math.cos(n2Angle)).toFixed(1);
+  const n2y = (cy + 445 * Math.sin(n2Angle)).toFixed(1);
+
+  return `<defs>
+    <linearGradient id="orbit-fade" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#000000" />
+      <stop offset="${fadeStartPct}%" stop-color="#000000" />
+      <stop offset="${Math.min(94, fadeStartPct + 30)}%" stop-color="#969696" />
+      <stop offset="100%" stop-color="#ffffff" />
+    </linearGradient>
+    <mask id="orbit-mask">
+      <rect width="1200" height="630" fill="url(#orbit-fade)" />
+    </mask>
+  </defs>
+  <g mask="url(#orbit-mask)" fill="none">
+    <!-- Concentric monochrome orbital hairlines cropped off the right edge -->
+    <circle cx="${cx}" cy="${cy}" r="215" stroke="#52514a" stroke-width="1.6" />
+    <circle cx="${cx}" cy="${cy}" r="325" stroke="#46453e" stroke-width="1.5" />
+    <circle cx="${cx}" cy="${cy}" r="445" stroke="#3c3b35" stroke-width="1.4" stroke-dasharray="5 7" />
+    <circle cx="${cx}" cy="${cy}" r="575" stroke="#33322d" stroke-width="1.35" />
+    <circle cx="${cx}" cy="${cy}" r="715" stroke="#292824" stroke-width="1.25" />
+
+    <!-- Secondary inclined orbital arc for subtle geometric depth -->
+    <ellipse cx="1270" cy="340" rx="490" ry="290" transform="rotate(-22 1270 340)" stroke="#383731" stroke-width="1.3" />
+
+    <!-- Minimal orbital nodes -->
+    <circle cx="${n1x}" cy="${n1y}" r="7.5" fill="#10100e" stroke="#57564e" stroke-width="1.4" />
+    <circle cx="${n1x}" cy="${n1y}" r="2.8" fill="#7d7c74" />
+    <circle cx="${n2x}" cy="${n2y}" r="3.2" fill="#63625b" />
+  </g>`;
+}
+
 function buildOgSvg(props: OgCardProps): string {
   const padX = 120;
-  const maxTextWidth = 1200 - padX * 2; // 960px
 
   if (props.isHome) {
-    const titleSize = 80;
-    const subtitleSize = 34;
-    const titleY = props.subtitle ? 296 : 332;
-    const subtitleY = titleY + 60;
+    const titleSize = 84;
+    const titleY = 342;
 
     return `<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
   <rect width="1200" height="630" fill="#10100e" />
-  <text x="${padX}" y="${titleY}" font-family="${FONT_SANS}" font-size="${titleSize}" font-weight="700" letter-spacing="-2.3" fill="#ecebe6">${escapeXml(props.title)}</text>
-  ${
-    props.subtitle
-      ? `<text x="${padX}" y="${subtitleY}" font-family="${FONT_SANS}" font-size="${subtitleSize}" font-weight="400" letter-spacing="-0.3" fill="#9e9d97">${escapeXml(props.subtitle)}</text>`
-      : ''
-  }
+  ${buildOrbitalMotif(40)}
+  <text x="${padX}" y="${titleY}" font-family="${FONT_SANS}" font-size="${titleSize}" font-weight="700" letter-spacing="-2.5" fill="#ecebe6">${escapeXml(props.title)}</text>
 </svg>`;
   }
 
+  const maxTextWidth = 960;
   let titleSize = 62;
   let titleLineHeight = 74;
   let titleLines = wrapByPixelWidth(props.title, titleSize, maxTextWidth, 3);
@@ -137,10 +177,10 @@ function buildOgSvg(props: OgCardProps): string {
     titleLines = wrapByPixelWidth(props.title, titleSize, maxTextWidth, 3);
   }
 
-  const subtitleSize = 29;
-  const subtitleLineHeight = 42;
+  const subtitleSize = 28;
+  const subtitleLineHeight = 41;
   const subtitleLines = props.subtitle
-    ? wrapByPixelWidth(props.subtitle, subtitleSize, maxTextWidth - 32, 2)
+    ? wrapByPixelWidth(props.subtitle, subtitleSize, maxTextWidth - 20, 2)
     : [];
 
   const metaCapHeight = props.meta ? 17 : 0;
@@ -167,6 +207,7 @@ function buildOgSvg(props: OgCardProps): string {
 
   return `<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
   <rect width="1200" height="630" fill="#10100e" />
+  ${buildOrbitalMotif(54)}
   ${
     props.meta
       ? `<text x="${padX}" y="${metaBaselineY}" font-family="${FONT_SANS}" font-size="23" font-weight="400" letter-spacing="-0.1" fill="#787771">${escapeXml(props.meta)}</text>`
@@ -195,7 +236,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
       slug: 'default',
       props: {
         title: 'Rudy Orre',
-        subtitle: 'Software Engineer',
         isHome: true,
       },
     },
