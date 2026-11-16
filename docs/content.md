@@ -4,16 +4,25 @@ How to add or update blog posts, projects, experience, links, and search command
 
 ## 1. Writing a new blog post
 
-Create a `.md` (or `.mdx` if you need an interactive component) file in [`src/content/blog/`](../src/content/blog/):
+Drop a `.md` (or `.mdx` if you need an interactive component) file into [`src/content/blog/`](../src/content/blog/)—**frontmatter is completely optional**:
+
+```markdown
+# Writing without a chatbot
+
+First paragraph automatically becomes the summary for /blog, RSS, OpenGraph cards, and search...
+```
+
+Or run `npm run new "Post title"` to scaffold a pre-dated draft file.
+
+If you want explicit overrides, any YAML frontmatter field is supported:
 
 ```markdown
 ---
 title: "Post title"
-date: 2026-11-08
-description: "One-sentence summary used in lists, RSS, OpenGraph, and search."
+date: 2026-11-15
+description: "Custom summary used in lists, RSS, OpenGraph, and search."
 tags: ["systems", "go"]
 draft: false
-# Optional overrides:
 # image: "/images/my-diagram.png"
 # canonical: "https://..."
 ---
@@ -21,9 +30,12 @@ draft: false
 Post body in standard Markdown.
 ```
 
-- **Slug:** derived from the filename (e.g. `src/content/blog/my-post.md` → `/blog/my-post`).
-- **Drafts:** set `draft: true` while writing; drafts are excluded from `/`, `/blog`, `/rss.xml`, and `/search-index.json`.
-- **Thumbnails & banners:** automatically generated from `seed="post:<slug>"` unless `image` is provided in frontmatter.
+- **Automatic metadata fallbacks** (implemented in [`src/lib/posts.ts`](../src/lib/posts.ts)):
+  - `title` → frontmatter `title` → first `# Heading` in body (automatically deduplicated from prose) → humanized filename slug.
+  - `description` → frontmatter `description` → first prose paragraph (~155 chars).
+  - `date` → frontmatter `date` → `YYYY-MM-DD-` filename prefix (e.g. `2026-11-15-my-post.md` still routes to `/blog/my-post`) → first `git` commit date → file `mtime`.
+- **Drafts & local testing:** prefix the filename with `_` (e.g. `_my-post.md`) or set `draft: true`. Run `npm run dev` to preview drafts live at `http://localhost:4321` with a `[draft]` badge; `npm run build` automatically excludes all drafts from `/`, `/blog`, `/og/blog/*`, `/rss.xml`, sitemap, and `/search-index.json`.
+- **Thumbnails, OG cards & search:** automatically generated at build time (`seed="post:<slug>"` SVG badge/banner, `1200×630` `/og/blog/<slug>.png`, RSS, and `⌘K` search index).
 - **Syndication (Substack / Medium):** `/rss.xml` outputs full post content. Publish on `rudyorre.com` first, then use Medium's *Import a story* or Substack's RSS/URL import so `rudyorre.com` stays the canonical URL.
 
 ## 2. Adding or updating a project

@@ -1,0 +1,6 @@
+---
+const html = await Astro.slots.render('default');
+const cleaned = html.replace(/^\s*<h1\b[^>]*>[\s\S]*?<\/h1>\s*/i, '');
+---
+
+<Fragment set:html={cleaned} />

@@ -1,13 +1,13 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProceduralGlyph from '../../components/ProceduralGlyph.astro';
-import { getCollection, render } from 'astro:content';
+import PostBody from '../../components/PostBody.astro';
+import { render } from 'astro:content';
 import { links } from '../../data/site';
+import { getBlogPosts } from '../../lib/posts';
 
 export async function getStaticPaths() {
-  const posts = (await getCollection('blog'))
-    .filter((post) => !post.data.draft)
-    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  const posts = await getBlogPosts();
 
   return posts.map((post, idx) => ({
     params: { slug: post.id },
@@ -20,13 +20,13 @@ export async function getStaticPaths() {
 }
 
 const { post, newerPost, olderPost } = Astro.props;
-const { Content } = await render(post);
+const { Content } = await render(post.entry);
 const formatDate = (date: Date) => date.toISOString().slice(0, 10);
 
-const sourcePath = post.filePath ?? `src/content/blog/${post.id}.md`;
+const sourcePath = post.filePath;
 const editUrl = `${links.repo}/edit/master/${sourcePath}`;
 
-const rawWords = (post.body ?? '')
+const rawWords = post.body
   .replace(/```[\s\S]*?```/g, ' ')
   .replace(/<[^>]+>/g, ' ')
   .trim()
@@ -35,18 +35,18 @@ const rawWords = (post.body ?? '')
 const readingMinutes = Math.max(1, Math.round(rawWords / 220));
 
 const postUrl = new URL(`/blog/${post.id}/`, Astro.site ?? 'https://rudyorre.com').toString();
-const ogImage = post.data.image ?? `/og/blog/${post.id}.png`;
+const ogImage = post.image ?? `/og/blog/${post.id}.png`;
 const ogImageAbs = new URL(ogImage, Astro.site ?? 'https://rudyorre.com').toString();
 
 const blogPostingJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
-  headline: post.data.title,
-  description: post.data.description,
-  datePublished: post.data.date.toISOString(),
+  headline: post.title,
+  description: post.description,
+  datePublished: post.date.toISOString(),
   url: postUrl,
   image: ogImageAbs,
-  keywords: post.data.tags,
+  keywords: post.tags,
   author: {
     '@type': 'Person',
     name: 'Rudy Orre',
@@ -56,35 +56,40 @@ const blogPostingJsonLd = {
 ---
 
 <BaseLayout
-  title={post.data.title}
-  description={post.data.description}
-  canonical={post.data.canonical}
+  title={post.title}
+  description={post.description}
+  canonical={post.canonical}
   ogType="article"
   ogImage={ogImage}
-  publishedTime={post.data.date.toISOString()}
-  tags={post.data.tags}
+  publishedTime={post.date.toISOString()}
+  tags={post.tags}
   jsonLd={blogPostingJsonLd}
 >
   <article class="prose">
     <header class="post-header">
       <a href="/blog" class="post-back-link">← all posts</a>
       <div class="post-banner-wrap">
-        <ProceduralGlyph seed={`post:${post.id}`} image={post.data.image} size="banner" />
+        <ProceduralGlyph seed={`post:${post.id}`} image={post.image} size="banner" />
       </div>
-      <h1>{post.data.title}</h1>
+      <h1>{post.title}</h1>
       <div class="post-meta">
-        <time datetime={formatDate(post.data.date)}>
-          {formatDate(post.data.date)}
+        <time datetime={formatDate(post.date)}>
+          {formatDate(post.date)}
         </time>
         <span> · {readingMinutes} min read</span>
         {
-          post.data.tags.length > 0 && (
-            <span> · {post.data.tags.join(', ')}</span>
+          post.tags.length > 0 && (
+            <span> · {post.tags.join(', ')}</span>
+          )
+        }
+        {
+          post.draft && (
+            <span class="version-badge version-badge-planned">draft</span>
           )
         }
       </div>
     </header>
-    <Content />
+    <PostBody><Content /></PostBody>
 
     <div class="post-source-bar">
       <a href={editUrl} target="_blank" rel="noopener">edit this post on github ↗</a>
@@ -97,7 +102,7 @@ const blogPostingJsonLd = {
             {olderPost && (
               <a href={`/blog/${olderPost.id}`} class="post-nav-link">
                 <span class="post-nav-label">← older</span>
-                <span class="post-nav-title">{olderPost.data.title}</span>
+                <span class="post-nav-title">{olderPost.title}</span>
               </a>
             )}
           </div>
@@ -105,7 +110,7 @@ const blogPostingJsonLd = {
             {newerPost && (
               <a href={`/blog/${newerPost.id}`} class="post-nav-link">
                 <span class="post-nav-label">newer →</span>
-                <span class="post-nav-title">{newerPost.data.title}</span>
+                <span class="post-nav-title">{newerPost.title}</span>
               </a>
             )}
           </div>
