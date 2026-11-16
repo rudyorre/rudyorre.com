@@ -5,10 +5,11 @@ Personal site and blog for Rudy Orre, built with [Astro](https://astro.build), p
 ## Commands
 
 ```bash
-npm install       # install dependencies
-npm run dev       # local dev server at http://localhost:4321
-npm run build     # static production build into ./dist
-npm run preview   # preview ./dist locally
+npm install               # install dependencies
+npm run new "Post title"  # optional: scaffold a dated draft in src/content/blog/
+npm run dev               # local dev server at http://localhost:4321 (includes drafts)
+npm run build             # static production build into ./dist (excludes drafts)
+npm run preview           # preview ./dist locally
 ```
 
 ## Architecture & Constraints

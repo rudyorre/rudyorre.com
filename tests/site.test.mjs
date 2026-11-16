@@ -267,3 +267,87 @@ describe('dist: static build verification', () => {
   });
 });
 
+// Transpile and import `src/lib/post-meta.ts` in-memory for zero-dependency unit testing
+const postMetaSource = fs.readFileSync(path.resolve('src/lib/post-meta.ts'), 'utf8');
+const postMetaJs = ts.transpileModule(postMetaSource, {
+  compilerOptions: {
+    module: ts.ModuleKind.ESNext,
+    target: ts.ScriptTarget.ES2022,
+  },
+}).outputText;
+
+const postMeta = await import(
+  `data:text/javascript;base64,${Buffer.from(postMetaJs).toString('base64')}`
+);
+
+const {
+  deriveSlugFromEntry,
+  isUnderscoreDraft,
+  extractDateFromFilename,
+  extractTitleFromBody,
+  extractDescriptionFromBody,
+  resolvePostMetadata,
+} = postMeta;
+
+describe('post-meta: zero-frontmatter blog resolution', () => {
+  test('deriveSlugFromEntry preserves standard slugs and strips date/underscore prefixes', () => {
+    assert.equal(deriveSlugFromEntry('procedural-glyphs.mdx'), 'procedural-glyphs');
+    assert.equal(deriveSlugFromEntry('rebuilding-this-site.md'), 'rebuilding-this-site');
+    assert.equal(
+      deriveSlugFromEntry('2026-11-16-writing-without-a-chatbot.md'),
+      'writing-without-a-chatbot'
+    );
+    assert.equal(deriveSlugFromEntry('_writing-without-a-chatbot.md'), 'writing-without-a-chatbot');
+    assert.equal(deriveSlugFromEntry('_drafts/My Raw Notes.md'), 'my-raw-notes');
+    assert.equal(deriveSlugFromEntry('ignored.md', 'custom-slug'), 'custom-slug');
+  });
+
+  test('isUnderscoreDraft detects leading underscores on files or blog subfolders', () => {
+    assert.equal(isUnderscoreDraft('src/content/blog/rebuilding-this-site.md'), false);
+    assert.equal(isUnderscoreDraft('src/content/blog/_wip-post.md'), true);
+    assert.equal(isUnderscoreDraft('src/content/blog/_drafts/wip-post.md'), true);
+  });
+
+  test('extractDateFromFilename parses YYYY-MM-DD- prefixes cleanly', () => {
+    const d = extractDateFromFilename('src/content/blog/2026-11-16-raw-writing.md');
+    assert.ok(d instanceof Date);
+    assert.equal(d.toISOString().slice(0, 10), '2026-11-16');
+    assert.equal(extractDateFromFilename('src/content/blog/rebuilding-this-site.md'), null);
+  });
+
+  test('extractTitleFromBody and extractDescriptionFromBody infer clean metadata from bare Markdown', () => {
+    const md = `
+# Writing \`without\` a [chatbot](https://example.com)
+
+I noticed recently that outsourcing a first draft skips the exact moment where you realize your **mental model** has a hole in it.
+
+## Second section
+More text here.
+`;
+    assert.equal(extractTitleFromBody(md), 'Writing without a chatbot');
+    assert.equal(
+      extractDescriptionFromBody(md),
+      'I noticed recently that outsourcing a first draft skips the exact moment where you realize your mental model has a hole in it.'
+    );
+  });
+
+  test('resolvePostMetadata falls back gracefully when frontmatter is completely empty', () => {
+    const resolved = resolvePostMetadata({
+      id: 'writing-without-ai',
+      data: {},
+      body: '# Writing without AI\n\nFirst paragraph becomes the description automatically.',
+      filePath: 'src/content/blog/_2026-11-16-writing-without-ai.md',
+    });
+
+    assert.equal(resolved.title, 'Writing without AI');
+    assert.equal(
+      resolved.description,
+      'First paragraph becomes the description automatically.'
+    );
+    assert.equal(resolved.date.toISOString().slice(0, 10), '2026-11-16');
+    assert.equal(resolved.draft, true);
+    assert.deepEqual(resolved.tags, []);
+  });
+});
+
+

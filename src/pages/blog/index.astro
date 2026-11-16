@@ -1,11 +1,9 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProceduralGlyph from '../../components/ProceduralGlyph.astro';
-import { getCollection } from 'astro:content';
+import { getBlogPosts } from '../../lib/posts';
 
-const posts = (await getCollection('blog'))
-  .filter((post) => !post.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const posts = await getBlogPosts();
 
 const formatDate = (date: Date) => date.toISOString().slice(0, 10);
 ---
@@ -25,21 +23,24 @@ const formatDate = (date: Date) => date.toISOString().slice(0, 10);
       posts.map((post) => (
         <li class="media-item">
           <a href={`/blog/${post.id}`} class="media-thumb-link" tabindex="-1" aria-hidden="true">
-            <ProceduralGlyph seed={`post:${post.id}`} image={post.data.image} size="md" />
+            <ProceduralGlyph seed={`post:${post.id}`} image={post.image} size="md" />
           </a>
           <div class="media-body">
             <div class="stack-item-header">
               <span class="stack-item-title">
-                <a href={`/blog/${post.id}`}>{post.data.title}</a>
+                <a href={`/blog/${post.id}`}>{post.title}</a>
+                {post.draft && (
+                  <span class="version-badge version-badge-planned">draft</span>
+                )}
               </span>
-              <time class="post-date" datetime={formatDate(post.data.date)}>
-                {formatDate(post.data.date)}
+              <time class="post-date" datetime={formatDate(post.date)}>
+                {formatDate(post.date)}
               </time>
             </div>
-            <p class="stack-item-desc">{post.data.description}</p>
-            {post.data.tags.length > 0 && (
+            <p class="stack-item-desc">{post.description}</p>
+            {post.tags.length > 0 && (
               <div class="tag-row">
-                {post.data.tags.map((tag) => (
+                {post.tags.map((tag) => (
                   <span class="tag">{tag}</span>
                 ))}
               </div>

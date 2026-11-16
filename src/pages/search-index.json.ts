@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
-import { getCollection } from 'astro:content';
 import { projects, jobs } from '../data/site';
+import { getBlogPosts } from '../lib/posts';
 
 export interface SearchDocument {
   title: string;
@@ -11,7 +11,7 @@ export interface SearchDocument {
 }
 
 export const GET: APIRoute = async () => {
-  const posts = (await getCollection('blog')).filter((p) => !p.data.draft);
+  const posts = await getBlogPosts();
 
   const docs: SearchDocument[] = [
     {
@@ -92,11 +92,11 @@ export const GET: APIRoute = async () => {
       body: 'time machine v0-alpha archive 2020 first commit 3648bc8 html5 up spectral lorem ipsum',
     },
     ...posts.map((post) => ({
-      title: post.data.title,
+      title: post.title,
       url: `/blog/${post.id}`,
       kind: 'blog' as const,
-      snippet: post.data.description,
-      body: `${post.data.tags.join(' ')} ${post.body ?? ''}`.replace(/\s+/g, ' ').slice(0, 4000),
+      snippet: post.description,
+      body: `${post.tags.join(' ')} ${post.body}`.replace(/\s+/g, ' ').slice(0, 4000),
     })),
     ...projects.map((p) => ({
       title: p.title,

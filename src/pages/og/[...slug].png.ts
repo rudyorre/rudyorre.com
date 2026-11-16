@@ -1,6 +1,6 @@
 import type { APIRoute, GetStaticPaths } from 'astro';
-import { getCollection } from 'astro:content';
 import sharp from 'sharp';
+import { getBlogPosts } from '../../lib/posts';
 
 type OgCardProps = {
   title: string;
@@ -229,7 +229,7 @@ function buildOgSvg(props: OgCardProps): string {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const posts = (await getCollection('blog')).filter((p) => !p.data.draft);
+  const posts = await getBlogPosts();
 
   const staticPages: Array<{ slug: string; props: OgCardProps }> = [
     {
@@ -284,9 +284,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const postPages = posts.map((post) => ({
     slug: `blog/${post.id}`,
     props: {
-      title: post.data.title,
-      subtitle: post.data.description,
-      meta: `Rudy Orre · ${post.data.date.toISOString().slice(0, 10)}`,
+      title: post.title,
+      subtitle: post.description,
+      meta: `Rudy Orre · ${post.date.toISOString().slice(0, 10)}`,
     },
   }));
 

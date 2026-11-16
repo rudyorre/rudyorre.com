@@ -1,12 +1,17 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { deriveSlugFromEntry } from './lib/post-meta';
 
 const blog = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
+  loader: glob({
+    pattern: '**/*.{md,mdx}',
+    base: './src/content/blog',
+    generateId: ({ entry, data }) => deriveSlugFromEntry(entry, data.slug),
+  }),
   schema: z.object({
-    title: z.string(),
-    date: z.coerce.date(),
-    description: z.string(),
+    title: z.string().optional(),
+    date: z.coerce.date().optional(),
+    description: z.string().optional(),
     draft: z.boolean().default(false),
     canonical: z.string().optional(),
     image: z.string().optional(),

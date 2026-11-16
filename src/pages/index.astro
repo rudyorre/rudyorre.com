@@ -1,13 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProceduralGlyph from '../components/ProceduralGlyph.astro';
-import { getCollection } from 'astro:content';
 import { projects, jobs, links } from '../data/site';
+import { getBlogPosts } from '../lib/posts';
 
-const posts = (await getCollection('blog'))
-  .filter((post) => !post.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 3);
+const posts = (await getBlogPosts()).slice(0, 3);
 
 const featuredProjects = projects.filter((p) => p.featured);
 
@@ -96,18 +93,21 @@ const formatDate = (date: Date) =>
         {posts.map((post) => (
           <li class="media-item">
             <a href={`/blog/${post.id}`} class="media-thumb-link" tabindex="-1" aria-hidden="true">
-              <ProceduralGlyph seed={`post:${post.id}`} image={post.data.image} size="sm" />
+              <ProceduralGlyph seed={`post:${post.id}`} image={post.image} size="sm" />
             </a>
             <div class="media-body">
               <div class="stack-item-header">
                 <span class="stack-item-title">
-                  <a href={`/blog/${post.id}`}>{post.data.title}</a>
+                  <a href={`/blog/${post.id}`}>{post.title}</a>
+                  {post.draft && (
+                    <span class="version-badge version-badge-planned">draft</span>
+                  )}
                 </span>
-                <time class="post-date" datetime={formatDate(post.data.date)}>
-                  {formatDate(post.data.date)}
+                <time class="post-date" datetime={formatDate(post.date)}>
+                  {formatDate(post.date)}
                 </time>
               </div>
-              <p class="stack-item-desc">{post.data.description}</p>
+              <p class="stack-item-desc">{post.description}</p>
             </div>
           </li>
         ))}
